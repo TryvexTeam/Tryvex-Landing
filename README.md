@@ -63,8 +63,8 @@ Clases Tailwind disponibles: `bg-ink`, `text-paper`, `text-vex`, `text-signal`, 
 | Fase | Contenido | Estado |
 |------|-----------|--------|
 | F1 | Scaffold Next.js 15 + TypeScript + Tailwind v4 + tokens + fuentes | ✅ Completada |
-| F2 | UI components: GlassCard, AnimatedText, Counter, SectionWrapper, Button | ⏳ Pendiente |
-| F3 | 11 secciones en React — fidelidad visual completa, deployable en Vercel | ⏳ Pendiente |
+| F2 | UI components: GlassCard, AnimatedText, Counter, SectionWrapper, Button | ✅ Completada |
+| F3 | 11 secciones en React — fidelidad visual completa, deployable en Vercel | ✅ Completada |
 | F4 | GSAP ScrollTrigger + Framer Motion — animaciones de nivel agencia | ⏳ Pendiente |
 
 ---
