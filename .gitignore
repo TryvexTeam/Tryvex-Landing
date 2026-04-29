@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# temp migration scripts
+extract-css.ps1
+extract-body.ps1
+convert-to-jsx.js
+src/app/body-content.html
+src/app/landing-script.js
