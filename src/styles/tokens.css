@@ -1,0 +1,35 @@
+/* Tryvex Design Tokens — fuente de verdad del sistema visual */
+
+:root {
+  /* Colores base */
+  --color-ink-base:    #0e0e0e;
+  --color-paper-base:  #f4f1ea;
+  --color-vex-base:    oklch(65% 0.18 28);
+  --color-signal-base: oklch(65% 0.12 250);
+
+  /* Glassmorphism */
+  --glass-bg:      rgba(255, 255, 255, 0.42);
+  --glass-bg-dark: rgba(14, 14, 14, 0.55);
+  --glass-blur:    blur(28px) saturate(180%);
+  --glass-border:  rgba(255, 255, 255, 0.18);
+
+  /* Tipografía fluida */
+  --text-hero:    clamp(3rem, 1rem + 7vw, 8rem);
+  --text-section: clamp(2rem, 1rem + 3vw, 3.5rem);
+  --text-body:    clamp(1rem, 0.92rem + 0.4vw, 1.125rem);
+
+  /* Espaciado de sección */
+  --space-section: clamp(4rem, 3rem + 5vw, 10rem);
+
+  /* Animaciones */
+  --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast:   150ms;
+  --duration-normal: 400ms;
+  --duration-slow:   700ms;
+
+  /* Radii */
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   24px;
+  --radius-pill: 9999px;
+}

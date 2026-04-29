@@ -1,0 +1,105 @@
+<h2>¿Cómo manejamos los estilos?</h2>
+<p class="subtitle">El landing tiene un sistema CSS propio muy trabajado. Tailwind v4 entra al equipo — hay que decidir cómo conviven.</p>
+
+<div class="section">
+  <h3>Lo que ya tenemos y no queremos perder</h3>
+  <div style="background:#0e0e0e; border-radius:14px; padding:20px; font-family:monospace; font-size:12px; color:#f4f1ea; line-height:2; margin-top:12px;">
+    <div><span style="color:#e53935;">--ink        </span> → #0e0e0e  <span style="color:#888;">/* negro editorial */</span></div>
+    <div><span style="color:#e53935;">--paper      </span> → #f4f1ea  <span style="color:#888;">/* crema cálido */</span></div>
+    <div><span style="color:#e53935;">--vex        </span> → oklch(65% .18 28)  <span style="color:#888;">/* rojo-naranja marca */</span></div>
+    <div><span style="color:#e53935;">--signal     </span> → oklch(65% .12 250) <span style="color:#888;">/* azul acero */</span></div>
+    <div><span style="color:#e53935;">--glass-bg   </span> → rgba(255,255,255,0.42) + blur(28px) saturate(180%)</div>
+    <div><span style="color:#e53935;">--grain      </span> → SVG noise texture, opacity .03</div>
+    <div><span style="color:#e53935;">fonts        </span> → Geist + JetBrains Mono + Instrument Serif</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Tres estrategias de estilos para Next.js + Tailwind v4</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-top:16px;">
+
+    <!-- OPCIÓN A -->
+    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:20px;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#888; text-transform:uppercase; margin-bottom:12px;">Opción A — Solo Tailwind</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Migrar todo a clases utility</div>
+      <div style="background:#fafafa; border-radius:8px; padding:12px; font-family:monospace; font-size:11px; color:#555; line-height:1.9; margin-bottom:12px; overflow:auto;">
+        &lt;div className=<br/>
+        &nbsp;"bg-[#0e0e0e]<br/>
+        &nbsp; backdrop-blur-2xl<br/>
+        &nbsp; text-[#f4f1ea]<br/>
+        &nbsp; rounded-xl"&gt;
+      </div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Sin CSS externo</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Valores oklch hardcodeados en JSX</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Tokens glass imposibles de mantener</div>
+      <div style="font-size:12px; color:#c62828;">✗ Se pierde el sistema actual</div>
+    </div>
+
+    <!-- OPCIÓN B — RECOMENDADA -->
+    <div style="border:2px solid #e53935; border-radius:12px; padding:20px; background:#fff9f9; position:relative;">
+      <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#e53935; color:#fff; font-size:10px; font-family:monospace; letter-spacing:0.15em; padding:3px 12px; border-radius:20px; text-transform:uppercase; white-space:nowrap;">Recomendada</div>
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#e53935; text-transform:uppercase; margin-bottom:12px;">Opción B — Tokens CSS + Tailwind</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">CSS Variables como fuente de verdad</div>
+      <div style="background:#fafafa; border-radius:8px; padding:12px; font-family:monospace; font-size:11px; color:#555; line-height:1.9; margin-bottom:12px; overflow:auto;">
+        <span style="color:#888;">/* tokens.css */</span><br/>
+        :root {<br/>
+        &nbsp;--color-ink: #0e0e0e;<br/>
+        &nbsp;--color-vex: oklch(65% .18 28);<br/>
+        }<br/><br/>
+        <span style="color:#888;">/* tailwind.config.ts */</span><br/>
+        colors: {<br/>
+        &nbsp;ink: 'var(--color-ink)',<br/>
+        &nbsp;vex: 'var(--color-vex)'<br/>
+        }<br/><br/>
+        <span style="color:#888;">/* JSX */</span><br/>
+        className="bg-ink text-vex"
+      </div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Tokens preservados y centralizados</div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Tailwind usa los valores reales del sistema</div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Dark mode: un solo swap de CSS Variable</div>
+      <div style="font-size:12px; color:#2e7d32;">✓ Glass y grain como plugins Tailwind</div>
+    </div>
+
+    <!-- OPCIÓN C -->
+    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:20px; opacity:0.75;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#888; text-transform:uppercase; margin-bottom:12px;">Opción C — CSS Modules</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Un archivo CSS por componente</div>
+      <div style="background:#fafafa; border-radius:8px; padding:12px; font-family:monospace; font-size:11px; color:#555; line-height:1.9; margin-bottom:12px;">
+        Hero.module.css<br/>
+        Services.module.css<br/>
+        Pricing.module.css<br/>
+        GlassCard.module.css<br/>
+        <span style="color:#888;">/* +15 archivos CSS */</span>
+      </div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Scoping automático por componente</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Más código, sin utility classes</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ No aprovecha Tailwind v4</div>
+      <div style="font-size:12px; color:#c62828;">✗ Duplicación de tokens entre módulos</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Con la Opción B, el sistema visual queda así en Next.js</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:12px;">
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:12px; color:#e53935; margin-bottom:8px;">styles/tokens.css → layout.tsx</div>
+      <p style="font-size:13px; color:#555; margin:0;">Importado una sola vez en el layout raíz. Contiene todos los CSS Variables: colores, glass, grain, spacing y radii del sistema Tryvex.</p>
+    </div>
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:12px; color:#e53935; margin-bottom:8px;">tailwind.config.ts extendido</div>
+      <p style="font-size:13px; color:#555; margin:0;">Los colores <code>ink</code>, <code>paper</code>, <code>vex</code>, <code>signal</code> disponibles como clases utility. <code>bg-ink</code>, <code>text-vex</code>, <code>border-signal</code> en todo el proyecto.</p>
+    </div>
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:12px; color:#e53935; margin-bottom:8px;">Plugin glass-light / glass-dark</div>
+      <p style="font-size:13px; color:#555; margin:0;">El backdrop-filter + rgba quedan definidos como plugin de Tailwind. Una sola clase <code>glass-light</code> activa todo el efecto glassmorphism.</p>
+    </div>
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:12px; color:#e53935; margin-bottom:8px;">Tipografía vía next/font</div>
+      <p style="font-size:13px; color:#555; margin:0;">Geist, JetBrains Mono e Instrument Serif con <code>next/font/google</code>. Zero layout shift, subconjunto automático, sin CDN externo.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">✅ <strong>Recomendación: Opción B.</strong> CSS Variables como fuente de verdad + Tailwind como capa utility. El sistema glassmorphism de Tryvex se preserva sin perder nada. Siguiente pregunta → ¿estrategia de animaciones con Framer Motion?</p>

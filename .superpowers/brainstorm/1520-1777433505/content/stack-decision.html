@@ -1,0 +1,60 @@
+<h2>Stack elegido: <span style="color:#e53935;">Next.js 15</span></h2>
+<p class="subtitle">La única opción que cubre todos los requisitos sin compromisos.</p>
+
+<div class="section">
+  <h3>Por qué Next.js gana para Tryvex</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:12px; padding:20px;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.15em; color:#e53935; text-transform:uppercase; margin-bottom:8px;">Backend integrado</div>
+      <p style="font-size:14px; line-height:1.55; color:#444;">API Routes y Server Actions viven dentro del mismo proyecto. No necesita servidor aparte para conectar Stripe, MercadoPago, n8n o cualquier API de automatización de Tryvex.</p>
+    </div>
+
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:12px; padding:20px;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.15em; color:#e53935; text-transform:uppercase; margin-bottom:8px;">Pasarela de pago</div>
+      <p style="font-size:14px; line-height:1.55; color:#444;">Stripe y MercadoPago tienen SDKs nativos para Next.js. Los webhooks se manejan con <code>route.ts</code>. Sin CORS manual ni servidor Express adicional.</p>
+    </div>
+
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:12px; padding:20px;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.15em; color:#e53935; text-transform:uppercase; margin-bottom:8px;">Escalabilidad real</div>
+      <p style="font-size:14px; line-height:1.55; color:#444;">El landing de hoy se convierte en blog, portal de clientes o SaaS mañana — sin migrar de tecnología. Mismo repo, misma estructura.</p>
+    </div>
+
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:12px; padding:20px;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.15em; color:#e53935; text-transform:uppercase; margin-bottom:8px;">SEO + Performance</div>
+      <p style="font-size:14px; line-height:1.55; color:#444;">SSG para páginas estáticas + SSR donde necesite datos dinámicos. Core Web Vitals excelentes + Metadata API nativa para SEO perfecto.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Stack completo propuesto</h3>
+  <div style="background:#0e0e0e; border-radius:14px; padding:24px; font-family:monospace; font-size:13px; color:#f4f1ea; line-height:2;">
+    <div><span style="color:#e53935;">framework   </span> → Next.js 15 (App Router)</div>
+    <div><span style="color:#e53935;">lenguaje    </span> → TypeScript</div>
+    <div><span style="color:#e53935;">estilos     </span> → Tailwind CSS v4 + CSS Variables (sistema actual preservado)</div>
+    <div><span style="color:#e53935;">animaciones </span> → Framer Motion (reemplaza IntersectionObserver manual)</div>
+    <div><span style="color:#e53935;">ui base     </span> → shadcn/ui (headless, sobre Radix UI)</div>
+    <div><span style="color:#e53935;">validación  </span> → Zod (forms y APIs)</div>
+    <div><span style="color:#e53935;">pagos       </span> → Stripe SDK (cuando se integre)</div>
+    <div><span style="color:#e53935;">deploy      </span> → Vercel (zero-config)</div>
+    <div><span style="color:#e53935;">tipografía  </span> → Geist + JetBrains Mono (ya las usan, se mantienen)</div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Por qué no los otros</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:12px;">
+    <div style="border:1px solid #e0e0e0; border-radius:10px; padding:16px; opacity:0.65;">
+      <div style="font-weight:600; margin-bottom:6px;">Vite + React ✗</div>
+      <p style="font-size:13px; color:#666; margin:0;">Sin backend nativo. Para integrar Stripe necesitaría un servidor Express separado — dos repos, doble complejidad de deploy.</p>
+    </div>
+    <div style="border:1px solid #e0e0e0; border-radius:10px; padding:16px; opacity:0.65;">
+      <div style="font-weight:600; margin-bottom:6px;">Astro ✗</div>
+      <p style="font-size:13px; color:#666; margin:0;">Excelente para performance estática, pero las islas React son para blogs — no para apps con pagos, formularios y autenticación futura.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">✅ <strong>Decisión: Next.js 15.</strong> Siguiente pregunta → ¿cómo estructuramos los componentes y secciones del landing?</p>

@@ -1,0 +1,105 @@
+<h2>¿Cómo hacemos la migración?</h2>
+<p class="subtitle">Ya tenemos el stack. Ahora decidimos el orden de construcción — la diferencia entre tener algo live en días o en semanas.</p>
+
+<div class="section">
+  <h3>Tres enfoques de migración</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-top:16px;">
+
+    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:20px; opacity:0.8;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#888; text-transform:uppercase; margin-bottom:12px;">Opción A — Big Bang</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Reescribir todo de una vez</div>
+      <div style="font-size:12px; color:#555; line-height:1.8; margin-bottom:14px;">Scaffoldear Next.js y migrar las 11 secciones + animaciones GSAP + estilos en una sola iteración antes de publicar algo.</div>
+      <div style="background:#fafafa; border-radius:8px; padding:12px; font-size:11px; color:#555; font-family:monospace; line-height:1.9; margin-bottom:12px;">
+        Semana 1: scaffold + secciones<br/>
+        Semana 2: GSAP animations<br/>
+        Semana 3: polish + deploy<br/>
+        <span style="color:#c62828;">Sin nada live hasta semana 3</span>
+      </div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Un solo esfuerzo continuo</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Semanas sin poder mostrar avance</div>
+      <div style="font-size:12px; color:#c62828;">✗ Bugs acumulados al final</div>
+    </div>
+
+    <div style="border:2px solid #e53935; border-radius:12px; padding:20px; background:#fff9f9; position:relative;">
+      <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#e53935; color:#fff; font-size:10px; font-family:monospace; letter-spacing:0.15em; padding:3px 12px; border-radius:20px; text-transform:uppercase; white-space:nowrap;">Recomendada</div>
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#e53935; text-transform:uppercase; margin-bottom:12px;">Opción B — Por fases</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Scaffold → secciones → animaciones</div>
+      <div style="background:#fafafa; border-radius:8px; padding:12px; font-size:11px; color:#555; font-family:monospace; line-height:1.9; margin-bottom:12px;">
+        <span style="color:#e53935;">F1</span> → Next.js base + tokens<br/>
+        <span style="color:#e53935;">F2</span> → UI components compartidos<br/>
+        <span style="color:#e53935;">F3</span> → 11 secciones en React<br/>
+        <span style="color:#e53935;">F4</span> → GSAP + Framer animations<br/>
+        <span style="color:#2e7d32;">Deploy posible desde F3</span>
+      </div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Cada fase es un hito visible</div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Deploy posible desde fase 3</div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Bugs aislados por sección</div>
+      <div style="font-size:12px; color:#2e7d32;">✓ Animaciones como capa separada</div>
+    </div>
+
+    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:20px; opacity:0.8;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#888; text-transform:uppercase; margin-bottom:12px;">Opción C — Paralela</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Landing viejo live, nuevo en desarrollo</div>
+      <div style="font-size:12px; color:#555; line-height:1.8; margin-bottom:14px;">El <code>index.html</code> vanilla sigue en producción. El nuevo Next.js se construye en rama separada sin presión de tiempo.</div>
+      <div style="background:#fafafa; border-radius:8px; padding:12px; font-size:11px; color:#555; font-family:monospace; line-height:1.9; margin-bottom:12px;">
+        main → index.html vanilla (live)<br/>
+        feat/nextjs → nuevo proyecto<br/>
+        <span style="color:#888;">Swap cuando esté listo</span>
+      </div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Sin presión de romper producción</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Dos codebases en paralelo</div>
+      <div style="font-size:12px; color:#c62828;">✗ Duplicación de trabajo de contenido</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Opción B — Plan de fases detallado</h3>
+  <div style="margin-top:14px;">
+
+    <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:10px; background:#f9f9f9; border:1px solid #e0e0e0; margin-bottom:10px;">
+      <div style="background:#e53935; color:#fff; border-radius:8px; padding:8px 14px; font-family:monospace; font-weight:700; font-size:14px; flex-shrink:0;">F1</div>
+      <div>
+        <div style="font-weight:600; font-size:13px; margin-bottom:6px;">Scaffold base — 1 día</div>
+        <div style="font-size:12px; color:#555; line-height:1.8;"><code>npx create-next-app</code> + TypeScript + Tailwind v4 · Tokens CSS migrados a <code>tokens.css</code> · Tailwind config extendido con colores Tryvex · Fuentes via <code>next/font</code> · Layout raíz con metadata SEO</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:10px; background:#f9f9f9; border:1px solid #e0e0e0; margin-bottom:10px;">
+      <div style="background:#e53935; color:#fff; border-radius:8px; padding:8px 14px; font-family:monospace; font-weight:700; font-size:14px; flex-shrink:0;">F2</div>
+      <div>
+        <div style="font-weight:600; font-size:13px; margin-bottom:6px;">UI components compartidos — 1 día</div>
+        <div style="font-size:12px; color:#555; line-height:1.8;"><code>GlassCard</code> · <code>AnimatedText</code> · <code>Counter</code> · <code>SectionWrapper</code> · <code>Button</code> · Estos bloques desbloquean la construcción de todas las secciones</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:10px; background:#f9f9f9; border:1px solid #e0e0e0; margin-bottom:10px;">
+      <div style="background:#e53935; color:#fff; border-radius:8px; padding:8px 14px; font-family:monospace; font-weight:700; font-size:14px; flex-shrink:0;">F3</div>
+      <div>
+        <div style="font-weight:600; font-size:13px; margin-bottom:6px;">11 secciones en React — 2-3 días</div>
+        <div style="font-size:12px; color:#555; line-height:1.8;">Orden: <strong>Navbar → Footer → Hero → Services → Process → Metrics → Testimonial → Pricing → FAQ → LogoStrip → CTAFinal</strong></div>
+        <div style="margin-top:8px; background:#f0faf0; border-radius:6px; padding:10px; font-size:12px; color:#2e7d32;">Al terminar F3 el landing es deployable en Vercel — fidelidad visual completa, sin animaciones GSAP aún.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:10px; background:#f9f9f9; border:1px solid #e0e0e0; margin-bottom:10px;">
+      <div style="background:#e53935; color:#fff; border-radius:8px; padding:8px 14px; font-family:monospace; font-weight:700; font-size:14px; flex-shrink:0;">F4</div>
+      <div>
+        <div style="font-weight:600; font-size:13px; margin-bottom:6px;">GSAP + Framer animations — 2 días</div>
+        <div style="font-size:12px; color:#555; line-height:1.8;">Hero pinned scrub · SplitText headings · Parallax 3 capas · Process horizontal scrub · Métricas counter scrub · Pricing 3D tilt · Navbar scroll hide/show</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:16px; align-items:flex-start; padding:16px; border-radius:10px; background:#f0faf0; border:1px solid #a5d6a7;">
+      <div style="background:#2e7d32; color:#fff; border-radius:8px; padding:8px 12px; font-size:18px; flex-shrink:0;">🚀</div>
+      <div>
+        <div style="font-weight:600; font-size:13px; margin-bottom:6px;">Deploy Vercel — día 7-8</div>
+        <div style="font-size:12px; color:#555; line-height:1.8;"><code>vercel --prod</code> · Zero-config · CI/CD automático en cada push a main · Dominio <code>tryvex.cl</code> apuntado al proyecto</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">✅ <strong>Recomendación: Opción B — por fases.</strong> En 7-8 días el landing de Tryvex está vivo en Vercel con animaciones GSAP de nivel agencia premium. ¿Aprobamos este plan y pasamos a escribir el spec?</p>

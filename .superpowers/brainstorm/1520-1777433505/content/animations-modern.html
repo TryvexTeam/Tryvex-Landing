@@ -1,0 +1,105 @@
+<h2>Animaciones de nivel <span style="color:#e53935;">agencia premium</span></h2>
+<p class="subtitle">Los efectos virales "scroll como video" son GSAP ScrollTrigger con scrub. Así funciona Apple, Linear, Vercel y las mejores agencias del mundo.</p>
+
+<div class="section">
+  <h3>¿Qué es el efecto "scroll como video"?</h3>
+  <div style="background:#0e0e0e; border-radius:14px; padding:24px; margin-top:12px; display:grid; grid-template-columns: 1fr 1fr; gap:24px; align-items:center;">
+    <div>
+      <p style="color:#f4f1ea; font-size:14px; line-height:1.7; margin:0 0 16px 0;">El usuario hace scroll → en vez de mover la página, <strong style="color:#e53935;">avanza por una timeline de animación</strong>. La página está "pausada" mientras el elemento se transforma frame a frame.</p>
+      <p style="color:#888; font-size:13px; line-height:1.6; margin:0;">Es exactamente lo que hace Apple con el iPhone girando, Vercel con su logo construyéndose, o los sitios donde el texto se escribe solo al bajar.</p>
+    </div>
+    <div style="font-family:monospace; font-size:12px; color:#f4f1ea; line-height:2; background:#1a1a1a; padding:16px; border-radius:10px;">
+      <div><span style="color:#e53935;">gsap.timeline</span>({</div>
+      <div>&nbsp;&nbsp;scrollTrigger: {</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;trigger: ".hero",</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4fc3f7;">scrub: 1,</span> <span style="color:#666;">// ← la magia</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;pin: true,</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;start: "top top",</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;end: "+=200%"</div>
+      <div>&nbsp;&nbsp;}</div>
+      <div>})</div>
+      <div>.to(".logo", { scale: 8, opacity: 0 })</div>
+      <div>.to(".headline", { y: -100, opacity: 1 })</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Stack de animaciones para Tryvex — dos herramientas, cada una en su carril</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
+
+    <div style="border:2px solid #e53935; border-radius:12px; padding:20px; background:#fff9f9; position:relative;">
+      <div style="position:absolute; top:-12px; left:20px; background:#e53935; color:#fff; font-size:10px; font-family:monospace; letter-spacing:0.15em; padding:3px 12px; border-radius:20px; text-transform:uppercase;">Scroll épico</div>
+      <div style="font-size:16px; font-weight:700; margin-bottom:4px; margin-top:8px;">GSAP + ScrollTrigger</div>
+      <div style="font-size:12px; color:#888; font-family:monospace; margin-bottom:14px;">gsap.com — estándar de la industria</div>
+      <div style="font-size:13px; color:#555; line-height:1.8; margin-bottom:14px;">El motor detrás de los efectos más sofisticados de la web. <code>scrub</code> convierte el scroll en el reproductor de una timeline — exactamente los efectos virales.</div>
+      <div style="font-size:12px; color:#444; line-height:2;">
+        <div>→ <strong>Pin</strong>: secciones que se "congelan" mientras animan</div>
+        <div>→ <strong>Scrub</strong>: scroll controla posición en la timeline</div>
+        <div>→ <strong>SplitText</strong>: texto que aparece letra por letra</div>
+        <div>→ <strong>DrawSVG</strong>: el logo Spark se dibuja solo</div>
+        <div>→ <strong>Parallax</strong> preciso con velocidades independientes</div>
+      </div>
+    </div>
+
+    <div style="border:2px solid #0e0e0e; border-radius:12px; padding:20px; position:relative;">
+      <div style="position:absolute; top:-12px; left:20px; background:#0e0e0e; color:#fff; font-size:10px; font-family:monospace; letter-spacing:0.15em; padding:3px 12px; border-radius:20px; text-transform:uppercase;">Componentes React</div>
+      <div style="font-size:16px; font-weight:700; margin-bottom:4px; margin-top:8px;">Framer Motion</div>
+      <div style="font-size:12px; color:#888; font-family:monospace; margin-bottom:14px;">framer.com/motion — nativo en React</div>
+      <div style="font-size:13px; color:#555; line-height:1.8; margin-bottom:14px;">Para hover states, micro-interacciones y transiciones entre páginas. Se integra con Next.js App Router sin fricción.</div>
+      <div style="font-size:12px; color:#444; line-height:2;">
+        <div>→ <strong>whileHover / whileTap</strong>: estados interactivos</div>
+        <div>→ <strong>AnimatePresence</strong>: transiciones de página fluidas</div>
+        <div>→ <strong>layout</strong>: animaciones de reflow automáticas</div>
+        <div>→ <strong>useSpring</strong>: física realista en UI</div>
+        <div>→ <strong>stagger</strong>: listas en cascada</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:#fffbf0; border:1px solid #f0d060; border-radius:10px; padding:16px; margin-top:12px; display:flex; align-items:center; gap:16px;">
+    <div style="font-size:24px;">🎯</div>
+    <div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:4px;">Regla de oro: GSAP para el scroll épico, Framer para los componentes</div>
+      <div style="font-size:12px; color:#666; line-height:1.6;">Conviven perfectamente en el mismo proyecto Next.js. GSAP maneja las grandes secuencias de scroll. Framer maneja las interacciones de componente. No compiten — se complementan.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Los 6 efectos concretos para el landing de Tryvex</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:12px;">
+    <div style="background:#0e0e0e; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:8px;">Hero pinned reveal</div>
+      <p style="font-size:12px; color:#aaa; margin:0; line-height:1.7;">La sección queda pinned 2 pantallas. El logo Spark crece hasta llenar la pantalla y luego el headline aparece letra por letra mientras se hace scroll.</p>
+    </div>
+    <div style="background:#0e0e0e; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:8px;">Process horizontal</div>
+      <p style="font-size:12px; color:#aaa; margin:0; line-height:1.7;">Los 4 pasos del proceso se desplazan horizontalmente sincronizados con el scroll vertical. La sección está pinned y da sensación de storytelling.</p>
+    </div>
+    <div style="background:#0e0e0e; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:8px;">Métricas scrub</div>
+      <p style="font-size:12px; color:#aaa; margin:0; line-height:1.7;">Los números cuentan sincronizados con la velocidad del scroll. Cuanto más rápido se baja, más rápido sube el número — scrub directo.</p>
+    </div>
+    <div style="background:#0e0e0e; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:8px;">SplitText headings</div>
+      <p style="font-size:12px; color:#aaa; margin:0; line-height:1.7;">Cada heading grande se divide en palabras. Aparecen con stagger y rise mientras el usuario entra a la sección — el efecto más viral del momento.</p>
+    </div>
+    <div style="background:#0e0e0e; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:8px;">Parallax 3 capas</div>
+      <p style="font-size:12px; color:#aaa; margin:0; line-height:1.7;">Grain texture, blobs de luz ambiental y contenido principal a 3 velocidades distintas. Da profundidad real al glassmorphism de Tryvex.</p>
+    </div>
+    <div style="background:#0e0e0e; border-radius:10px; padding:16px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:8px;">Pricing 3D tilt</div>
+      <p style="font-size:12px; color:#aaa; margin:0; line-height:1.7;">Las cards de pricing entran desde ángulos opuestos con scrub. Al hacer hover, Framer Motion aplica un tilt 3D que sigue al cursor.</p>
+    </div>
+  </div>
+</div>
+
+<div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:12px; padding:18px; margin-top:16px;">
+  <div style="font-size:12px; font-weight:600; margin-bottom:8px; color:#444;">¿Y Lottie?</div>
+  <p style="font-size:12px; color:#666; margin:0; line-height:1.7;">Si en el futuro queremos animaciones tipo ilustración (un flujo de automatización que se construye, un robot), Lottie + <code>lottie-react</code> se agrega sin problema. Un diseñador exporta desde After Effects y nosotros controlamos la reproducción con scroll vía GSAP ScrollTrigger.</p>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">✅ <strong>Stack: GSAP + ScrollTrigger para scroll épico + Framer Motion para componentes React.</strong> Los dos conviven sin conflicto en Next.js 15. Siguiente pregunta → ¿estrategia de migración: big bang o sección por sección?</p>

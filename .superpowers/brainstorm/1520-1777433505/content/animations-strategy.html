@@ -1,0 +1,109 @@
+<h2>¿Cómo manejamos las animaciones?</h2>
+<p class="subtitle">El landing actual tiene 155 líneas de JS manual: IntersectionObserver, parallax, word-split, contadores, magnetic hover. Framer Motion reemplaza todo eso — la pregunta es cómo.</p>
+
+<div class="section">
+  <h3>Lo que tenemos hoy vs. lo que propone Framer Motion</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:12px;">
+    <div style="background:#fafafa; border:1px solid #e0e0e0; border-radius:10px; padding:16px;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#888; text-transform:uppercase; margin-bottom:10px;">Hoy — JS vanilla</div>
+      <div style="font-size:12px; color:#555; line-height:1.9;">
+        <div>• IntersectionObserver global → clases CSS</div>
+        <div>• <code>split(texto)</code> manual en cada heading</div>
+        <div>• <code>requestAnimationFrame</code> para parallax</div>
+        <div>• <code>setInterval</code> para contadores</div>
+        <div>• <code>mousemove</code> listener para magnetic hover</div>
+        <div>• <code>scrollY</code> polling para navbar</div>
+      </div>
+    </div>
+    <div style="background:#fff9f9; border:1px solid #e53935; border-radius:10px; padding:16px;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#e53935; text-transform:uppercase; margin-bottom:10px;">Con Framer Motion</div>
+      <div style="font-size:12px; color:#555; line-height:1.9;">
+        <div>• <code>whileInView</code> → reemplaza IntersectionObserver</div>
+        <div>• <code>staggerChildren</code> → word-split declarativo</div>
+        <div>• <code>useScroll + useTransform</code> → parallax</div>
+        <div>• <code>useMotionValue + animate</code> → contadores</div>
+        <div>• <code>whileHover</code> → magnetic hover</div>
+        <div>• <code>useScroll</code> → navbar scroll state</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Tres estrategias de adopción</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-top:16px;">
+
+    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:20px;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#888; text-transform:uppercase; margin-bottom:12px;">Opción A — Conservadora</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Mantener JS manual + Framer solo para lo nuevo</div>
+      <div style="font-size:12px; color:#555; line-height:1.7; margin-bottom:12px;">Migrar solo secciones nuevas. Las animaciones existentes siguen con IntersectionObserver + RAF.</div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Menos trabajo inicial</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Dos sistemas en paralelo</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Bugs difíciles de debuggear</div>
+      <div style="font-size:12px; color:#c62828;">✗ Deuda técnica desde el día 1</div>
+    </div>
+
+    <div style="border:2px solid #e53935; border-radius:12px; padding:20px; background:#fff9f9; position:relative;">
+      <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#e53935; color:#fff; font-size:10px; font-family:monospace; letter-spacing:0.15em; padding:3px 12px; border-radius:20px; text-transform:uppercase; white-space:nowrap;">Recomendada</div>
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#e53935; text-transform:uppercase; margin-bottom:12px;">Opción B — Reemplazo completo</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Framer Motion para todo desde el inicio</div>
+      <div style="background:#fafafa; border-radius:8px; padding:12px; font-family:monospace; font-size:11px; color:#555; line-height:1.9; margin-bottom:12px; overflow:auto;">
+        <span style="color:#888;">// SectionWrapper universal</span><br/>
+        &lt;motion.section<br/>
+        &nbsp;&nbsp;initial={{ opacity:0, y:32 }}<br/>
+        &nbsp;&nbsp;whileInView={{ opacity:1, y:0 }}<br/>
+        &nbsp;&nbsp;viewport={{ once:true }}<br/>
+        &nbsp;&nbsp;transition={{ duration:0.6,<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;ease:[0.16,1,0.3,1] }}<br/>
+        /&gt;
+      </div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Un solo sistema, sin conflictos</div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ <code>useReducedMotion</code> automático</div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Stagger y orchestration declarativos</div>
+      <div style="font-size:12px; color:#2e7d32;">✓ Base limpia para animaciones futuras</div>
+    </div>
+
+    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:20px; opacity:0.75;">
+      <div style="font-size:11px; font-family:monospace; letter-spacing:0.12em; color:#888; text-transform:uppercase; margin-bottom:12px;">Opción C — CSS puro</div>
+      <div style="font-size:13px; font-weight:600; margin-bottom:10px;">Solo CSS scroll-driven + transitions</div>
+      <div style="font-size:12px; color:#555; line-height:1.7; margin-bottom:12px;">CSS Scroll-Driven Animations API + <code>@keyframes</code>. Sin JS de animación.</div>
+      <div style="font-size:12px; color:#2e7d32; margin-bottom:4px;">✓ Bundle JS mínimo</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Safari soporte parcial aún</div>
+      <div style="font-size:12px; color:#c62828; margin-bottom:4px;">✗ Contadores y parallax requieren JS igual</div>
+      <div style="font-size:12px; color:#c62828;">✗ No escala a interacciones complejas</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Las 6 animaciones del landing → equivalente en Framer Motion</h3>
+  <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:12px;">
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:8px; padding:14px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:6px;">Scroll reveal</div>
+      <p style="font-size:12px; color:#555; margin:0;"><code>whileInView</code> en <code>SectionWrapper</code>. Variantes: fade-up, fade-left, scale-in según prop.</p>
+    </div>
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:8px; padding:14px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:6px;">Word-split</div>
+      <p style="font-size:12px; color:#555; margin:0;"><code>AnimatedText</code> con <code>staggerChildren</code>. Cada palabra es <code>motion.span</code> con delay incremental.</p>
+    </div>
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:8px; padding:14px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:6px;">Parallax</div>
+      <p style="font-size:12px; color:#555; margin:0;"><code>useScroll + useTransform</code>. El grain layer y blobs se mueven a velocidades distintas.</p>
+    </div>
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:8px; padding:14px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:6px;">Contadores</div>
+      <p style="font-size:12px; color:#555; margin:0;"><code>useMotionValue + animate</code> en <code>Counter</code>. Trigger al entrar en viewport, easing expo.</p>
+    </div>
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:8px; padding:14px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:6px;">Magnetic hover</div>
+      <p style="font-size:12px; color:#555; margin:0;"><code>useMotionValue + spring</code> en botones CTA. Sigue suavemente al cursor.</p>
+    </div>
+    <div style="background:#f9f9f9; border:1px solid #e0e0e0; border-radius:8px; padding:14px;">
+      <div style="font-family:monospace; font-size:11px; color:#e53935; margin-bottom:6px;">Navbar scroll</div>
+      <p style="font-size:12px; color:#555; margin:0;"><code>useScroll + useMotionValueEvent</code>. Detecta dirección → muestra/oculta la pill glass con spring.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:20px;">✅ <strong>Recomendación: Opción B.</strong> Framer Motion completo desde el inicio — un sistema, cero conflictos, <code>useReducedMotion</code> incluido. Siguiente pregunta → ¿estrategia de migración: big bang o sección por sección?</p>

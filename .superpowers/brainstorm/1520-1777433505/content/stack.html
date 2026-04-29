@@ -1,0 +1,56 @@
+<h2>¿Qué stack base usamos para Tryvex Landing?</h2>
+<p class="subtitle">Migrando de HTML/CSS/JS vanilla a React moderno. Tres caminos sólidos para una landing de agencia tech como Tryvex.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="nextjs" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #0e0e0e 0%, #1a1a1a 100%); display:flex; align-items:center; justify-content:center; height:110px;">
+      <span style="font-family: monospace; font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.04em;">Next.js 15</span>
+    </div>
+    <div class="card-body">
+      <h3>Next.js 15 + App Router</h3>
+      <p>El estándar de la industria para sitios que van a crecer. SSR/SSG para SEO perfecto, React Server Components, deploy en Vercel en 1 click. Ideal si el landing evoluciona a blog, casos de estudio o portal.</p>
+      <div style="margin-top: 12px;">
+        <div class="pros-cons">
+          <div class="pros"><h4>Pros</h4><ul><li>SEO nativo (SSR/SSG)</li><li>Escala a producto completo</li><li>Deploy instantáneo Vercel</li><li>Ecosistema enorme</li></ul></div>
+          <div class="cons"><h4>Contras</h4><ul><li>Más config inicial</li><li>Algo overkill para 1 página</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="vite" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); display:flex; align-items:center; justify-content:center; height:110px;">
+      <span style="font-family: monospace; font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.04em;">Vite + React</span>
+    </div>
+    <div class="card-body">
+      <h3>Vite + React 19</h3>
+      <p>Setup mínimo, velocidad máxima. SPA pura sin servidor ni hidratación compleja. Control total sin opiniones de framework. Ideal para iterar rápido sobre el diseño.</p>
+      <div style="margin-top: 12px;">
+        <div class="pros-cons">
+          <div class="pros"><h4>Pros</h4><ul><li>Setup en 2 minutos</li><li>Dev server ultrarrápido (HMR)</li><li>Sin opiniones impuestas</li><li>Curva suave</li></ul></div>
+          <div class="cons"><h4>Contras</h4><ul><li>SEO manual (sin SSR)</li><li>Deploy menos integrado</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="astro" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #e53935 0%, #ff6b4a 100%); display:flex; align-items:center; justify-content:center; height:110px;">
+      <span style="font-family: monospace; font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.04em;">Astro 5</span>
+    </div>
+    <div class="card-body">
+      <h3>Astro 5 + React Islands</h3>
+      <p>Mejor performance para sites de contenido. HTML estático por defecto — solo los componentes interactivos cargan React. Bundle mínimo, Core Web Vitals perfectos de entrada.</p>
+      <div style="margin-top: 12px;">
+        <div class="pros-cons">
+          <div class="pros"><h4>Pros</h4><ul><li>Performance top tier</li><li>0 JS por defecto</li><li>CWV excelentes</li><li>MDX + blog nativo</li></ul></div>
+          <div class="cons"><h4>Contras</h4><ul><li>Menos familiar que Next</li><li>Mental model de "islas" nuevo</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top: 24px;">💡 <strong>Recomendación Jarvis:</strong> <strong>Next.js 15</strong> — Tryvex es una agencia que va a crecer. El landing de hoy puede ser el portal con blog, casos de estudio y dashboard mañana.</p>
