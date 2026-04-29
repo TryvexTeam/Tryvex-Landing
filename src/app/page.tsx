@@ -4,7 +4,7 @@ import LandingClient from "./LandingClient";
 export default function Home() {
   return (
     <>
-      <LandingClient />
+
 ﻿<div className="scroll-progress"></div>
 <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
 <div className="grain"></div>
@@ -421,6 +421,7 @@ export default function Home() {
     </div>
   </div>
 </footer>
+      <LandingClient />
     </>
   );
 }
