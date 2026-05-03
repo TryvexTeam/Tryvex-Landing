@@ -6,7 +6,7 @@ export default function LandingClient() {
   useEffect(() => {
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /* 1. Word-split big headings */
+    /* ── 1. Word-split big headings ──────────────────────────────── */
     document.querySelectorAll('[data-split="words"]').forEach((el) => {
       const walk = (node: Node): Node[] => {
         const out: Node[] = [];
@@ -29,9 +29,7 @@ export default function LandingClient() {
           } else if (child.nodeType === 1) {
             const clone = (child as Element).cloneNode(false);
             const inner = walk(child);
-            if (inner.length) {
-              inner.forEach((n) => clone.appendChild(n));
-            }
+            if (inner.length) inner.forEach((n) => clone.appendChild(n));
             out.push(clone);
           }
         });
@@ -42,7 +40,11 @@ export default function LandingClient() {
       replaced.forEach((n) => el.appendChild(n));
     });
 
-    /* 2. Intersection observer for reveals */
+    /* ── 2. Intersection observer reveals ───────────────────────── */
+    // GSAP-controlled stagger wrappers are excluded to avoid CSS conflicts
+    const gsapStaggerClasses = ["services", "process", "offer"];
+    const gsapAnimClasses = ["metrics-block", "quote-card", "final", "final-spark"];
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -60,74 +62,32 @@ export default function LandingClient() {
 
     document
       .querySelectorAll('[data-anim], [data-stagger], [data-split="words"]')
-      .forEach((el) => io.observe(el));
+      .forEach((el) => {
+        if (!reduce) {
+          // Skip stagger parents whose children GSAP will animate
+          if (
+            el.hasAttribute("data-stagger") &&
+            gsapStaggerClasses.some((c) => el.classList.contains(c))
+          )
+            return;
+          // Skip individual elements GSAP will animate
+          if (
+            el.hasAttribute("data-anim") &&
+            gsapAnimClasses.some((c) => el.classList.contains(c))
+          )
+            return;
+        }
+        io.observe(el);
+      });
 
     document.querySelectorAll('[data-split="words"]').forEach((h) => {
-      if (h.classList.contains("in")) {
+      if (h.classList.contains("in"))
         h.querySelectorAll(".split-word").forEach((s) =>
           s.classList.add("in")
         );
-      }
     });
 
-    /* 3. Parallax + ambient drift on scroll */
-    let ticking = false;
-    const parallaxEls = document.querySelectorAll("[data-parallax]");
-    const ambient = document.querySelector(".ambient") as HTMLElement | null;
-    const heroVisual = document.querySelector(
-      ".hero-visual"
-    ) as HTMLElement | null;
-    const progress = document.querySelector(
-      ".scroll-progress"
-    ) as HTMLElement | null;
-
-    const onScroll = () => {
-      const sy = window.scrollY;
-      const max =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const pct = Math.max(0, Math.min(1, sy / max));
-
-      if (ambient) ambient.style.setProperty("--sy", pct.toString());
-      if (progress)
-        progress.style.setProperty("--sp", (pct * 100).toFixed(2) + "%");
-
-      const vh = window.innerHeight;
-      parallaxEls.forEach((el) => {
-        const r = el.getBoundingClientRect();
-        const center = r.top + r.height / 2;
-        const p = (center - vh / 2) / vh;
-        (el as HTMLElement).style.setProperty(
-          "--p",
-          Math.max(-1.4, Math.min(1.4, -p)).toFixed(3)
-        );
-      });
-
-      if (heroVisual) {
-        const r = heroVisual.getBoundingClientRect();
-        const center = r.top + r.height / 2;
-        const t = Math.max(-1, Math.min(1, (center - vh / 2) / vh));
-        heroVisual.style.transform = `translateY(${(-t * 18).toFixed(
-          1
-        )}px) rotate(${(t * -1.2).toFixed(2)}deg)`;
-      }
-
-      ticking = false;
-    };
-
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!ticking) {
-          requestAnimationFrame(onScroll);
-          ticking = true;
-        }
-      },
-      { passive: true }
-    );
-    onScroll();
-
-    /* 4. Animated counters */
-    const counters = document.querySelectorAll(".metric .v");
+    /* ── 3. Animated counters ────────────────────────────────────── */
     const counterIO = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -147,11 +107,8 @@ export default function LandingClient() {
           const tick = (now: number) => {
             const t = Math.min(1, (now - start) / dur);
             const v = target * ease(t);
-            const display = isFloat
-              ? v.toFixed(1)
-              : Math.round(v).toString();
             el.innerHTML =
-              display +
+              (isFloat ? v.toFixed(1) : Math.round(v).toString()) +
               "<em>" +
               suffix.replace(/<\/?em>/g, "") +
               "</em>";
@@ -163,9 +120,9 @@ export default function LandingClient() {
       },
       { threshold: 0.5 }
     );
-    counters.forEach((c) => counterIO.observe(c));
+    document.querySelectorAll(".metric .v").forEach((c) => counterIO.observe(c));
 
-    /* 5. Hero flow steps cycling */
+    /* ── 4. Hero flow steps cycling ─────────────────────────────── */
     const steps = document.querySelectorAll(".hv-step");
     let stepInterval: ReturnType<typeof setInterval> | null = null;
     if (steps.length) {
@@ -177,9 +134,12 @@ export default function LandingClient() {
       }, 2200);
     }
 
-    /* 6. Magnetic CTA hover */
+    /* ── 5. Magnetic CTA hover ───────────────────────────────────── */
     const btns = document.querySelectorAll(".btn-primary");
-    const handlers = new Map<Element, { move: EventListener; leave: EventListener }>();
+    const handlers = new Map<
+      Element,
+      { move: EventListener; leave: EventListener }
+    >();
     btns.forEach((btn) => {
       const move = ((e: MouseEvent) => {
         const r = (btn as HTMLElement).getBoundingClientRect();
@@ -197,6 +157,281 @@ export default function LandingClient() {
       handlers.set(btn, { move, leave });
     });
 
+    /* ── 6. Scroll progress bar ──────────────────────────────────── */
+    const progress = document.querySelector(
+      ".scroll-progress"
+    ) as HTMLElement | null;
+    let pTicking = false;
+    const updateProgress = () => {
+      const max =
+        document.documentElement.scrollHeight - window.innerHeight;
+      progress?.style.setProperty(
+        "--sp",
+        (Math.min(1, window.scrollY / (max || 1)) * 100).toFixed(2) + "%"
+      );
+      pTicking = false;
+    };
+    const onScrollP = () => {
+      if (!pTicking) {
+        requestAnimationFrame(updateProgress);
+        pTicking = true;
+      }
+    };
+    window.addEventListener("scroll", onScrollP, { passive: true });
+    updateProgress();
+
+    /* ── 7. GSAP ScrollTrigger scrub animations ──────────────────── */
+    let gsapCtx: { revert: () => void } | null = null;
+
+    if (!reduce) {
+      Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+        ([{ gsap }, { ScrollTrigger }]) => {
+          gsap.registerPlugin(ScrollTrigger);
+
+          // Remove CSS stagger transitions from GSAP-controlled elements
+          // so scrub opacity doesn't fight the CSS transition delay rules
+          document.querySelectorAll(".svc, .step, .plan").forEach((el) => {
+            (el as HTMLElement).style.transition = "none";
+          });
+
+          gsapCtx = gsap.context(() => {
+            /* ── Hero multi-layer parallax (bidirectional scrub) ─ */
+            const heroST = {
+              trigger: ".hero",
+              start: "top top",
+              end: "bottom top",
+              scrub: 1.2,
+            };
+
+            gsap.to(".hero-visual", {
+              y: -140,
+              rotation: -4,
+              scale: 0.94,
+              ease: "none",
+              scrollTrigger: heroST,
+            });
+            gsap.to(".fc-1", {
+              y: -230,
+              x: 60,
+              rotation: -20,
+              scale: 0.8,
+              ease: "none",
+              scrollTrigger: { ...heroST, scrub: 2.2 },
+            });
+            gsap.to(".fc-2", {
+              y: 190,
+              x: -50,
+              rotation: 16,
+              scale: 0.82,
+              ease: "none",
+              scrollTrigger: { ...heroST, scrub: 2.2 },
+            });
+            gsap.to(".hero-col h1", {
+              y: -55,
+              ease: "none",
+              scrollTrigger: { ...heroST, scrub: 0.7 },
+            });
+            gsap.to(".hero-col .eyebrow", {
+              y: -35,
+              ease: "none",
+              scrollTrigger: { ...heroST, scrub: 0.5 },
+            });
+            gsap.to(".hero-col .lede, .hero-col .hero-cta", {
+              y: -22,
+              ease: "none",
+              scrollTrigger: { ...heroST, scrub: 0.4 },
+            });
+
+            /* ── Ambient blobs — slow full-page drift ────────────── */
+            const blobST = {
+              trigger: "body",
+              start: "top top",
+              end: "bottom bottom",
+              scrub: 4,
+            };
+            gsap.to(".ambient .b1", {
+              y: -480,
+              x: 90,
+              ease: "none",
+              scrollTrigger: blobST,
+            });
+            gsap.to(".ambient .b2", {
+              y: 360,
+              x: -60,
+              ease: "none",
+              scrollTrigger: blobST,
+            });
+            gsap.to(".ambient .b3", {
+              y: -520,
+              x: 80,
+              ease: "none",
+              scrollTrigger: blobST,
+            });
+
+            /* ── Services cards — 3D rotationX scrub entry ─────── */
+            gsap.utils.toArray<Element>(".svc").forEach((el, i) => {
+              gsap.fromTo(
+                el,
+                {
+                  rotationX: -24,
+                  y: 70,
+                  transformPerspective: 1100,
+                  opacity: 0,
+                },
+                {
+                  rotationX: 0,
+                  y: 0,
+                  opacity: 1,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: el,
+                    start: "top 92%",
+                    end: "top 32%",
+                    scrub: 1 + i * 0.15,
+                  },
+                }
+              );
+            });
+
+            /* ── Process steps — alternating rotationY scrub ────── */
+            gsap.utils.toArray<Element>(".step").forEach((el, i) => {
+              const dir = i % 2 === 0 ? -18 : 18;
+              gsap.fromTo(
+                el,
+                {
+                  rotationY: dir,
+                  x: dir * -4,
+                  transformPerspective: 1000,
+                  opacity: 0,
+                },
+                {
+                  rotationY: 0,
+                  x: 0,
+                  opacity: 1,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: el,
+                    start: "top 90%",
+                    end: "top 30%",
+                    scrub: 1.2 + i * 0.1,
+                  },
+                }
+              );
+            });
+
+            /* ── Metrics block — rise + blur scrub ───────────────── */
+            gsap.fromTo(
+              ".metrics-block",
+              { y: 90, filter: "blur(12px)", opacity: 0 },
+              {
+                y: 0,
+                filter: "blur(0px)",
+                opacity: 1,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: ".metrics-block",
+                  start: "top 88%",
+                  end: "top 35%",
+                  scrub: 1.6,
+                },
+              }
+            );
+
+            /* ── Testimonial card — 3D tilt scrub ───────────────── */
+            gsap.fromTo(
+              ".quote-card",
+              {
+                rotationX: -12,
+                y: 80,
+                transformPerspective: 900,
+                opacity: 0,
+              },
+              {
+                rotationX: 0,
+                y: 0,
+                opacity: 1,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: ".quote-card",
+                  start: "top 88%",
+                  end: "top 28%",
+                  scrub: 1.4,
+                },
+              }
+            );
+
+            /* ── Pricing plans — staggered 3D entry ─────────────── */
+            gsap.utils.toArray<Element>(".plan").forEach((el, i) => {
+              gsap.fromTo(
+                el,
+                {
+                  rotationX: -14,
+                  y: 80,
+                  transformPerspective: 1000,
+                  opacity: 0,
+                },
+                {
+                  rotationX: 0,
+                  y: 0,
+                  opacity: 1,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: el,
+                    start: "top 92%",
+                    end: "top 40%",
+                    scrub: 0.9 + i * 0.25,
+                  },
+                }
+              );
+            });
+
+            /* ── Final CTA — dramatic scale + tilt reveal ────────── */
+            gsap.fromTo(
+              ".final",
+              {
+                scale: 0.88,
+                rotationX: -8,
+                transformPerspective: 1200,
+                opacity: 0,
+              },
+              {
+                scale: 1,
+                rotationX: 0,
+                opacity: 1,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: ".final",
+                  start: "top 92%",
+                  end: "top 22%",
+                  scrub: 1.8,
+                },
+              }
+            );
+
+            /* ── Final sparks — spin in with scrub ───────────────── */
+            gsap.utils.toArray<Element>(".final-spark").forEach((el, i) => {
+              gsap.fromTo(
+                el,
+                { scale: 0.2, rotation: -90 + i * 35, opacity: 0 },
+                {
+                  scale: 1,
+                  rotation: 0,
+                  opacity: 1,
+                  ease: "none",
+                  scrollTrigger: {
+                    trigger: ".final",
+                    start: "top 88%",
+                    end: "center 45%",
+                    scrub: 0.9 + i * 0.3,
+                  },
+                }
+              );
+            });
+          });
+        }
+      );
+    }
+
     return () => {
       io.disconnect();
       counterIO.disconnect();
@@ -205,6 +440,8 @@ export default function LandingClient() {
         btn.removeEventListener("mousemove", move);
         btn.removeEventListener("mouseleave", leave);
       });
+      window.removeEventListener("scroll", onScrollP);
+      gsapCtx?.revert();
     };
   }, []);
 
