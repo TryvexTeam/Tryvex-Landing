@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const NOTIFY_EMAIL = "hola@tryvex.cl";
+const NOTIFY_EMAIL = "tryvexentreprise@gmail.com";
 const MEET_LINK =
   process.env.GOOGLE_MEET_LINK ?? "https://meet.google.com/tryvex-agenda";
 
@@ -40,13 +40,13 @@ export async function POST(req: NextRequest) {
   try {
     await Promise.all([
       resend.emails.send({
-        from: "Tryvex <hola@tryvex.cl>",
+        from: "Tryvex <tryvexentreprise@gmail.com>",
         to: email,
         subject: "Confirmación de llamada · Tryvex",
         html: buildClientEmail({ name, date, time, meetLink: MEET_LINK }),
       }),
       resend.emails.send({
-        from: "Tryvex Form <hola@tryvex.cl>",
+        from: "Tryvex Form <tryvexentreprise@gmail.com>",
         to: NOTIFY_EMAIL,
         subject: `Nueva solicitud de llamada — ${name}`,
         html: buildInternalEmail({ name, phone, email, date, time }),
@@ -100,7 +100,7 @@ function buildClientEmail({
           </a>
           <p style="margin:40px 0 0;color:#4a4540;font-size:13px;">
             ¿Necesitas reagendar? Escríbenos a
-            <a href="mailto:hola@tryvex.cl" style="color:#e53935;">hola@tryvex.cl</a>
+            <a href="mailto:tryvexentreprise@gmail.com" style="color:#e53935;">tryvexentreprise@gmail.com</a>
           </p>
         </td></tr>
       </table>

@@ -30,6 +30,7 @@ export default function Home() {
       <svg className="logo-mark"><use href="#spark"/></svg>
       <span className="logo-word">tryvex<span className="dot">.</span></span>
     </a>
+    <span className="logo-tagline">Dale el brillo que le falta a tu negocio</span>
     <div className="nav-links">
       <a href="#services">Servicios</a>
       <a href="#process">Proceso</a>
@@ -364,7 +365,7 @@ export default function Home() {
     <div data-anim="fade-right">
       <div className="sec-tag">06 · Preguntas</div>
       <h2 data-split="words">Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h2>
-      <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href="mailto:hola@tryvex.cl" style={{color: "var(--red)"}}>hola@tryvex.cl</a> y te contestamos el mismo día.</p>
+      <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{color: "var(--red)"}}>tryvexentreprise@gmail.com</a> y te contestamos el mismo día.</p>
     </div>
     <div className="faq glass" data-anim="fade-left">
       <details open={true}>
@@ -426,7 +427,7 @@ export default function Home() {
         </div>
         <div>
           <h5>Contacto</h5>
-          <a href="mailto:hola@tryvex.cl">hola@tryvex.cl</a>
+          <a href="mailto:tryvexentreprise@gmail.com">tryvexentreprise@gmail.com</a>
           <a href="#">+56 9 ···· ····</a>
           <a href="#">Santiago · CL</a>
         </div>

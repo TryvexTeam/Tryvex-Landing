@@ -82,7 +82,7 @@ export default function FinalCTA() {
         },
         error: {
           title: "Algo falló",
-          description: "Escríbenos directo a hola@tryvex.cl",
+          description: "Escríbenos directo a tryvexentreprise@gmail.com",
         },
       });
       setView("success");
@@ -226,8 +226,8 @@ export default function FinalCTA() {
           <p>
             Te enviamos un correo con la invitación a Google Meet. Si necesitas
             reagendar, escríbenos a{" "}
-            <a href="mailto:hola@tryvex.cl" style={{ color: "var(--red)" }}>
-              hola@tryvex.cl
+            <a href="mailto:tryvexentreprise@gmail.com" style={{ color: "var(--red)" }}>
+              tryvexentreprise@gmail.com
             </a>
           </p>
         </div>
