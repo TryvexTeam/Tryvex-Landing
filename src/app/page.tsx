@@ -1,5 +1,5 @@
 import React from "react";
-import LandingClient from "./LandingClient";
+import LandingClient from "../features/landing/components/LandingClient";
 
 export default function Home() {
   return (
@@ -47,8 +47,28 @@ export default function Home() {
 
 {/* HERO */}
 <section className="hero">
+  {/* Scene A — floating spark pieces, scattered by GSAP ScrollTrigger scrub */}
+  <svg className="scene-piece sa-p1" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="var(--red)"/>
+  </svg>
+  <svg className="scene-piece sa-p2" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="var(--ink)"/>
+  </svg>
+  <svg className="scene-piece sa-p3" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="var(--red)"/>
+    <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="var(--ink)"/>
+  </svg>
+  <svg className="scene-piece sa-p4" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="var(--muted-2)"/>
+  </svg>
+  <svg className="scene-piece sa-p5" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="var(--red)"/>
+  </svg>
+  <svg className="scene-piece sa-p6" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="var(--ink)"/>
+  </svg>
   <div className="wrap hero-grid">
-    <div>
+    <div className="hero-col">
       <span className="eyebrow" data-anim="fade-down"><span className="live"></span> Atendiendo a 14 negocios · Santiago, CL</span>
       <h1 data-split="words">Automatizamos lo aburrido. Tú vendes <em>lo importante.</em></h1>
       <p className="lede" data-anim="fade-up">
@@ -216,9 +236,10 @@ export default function Home() {
 </section>
 
 {/* METRICS — DARK GLASS */}
+<div className="scene-metrics-wrap" data-scene="metrics">
 <section className="block">
   <div className="wrap">
-    <div className="metrics-block glass dark" data-anim="rise-blur">
+    <div className="metrics-block glass dark">
       <div className="sec-tag">03 · Resultados</div>
       <h2 data-split="words">Lo que nuestros clientes <em>dejaron de hacer</em> a mano.</h2>
       <div className="metrics" data-stagger>
@@ -242,6 +263,7 @@ export default function Home() {
     </div>
   </div>
 </section>
+</div>{/* /scene-metrics-wrap */}
 
 {/* TESTIMONIAL */}
 <section className="block">
@@ -369,9 +391,10 @@ export default function Home() {
 </section>
 
 {/* FINAL CTA */}
+<div className="scene-final-wrap" data-scene="final">
 <section className="block" id="final">
   <div className="wrap">
-    <div className="final glass dark" data-anim="rise-blur">
+    <div className="final glass dark">
       <svg className="final-spark"><use href="#spark-light"/></svg>
       <h2 data-split="words">Hablemos 20 minutos. <em>Sin compromiso, sin pitch.</em></h2>
       <p>Te decimos honestamente si podemos ayudarte, y si no, qué herramienta o equipo deberías mirar.</p>
@@ -382,6 +405,7 @@ export default function Home() {
     </div>
   </div>
 </section>
+</div>{/* /scene-final-wrap */}
 
 {/* FOOTER */}
 <footer>

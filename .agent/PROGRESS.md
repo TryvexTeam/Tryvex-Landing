@@ -15,7 +15,7 @@
 | F1 | Scaffold Next.js 16 + TypeScript + Tailwind v4 + tokens + fuentes | ✅ |
 | F2 | Componentes UI migrados desde index.html (glass, buttons, animations) | ✅ |
 | F3 | 11 secciones en React — fidelidad visual completa, deploy en Vercel | ✅ |
-| F4 | GSAP ScrollTrigger + Framer Motion — animaciones de nivel agencia | ⏳ Pendiente |
+| F4 | Anime.js v4 + Lenis + GSAP — scroll-driven scrollytelling completo (Scene A + B + C) | ✅ |
 
 ### Arquitectura actual
 - **`src/app/page.tsx`** — Server component con todo el HTML migrado de `index.html` a JSX
@@ -41,10 +41,36 @@ f75daf1 Initial commit
 3. **Animaciones vanilla JS**: Las animaciones se mantienen como JavaScript vanilla en un `useEffect` (no GSAP/Framer Motion aún). Esto es la Fase 4 pendiente.
 4. **prefers-reduced-motion eliminado**: Se removió la media query que bloqueaba animaciones para usuarios con esta configuración de OS activa.
 
-### Notas para la siguiente sesión
-- La **Fase 4** (GSAP + Framer Motion) está pendiente. Actualmente las animaciones son CSS transitions activadas por IntersectionObserver.
-- Se pueden refactorizar las 11 secciones en componentes individuales (`src/components/sections/`) cuando sea necesario.
-- Los scripts temporales (`extract-css.ps1`, `extract-body.ps1`, `convert-to-jsx.js`) están en `.gitignore`.
+### Fase 4 — Estado al 2026-05-04
+
+**Stack implementado:** Anime.js v4 + Lenis 1.3.23 + GSAP 3.15 (coexistiendo)
+
+| Responsabilidad | Librería |
+|---|---|
+| Hero parallax + blobs + services + process + quote-card + plans | GSAP ScrollTrigger (existente) |
+| Scene B: metrics pinned scrollytelling | **Anime.js v4** `onScroll({ sync: true })` |
+| Scene C: final CTA dramatic close | **Anime.js v4** `onScroll({ sync: true })` |
+| Scene A: hero exploded brand SVG | ❌ Pendiente próxima sesión |
+| Smooth scroll | **Lenis** (lerp: 0.1) |
+
+**Archivos modificados en F4:**
+- `src/app/LandingClient.tsx` — reescrito completo: Lenis RAf loop, GSAP sin .metrics-block/.final/.final-spark, Anime.js Scene B + C, counter animation preservada vía rAF propio
+- `src/app/landing.css` — agregados `.scene-metrics-wrap`, `.scene-final-wrap`, `.scene-piece` al final
+- `src/app/page.tsx` — métricas wrapeadas en `<div class="scene-metrics-wrap">`, final CTA en `<div class="scene-final-wrap">`
+- `package.json` / `package-lock.json` — animejs@4.4.1 y lenis@1.3.23 instalados
+
+**Completado 2026-05-12:**
+- Scene A implementada: 6 piezas SVG spark (`.sa-p1`–`.sa-p6`) en `.hero` con GSAP ScrollTrigger scrub — scatter explosion al salir del hero
+- Bug `.hero-col` corregido: clase añadida al div de texto del hero-grid, activando los parallax de h1/eyebrow/lede
+- `animate` import no-usada eliminada de animejs destructuring
+- Build ✅ `Compiled successfully in 5.0s`, TypeScript clean
+- Playwright screenshots verificados: hero, métricas dark glass, CTA final
+
+### Notas técnicas F4
+- `onScroll({ sync: true })` con `createTimeline` mapea progress de scroll 0→1 al timeline — reversa automática al subir
+- `stagger(120)` / `stagger(180)` — Anime.js v4 utility importada del módulo
+- GSAP y Anime.js no colisionan: GSAP toca `.svc/.step/.plan/.quote-card/hero`, Anime.js toca `.metrics-block/.final/.final-spark` (excluidos de IntersectionObserver vía `animeSelectors`)
+- Lenis actualiza `window.scrollY` normalmente — scroll-progress bar sigue funcionando
 
 ---
 **[2026-04-29] — Antigravity completó:**
@@ -52,3 +78,4 @@ f75daf1 Initial commit
 - Resumen: Migración completa de landing HTML estática a Next.js 16 con deploy funcional en Vercel
 - Pendiente para Jarvis: Fase 4 (animaciones premium con GSAP/Framer Motion), refactorización en componentes modulares
 ---
+    
