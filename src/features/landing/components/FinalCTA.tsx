@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { sileo } from "sileo";
 
 const TIME_SLOTS = ["10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -35,7 +36,6 @@ export default function FinalCTA() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
   const workingDays = useMemo(() => getWorkingDays(7), []);
 
@@ -54,22 +54,40 @@ export default function FinalCTA() {
     e.preventDefault();
     if (!canSubmit) return;
     setLoading(true);
-    setError(false);
+
+    const dateStr = selectedDate!.toLocaleDateString("es-CL", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
+
+    const request = fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, date: dateStr, time: selectedTime }),
+    }).then((res) => {
+      if (!res.ok) throw new Error("request failed");
+      return res.json();
+    });
+
     try {
-      const dateStr = selectedDate!.toLocaleDateString("es-CL", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
+      await sileo.promise(request, {
+        loading: {
+          title: "Enviando solicitud…",
+          description: "Un momento.",
+        },
+        success: {
+          title: "¡Quedamos para la llamada!",
+          description: "Revisa tu correo — te enviamos la invitación a Google Meet.",
+        },
+        error: {
+          title: "Algo falló",
+          description: "Escríbenos directo a hola@tryvex.cl",
+        },
       });
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, date: dateStr, time: selectedTime }),
-      });
-      if (!res.ok) throw new Error("failed");
       setView("success");
     } catch {
-      setError(true);
+      // sileo already shows the error toast
     } finally {
       setLoading(false);
     }
@@ -181,15 +199,6 @@ export default function FinalCTA() {
               autoComplete="email"
             />
           </div>
-
-          {error && (
-            <p className="sch-error">
-              Algo falló. Escríbenos a{" "}
-              <a href="mailto:hola@tryvex.cl" style={{ color: "var(--red)" }}>
-                hola@tryvex.cl
-              </a>
-            </p>
-          )}
 
           <button
             type="submit"
