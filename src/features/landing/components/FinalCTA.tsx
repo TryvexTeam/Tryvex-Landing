@@ -99,141 +99,139 @@ export default function FinalCTA() {
         <use href="#spark-light" />
       </svg>
 
-      {/* ── CTA view ── */}
-      <div className={`fv${view === "cta" ? " fv--active" : ""}`}>
-        <h2 data-split="words">
-          Hablemos 20 minutos.{" "}
-          <em>Sin compromiso, sin pitch.</em>
-        </h2>
-        <p>
-          Te decimos honestamente si podemos ayudarte, y si no, qué herramienta
-          o equipo deberías mirar.
-        </p>
-        <button className="btn-primary" onClick={() => setView("form")}>
-          Agendar llamada
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
-        </button>
-      </div>
+      {/*
+        fv-shell: position:relative wrapper.
+        The CTA view (fv--ghost when inactive) stays in normal flow
+        and defines the shell's height — the container never changes size.
+        Form and success are position:absolute overlays within that same space.
+      */}
+      <div className="fv-shell">
 
-      {/* ── Schedule form view ── */}
-      <div className={`fv fv--form${view === "form" ? " fv--active" : ""}`}>
-        <form className="sch-form" onSubmit={handleSubmit} noValidate>
-          <p className="sch-label">
-            Elige un día y hora para tu llamada de 20 min.
+        {/* ── CTA — always in DOM; ghost holds height when inactive ── */}
+        <div className={view === "cta" ? "fv fv--active" : "fv fv--ghost"}>
+          <h2 data-split="words">
+            Hablemos 20 minutos.{" "}
+            <em>Sin compromiso, sin pitch.</em>
+          </h2>
+          <p>
+            Te decimos honestamente si podemos ayudarte, y si no, qué
+            herramienta o equipo deberías mirar.
           </p>
-
-          {/* Day picker */}
-          <div className="sch-days">
-            {workingDays.map((day, i) => {
-              const isSelected =
-                selectedDate !== null &&
-                selectedDate.getTime() === day.getTime();
-              return (
-                <button
-                  key={i}
-                  type="button"
-                  className={`sch-day${isSelected ? " sch-day--sel" : ""}`}
-                  onClick={() => {
-                    setSelectedDate(day);
-                    setSelectedTime(null);
-                  }}
-                >
-                  <span className="sch-day-name">{DAYS_ES[day.getDay()]}</span>
-                  <span className="sch-day-num">{day.getDate()}</span>
-                  <span className="sch-day-month">
-                    {MONTHS_ES[day.getMonth()]}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Time slots — reveal after day selection */}
-          <div
-            className={`sch-times${selectedDate ? " sch-times--open" : ""}`}
-          >
-            {TIME_SLOTS.map((t) => (
-              <button
-                key={t}
-                type="button"
-                className={`sch-time${selectedTime === t ? " sch-time--sel" : ""}`}
-                onClick={() => setSelectedTime(t)}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {/* Inputs */}
-          <div className="sch-inputs">
-            <input
-              name="name"
-              type="text"
-              placeholder="Nombre"
-              value={form.name}
-              onChange={handleChange}
-              required
-              disabled={loading}
-              autoComplete="name"
-            />
-            <input
-              name="phone"
-              type="tel"
-              placeholder="Teléfono (+56 9 ···· ····)"
-              value={form.phone}
-              onChange={handleChange}
-              required
-              disabled={loading}
-              autoComplete="tel"
-            />
-            <input
-              name="email"
-              type="email"
-              placeholder="Correo electrónico"
-              value={form.email}
-              onChange={handleChange}
-              required
-              disabled={loading}
-              autoComplete="email"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={!canSubmit || loading}
-            style={{ width: "100%", justifyContent: "center" }}
-          >
-            {loading ? "Enviando…" : "Confirmar llamada"}
-            {!loading && (
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            )}
+          <button className="btn-primary" onClick={() => setView("form")}>
+            Agendar llamada
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
           </button>
-        </form>
-      </div>
+        </div>
 
-      {/* ── Success view ── */}
-      <div className={`fv fv--success${view === "success" ? " fv--active" : ""}`}>
-        <p className="sch-ok-tag">✓ Solicitud recibida</p>
-        <h2 style={{ fontSize: "clamp(28px, 3vw, 48px)", margin: "0 0 16px" }}>
-          ¡Quedamos para la llamada!
-        </h2>
-        <p>
-          Te enviamos un correo con la invitación a Google Meet. Si necesitas
-          reagendar, escríbenos a{" "}
-          <a href="mailto:hola@tryvex.cl" style={{ color: "var(--red)" }}>
-            hola@tryvex.cl
-          </a>
-        </p>
+        {/* ── Form — absolute overlay, scrolls if content overflows ── */}
+        <div className={`fv fv--overlay${view === "form" ? " fv--active" : ""}`}>
+          <form className="sch-form" onSubmit={handleSubmit} noValidate>
+            <p className="sch-label">
+              Elige un día y hora para tu llamada de 20 min.
+            </p>
+
+            <div className="sch-days">
+              {workingDays.map((day, i) => {
+                const isSelected =
+                  selectedDate !== null &&
+                  selectedDate.getTime() === day.getTime();
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`sch-day${isSelected ? " sch-day--sel" : ""}`}
+                    onClick={() => {
+                      setSelectedDate(day);
+                      setSelectedTime(null);
+                    }}
+                  >
+                    <span className="sch-day-name">{DAYS_ES[day.getDay()]}</span>
+                    <span className="sch-day-num">{day.getDate()}</span>
+                    <span className="sch-day-month">{MONTHS_ES[day.getMonth()]}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className={`sch-times${selectedDate ? " sch-times--open" : ""}`}>
+              {TIME_SLOTS.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  className={`sch-time${selectedTime === t ? " sch-time--sel" : ""}`}
+                  onClick={() => setSelectedTime(t)}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+
+            <div className="sch-inputs">
+              <input
+                name="name"
+                type="text"
+                placeholder="Nombre"
+                value={form.name}
+                onChange={handleChange}
+                required
+                disabled={loading}
+                autoComplete="name"
+              />
+              <input
+                name="phone"
+                type="tel"
+                placeholder="Teléfono (+56 9 ···· ····)"
+                value={form.phone}
+                onChange={handleChange}
+                required
+                disabled={loading}
+                autoComplete="tel"
+              />
+              <input
+                name="email"
+                type="email"
+                placeholder="Correo electrónico"
+                value={form.email}
+                onChange={handleChange}
+                required
+                disabled={loading}
+                autoComplete="email"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={!canSubmit || loading}
+              style={{ width: "100%", justifyContent: "center" }}
+            >
+              {loading ? "Enviando…" : "Confirmar llamada"}
+              {!loading && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* ── Success — absolute overlay ── */}
+        <div className={`fv fv--overlay${view === "success" ? " fv--active" : ""}`}>
+          <p className="sch-ok-tag">✓ Solicitud recibida</p>
+          <h2 style={{ fontSize: "clamp(28px, 3vw, 48px)", margin: "0 0 16px" }}>
+            ¡Quedamos para la llamada!
+          </h2>
+          <p>
+            Te enviamos un correo con la invitación a Google Meet. Si necesitas
+            reagendar, escríbenos a{" "}
+            <a href="mailto:hola@tryvex.cl" style={{ color: "var(--red)" }}>
+              hola@tryvex.cl
+            </a>
+          </p>
+        </div>
+
       </div>
     </div>
   );
