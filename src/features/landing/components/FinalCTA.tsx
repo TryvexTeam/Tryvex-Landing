@@ -3,12 +3,16 @@
 import { useState, useMemo } from "react";
 import { sileo } from "sileo";
 
-const TIME_SLOTS = ["10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+const FALLBACK_SLOTS = ["10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MONTHS_ES = [
   "Ene", "Feb", "Mar", "Abr", "May", "Jun",
   "Jul", "Ago", "Sep", "Oct", "Nov", "Dic",
 ];
+
+function toDateISO(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 function getWorkingDays(count: number): Date[] {
   const days: Date[] = [];
@@ -35,9 +39,28 @@ export default function FinalCTA() {
   const [form, setForm] = useState<ScheduleForm>({ name: "", phone: "", email: "" });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<string[]>(FALLBACK_SLOTS);
+  const [loadingSlots, setLoadingSlots] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const workingDays = useMemo(() => getWorkingDays(7), []);
+
+  const handleDaySelect = async (day: Date) => {
+    setSelectedDate(day);
+    setSelectedTime(null);
+    setLoadingSlots(true);
+    try {
+      const res = await fetch(`/api/availability?date=${toDateISO(day)}`);
+      if (res.ok) {
+        const { slots } = await res.json() as { slots: string[] };
+        setAvailableSlots(slots.length > 0 ? slots : FALLBACK_SLOTS);
+      }
+    } catch {
+      setAvailableSlots(FALLBACK_SLOTS);
+    } finally {
+      setLoadingSlots(false);
+    }
+  };
 
   const canSubmit =
     form.name.trim() !== "" &&
@@ -64,7 +87,12 @@ export default function FinalCTA() {
     const request = fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, date: dateStr, time: selectedTime }),
+      body: JSON.stringify({
+        ...form,
+        date: dateStr,
+        dateISO: toDateISO(selectedDate!),
+        time: selectedTime,
+      }),
     }).then((res) => {
       if (!res.ok) throw new Error("request failed");
       return res.json();
@@ -142,10 +170,7 @@ export default function FinalCTA() {
                     key={i}
                     type="button"
                     className={`sch-day${isSelected ? " sch-day--sel" : ""}`}
-                    onClick={() => {
-                      setSelectedDate(day);
-                      setSelectedTime(null);
-                    }}
+                    onClick={() => handleDaySelect(day)}
                   >
                     <span className="sch-day-name">{DAYS_ES[day.getDay()]}</span>
                     <span className="sch-day-num">{day.getDate()}</span>
@@ -156,16 +181,22 @@ export default function FinalCTA() {
             </div>
 
             <div className={`sch-times${selectedDate ? " sch-times--open" : ""}`}>
-              {TIME_SLOTS.map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  className={`sch-time${selectedTime === t ? " sch-time--sel" : ""}`}
-                  onClick={() => setSelectedTime(t)}
-                >
-                  {t}
-                </button>
-              ))}
+              {loadingSlots ? (
+                <span style={{ fontSize: "12px", color: "rgba(244,241,234,0.4)" }}>
+                  Cargando horarios…
+                </span>
+              ) : (
+                availableSlots.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`sch-time${selectedTime === t ? " sch-time--sel" : ""}`}
+                    onClick={() => setSelectedTime(t)}
+                  >
+                    {t}
+                  </button>
+                ))
+              )}
             </div>
 
             <div className="sch-inputs">

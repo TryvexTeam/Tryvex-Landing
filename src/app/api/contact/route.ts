@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { createCalendarEvent } from "@/lib/google-calendar";
 
 const NOTIFY_EMAIL = "tryvexentreprise@gmail.com";
-const MEET_LINK =
-  process.env.GOOGLE_MEET_LINK ?? "https://meet.google.com/tryvex-agenda";
+const FALLBACK_MEET = process.env.GOOGLE_MEET_LINK ?? "https://meet.google.com/tryvex-agenda";
 
 interface SchedulePayload {
   name: string;
   phone: string;
   email: string;
   date?: string;
+  dateISO?: string;
   time?: string;
 }
 
@@ -26,13 +27,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid body" }, { status: 400 });
   }
 
-  const { name, phone, email, date, time } = body;
+  const { name, phone, email, date, dateISO, time } = body;
 
   if (!name?.trim() || !email?.trim() || !phone?.trim()) {
     return NextResponse.json(
       { error: "name, phone and email required" },
       { status: 422 }
     );
+  }
+
+  // Create Google Calendar event + Meet link (falls back if Calendar not configured)
+  let meetLink = FALLBACK_MEET;
+  if (process.env.GOOGLE_REFRESH_TOKEN && dateISO && time) {
+    try {
+      meetLink = await createCalendarEvent({ name, phone, email, dateISO, time });
+    } catch (err) {
+      console.error("[/api/contact] calendar error", err);
+    }
   }
 
   const resend = new Resend(apiKey);
@@ -43,7 +54,7 @@ export async function POST(req: NextRequest) {
         from: "Tryvex <tryvexentreprise@gmail.com>",
         to: email,
         subject: "Confirmación de llamada · Tryvex",
-        html: buildClientEmail({ name, date, time, meetLink: MEET_LINK }),
+        html: buildClientEmail({ name, date, time, meetLink }),
       }),
       resend.emails.send({
         from: "Tryvex Form <tryvexentreprise@gmail.com>",
