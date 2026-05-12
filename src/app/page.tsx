@@ -1,5 +1,6 @@
 import React from "react";
 import LandingClient from "../features/landing/components/LandingClient";
+import FinalCTA from "../features/landing/components/FinalCTA";
 
 export default function Home() {
   return (
@@ -92,10 +93,10 @@ export default function Home() {
 
     <div style={{position: "relative"}} data-anim="scale-in">
       <div className="float-chip glass strong fc-1" data-parallax style={{"--p-amt": "-20px"} as React.CSSProperties}>
-        <div className="ic">T</div>
+        <div className="ic" style={{background: "var(--red)"}}>S</div>
         <div>
-          <div style={{fontWeight: "600", fontSize: "13px"}}>Catalina firmó factura</div>
-          <div style={{fontFamily: "'JetBrains Mono', monospace", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.06em"}}>Hace 2 segundos · auto</div>
+          <div style={{fontWeight: "600", fontSize: "13px"}}>Pedido nuevo · Shopify</div>
+          <div style={{fontFamily: "'JetBrains Mono', monospace", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.06em"}}>Hace 3 segundos · webhook</div>
         </div>
       </div>
 
@@ -325,7 +326,7 @@ export default function Home() {
         <div className="plan-tag"><span className="dot"></span> Sprint</div>
         <h3>Proyecto único</h3>
         <p className="desc">Una landing, un flujo, un MVP. Alcance fijo, plazo fijo, precio cerrado.</p>
-        <div className="plan-price">desde $1.8M<small>CLP</small></div>
+        <div className="plan-price">desde $150K+<small>CLP</small></div>
         <ul>
           <li>Reunión de descubrimiento</li>
           <li>Diseño y desarrollo</li>
@@ -338,18 +339,18 @@ export default function Home() {
         </a>
       </div>
       <div className="plan glass feat">
-        <div className="plan-tag"><span className="dot"></span> Recomendado</div>
+        <div className="plan-tag"><span className="dot"></span> Personalizado</div>
         <h3>Tryvex <em>partner</em></h3>
-        <p className="desc">Un equipo dedicado al mes. Construimos, mantenemos y mejoramos en continuo lo que tu negocio necesita.</p>
-        <div className="plan-price">$2.4M<small>/ MES · CLP</small></div>
+        <p className="desc">Para negocios que necesitan un equipo propio. Alcance, ritmo y precio se definen juntos en una llamada.</p>
+        <div className="plan-price" style={{fontSize: "1.4rem", letterSpacing: "-0.02em"}}>Precio a medida</div>
         <ul>
           <li>Equipo dedicado (diseño + dev)</li>
-          <li>Sprints quincenales</li>
-          <li>Sin contratos atados — cancela cuando quieras</li>
+          <li>Sprints quincenales adaptados a tu ritmo</li>
+          <li>Catálogo de servicios completo a tu disposición</li>
           <li>Reportes mensuales con métricas reales</li>
         </ul>
         <a href="#final" className="btn-primary">
-          Reservar partnership
+          Agendar una llamada
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
       </div>
@@ -394,15 +395,7 @@ export default function Home() {
 <div className="scene-final-wrap" data-scene="final">
 <section className="block" id="final">
   <div className="wrap">
-    <div className="final glass dark">
-      <svg className="final-spark"><use href="#spark-light"/></svg>
-      <h2 data-split="words">Hablemos 20 minutos. <em>Sin compromiso, sin pitch.</em></h2>
-      <p>Te decimos honestamente si podemos ayudarte, y si no, qué herramienta o equipo deberías mirar.</p>
-      <a href="mailto:hola@tryvex.cl" className="btn-primary">
-        Agendar llamada
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-    </div>
+    <FinalCTA />
   </div>
 </section>
 </div>{/* /scene-final-wrap */}
