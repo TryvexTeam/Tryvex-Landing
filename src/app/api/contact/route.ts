@@ -71,41 +71,92 @@ function buildClientEmail({
   time?: string;
   meetLink: string;
 }) {
-  const slotLine =
-    date && time
-      ? `<p style="margin:0 0 24px;color:#a09a8f;font-size:15px;line-height:1.6;">
-           📅 <strong style="color:#f4f1ea;">${date} a las ${time}</strong>
-         </p>`
-      : "";
+  const slotBlock = date && time ? `
+    <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">
+      <tr>
+        <td style="background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.3);border-radius:12px;padding:20px 24px;">
+          <p style="margin:0 0 4px;color:#e53935;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">Fecha confirmada</p>
+          <p style="margin:0;color:#f4f1ea;font-size:20px;font-weight:700;letter-spacing:-0.01em;">${date} · ${time} hrs</p>
+        </td>
+      </tr>
+    </table>` : "";
 
   return `<!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
-<body style="margin:0;padding:0;background:#f4f1ea;font-family:system-ui,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 16px;">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Confirmación de llamada · Tryvex</title>
+</head>
+<body style="margin:0;padding:0;background:#0e0e0e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0e0e0e;padding:48px 16px;">
     <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="background:#0e0e0e;border-radius:16px;padding:48px 40px;">
-        <tr><td>
-          <p style="margin:0 0 8px;color:#e53935;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;">Tryvex Studio</p>
-          <h1 style="margin:0 0 24px;color:#f4f1ea;font-size:28px;line-height:1.2;">Hola, ${name} 👋</h1>
-          <p style="margin:0 0 16px;color:#a09a8f;font-size:16px;line-height:1.6;">
-            Quedamos para una llamada de 20 minutos. Te llamamos en el horario elegido.
-          </p>
-          ${slotLine}
-          <p style="margin:0 0 32px;color:#a09a8f;font-size:16px;line-height:1.6;">
-            Usaremos Google Meet. Aquí está el enlace:
-          </p>
-          <a href="${meetLink}" style="display:inline-block;background:#e53935;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:600;font-size:15px;">
-            Abrir Google Meet →
-          </a>
-          <p style="margin:40px 0 0;color:#4a4540;font-size:13px;">
-            ¿Necesitas reagendar? Escríbenos a
-            <a href="mailto:tryvexentreprise@gmail.com" style="color:#e53935;">tryvexentreprise@gmail.com</a>
-          </p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+
+        <!-- Header / Logo -->
+        <tr><td style="padding:0 0 32px;text-align:center;">
+          <p style="margin:0;color:#e53935;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">✦ Tryvex Studio</p>
         </td></tr>
+
+        <!-- Card -->
+        <tr><td style="background:#161616;border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;">
+
+          <!-- Red top bar -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="background:linear-gradient(135deg,#e53935 0%,#b71c1c 100%);height:4px;"></td></tr>
+          </table>
+
+          <!-- Body -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="padding:48px 40px;">
+            <tr><td>
+
+              <p style="margin:0 0 6px;color:#e53935;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;">Llamada agendada</p>
+              <h1 style="margin:0 0 8px;color:#f4f1ea;font-size:32px;font-weight:700;line-height:1.15;letter-spacing:-0.02em;">Hola, ${name}.</h1>
+              <p style="margin:0 0 32px;color:#7a736b;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;">Dale el brillo que le falta a tu negocio</p>
+
+              <p style="margin:0 0 28px;color:#a09a8f;font-size:16px;line-height:1.65;">
+                Quedamos para una llamada de <strong style="color:#f4f1ea;">20 minutos</strong>. Sin compromiso, sin pitch — solo conversamos si podemos ayudarte.
+              </p>
+
+              ${slotBlock}
+
+              <!-- Divider -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+                <tr><td style="border-top:1px solid rgba(255,255,255,0.07);height:1px;"></td></tr>
+              </table>
+
+              <p style="margin:0 0 6px;color:#7a736b;font-size:13px;">Nos conectamos por Google Meet:</p>
+              <p style="margin:0 0 28px;">
+                <a href="${meetLink}" style="display:inline-block;background:#e53935;color:#fff;text-decoration:none;padding:14px 32px;border-radius:999px;font-weight:600;font-size:14px;letter-spacing:0.01em;">
+                  Abrir Google Meet →
+                </a>
+              </p>
+
+              <p style="margin:0;color:#4a4540;font-size:13px;line-height:1.55;">
+                ¿Necesitas reagendar? Escríbenos a
+                <a href="mailto:tryvexentreprise@gmail.com" style="color:#e53935;text-decoration:none;">tryvexentreprise@gmail.com</a>
+                y te respondemos el mismo día.
+              </p>
+
+            </td></tr>
+          </table>
+
+          <!-- Footer inside card -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.06);padding:20px 40px;text-align:center;">
+              <p style="margin:0;color:#4a4540;font-size:12px;">© MMXXVI · Tryvex Studio · Santiago, CL</p>
+            </td></tr>
+          </table>
+
+        </td></tr>
+        <!-- /Card -->
+
       </table>
     </td></tr>
   </table>
+
 </body>
 </html>`;
 }
@@ -125,16 +176,74 @@ function buildInternalEmail({
 }) {
   return `<!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"/></head>
-<body style="margin:0;padding:32px;font-family:system-ui,sans-serif;background:#f4f1ea;">
-  <h2 style="margin:0 0 16px;color:#0e0e0e;">Nueva solicitud de llamada</h2>
-  <table cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:480px;">
-    <tr><td style="color:#666;width:120px;">Nombre</td><td style="color:#0e0e0e;font-weight:600;">${name}</td></tr>
-    <tr><td style="color:#666;">Teléfono</td><td style="color:#0e0e0e;">${phone}</td></tr>
-    <tr><td style="color:#666;">Correo</td><td><a href="mailto:${email}" style="color:#e53935;">${email}</a></td></tr>
-    ${date ? `<tr><td style="color:#666;">Fecha</td><td style="color:#0e0e0e;font-weight:600;">${date}</td></tr>` : ""}
-    ${time ? `<tr><td style="color:#666;">Hora</td><td style="color:#0e0e0e;font-weight:600;">${time}</td></tr>` : ""}
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Nueva solicitud · Tryvex</title>
+</head>
+<body style="margin:0;padding:0;background:#0e0e0e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0e0e0e;padding:48px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+
+        <!-- Header -->
+        <tr><td style="padding:0 0 24px;">
+          <p style="margin:0;color:#e53935;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">✦ Tryvex · Notificación interna</p>
+        </td></tr>
+
+        <!-- Card -->
+        <tr><td style="background:#161616;border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="background:linear-gradient(135deg,#e53935 0%,#b71c1c 100%);height:4px;"></td></tr>
+          </table>
+          <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px;">
+            <tr><td>
+
+              <p style="margin:0 0 4px;color:#e53935;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;">Nueva solicitud de llamada</p>
+              <h2 style="margin:0 0 32px;color:#f4f1ea;font-size:24px;font-weight:700;letter-spacing:-0.02em;">${name}</h2>
+
+              <!-- Data rows -->
+              <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:#7a736b;font-size:13px;width:90px;">Teléfono</td>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:#f4f1ea;font-size:14px;font-weight:600;">${phone}</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:#7a736b;font-size:13px;">Correo</td>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);">
+                    <a href="mailto:${email}" style="color:#e53935;font-size:14px;text-decoration:none;">${email}</a>
+                  </td>
+                </tr>
+                ${date ? `<tr>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:#7a736b;font-size:13px;">Fecha</td>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:#f4f1ea;font-size:14px;font-weight:600;">${date}</td>
+                </tr>` : ""}
+                ${time ? `<tr>
+                  <td style="padding:12px 0;color:#7a736b;font-size:13px;">Hora</td>
+                  <td style="padding:12px 0;color:#f4f1ea;font-size:14px;font-weight:600;">${time} hrs</td>
+                </tr>` : ""}
+              </table>
+
+              <p style="margin:28px 0 0;">
+                <a href="mailto:${email}" style="display:inline-block;background:#e53935;color:#fff;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:600;font-size:13px;">
+                  Responder a ${name} →
+                </a>
+              </p>
+
+            </td></tr>
+          </table>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="background:rgba(255,255,255,0.03);border-top:1px solid rgba(255,255,255,0.06);padding:16px 40px;text-align:center;">
+              <p style="margin:0;color:#4a4540;font-size:12px;">Tryvex Studio · Notificación automática</p>
+            </td></tr>
+          </table>
+        </td></tr>
+
+      </table>
+    </td></tr>
   </table>
+
 </body>
 </html>`;
 }
