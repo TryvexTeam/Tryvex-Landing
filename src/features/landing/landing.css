@@ -745,13 +745,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
+  visibility: hidden;
   opacity: 0;
+  transition: opacity 0.25s ease, visibility 0.25s;
+  height: 30px; /* espacio fijo reservado — el layout no se mueve al abrir */
+  align-items: center;
 }
 .sch-times--open {
-  max-height: 46px;
+  visibility: visible;
   opacity: 1;
 }
 .sch-time {
