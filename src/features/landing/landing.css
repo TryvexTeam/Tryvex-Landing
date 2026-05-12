@@ -650,6 +650,7 @@
   position: relative;
   width: 100%;
   overflow: hidden;
+  padding-bottom: 56px;
 }
 .fv {
   width: 100%;
