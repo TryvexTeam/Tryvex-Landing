@@ -30,7 +30,6 @@ export default function Home() {
       <svg className="logo-mark"><use href="#spark"/></svg>
       <span className="logo-word">tryvex<span className="dot">.</span></span>
     </a>
-    <span className="logo-tagline">Dale el brillo que le falta a tu negocio</span>
     <div className="nav-links">
       <a href="#services">Servicios</a>
       <a href="#process">Proceso</a>
@@ -139,6 +138,15 @@ export default function Home() {
         <span className="strip-logo serif">Mistral Studio</span>
       </div>
     </div>
+  </div>
+</section>
+
+{/* MANIFESTO */}
+<section className="manifesto-break">
+  <div className="wrap">
+    <p className="manifesto-line" data-anim="fade-up">
+      Dale el <em>brillo</em> que le falta<br/>a tu negocio. Con nosotros.
+    </p>
   </div>
 </section>
 
