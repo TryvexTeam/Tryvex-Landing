@@ -146,8 +146,8 @@ function buildClientEmail({
         <tr><td style="border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
           <table width="100%" cellpadding="0" cellspacing="0">
 
-            <!-- Banner: oscuro con logo transparente -->
-            <tr><td style="background:#090909;padding:40px 40px 32px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <!-- Banner: crema con logo transparente -->
+            <tr><td style="background:#edeae2;padding:36px 40px 32px;text-align:center;">
               <img src="https://tryvex.tech/logo-email-dark.png" width="180" alt="tryvex." style="display:block;margin:0 auto;border:0;height:auto;max-width:180px;"/>
             </td></tr>
 
@@ -235,8 +235,8 @@ function buildInternalEmail({
         <tr><td style="border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
           <table width="100%" cellpadding="0" cellspacing="0">
 
-            <!-- Banner: oscuro con logo transparente -->
-            <tr><td style="background:#090909;padding:40px 40px 32px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <!-- Banner: crema con logo transparente -->
+            <tr><td style="background:#edeae2;padding:36px 40px 32px;text-align:center;">
               <img src="https://tryvex.tech/logo-email-dark.png" width="180" alt="tryvex." style="display:block;margin:0 auto;border:0;height:auto;max-width:180px;"/>
             </td></tr>
 
