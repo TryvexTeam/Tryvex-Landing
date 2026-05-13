@@ -148,19 +148,8 @@ export default function LandingClient() {
     /* ── 6. GSAP ScrollTrigger + Anime.js scroll scenes ─────────── */
     let gsapCtx: { revert: () => void } | null = null;
     let animeCleanup: (() => void) | null = null;
-    let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;
-    let lenisRafId: number | null = null;
 
     if (!reduce) {
-      // Lenis smooth scroll
-      import("lenis").then(({ default: Lenis }) => {
-        lenis = new Lenis({ lerp: 0.1, smoothWheel: true }) as typeof lenis;
-        const raf = (time: number) => {
-          lenis!.raf(time);
-          lenisRafId = requestAnimationFrame(raf);
-        };
-        lenisRafId = requestAnimationFrame(raf);
-      });
 
       // GSAP — hero parallax, blobs, services, process, quote-card, plans
       Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
@@ -416,8 +405,6 @@ export default function LandingClient() {
       window.removeEventListener("scroll", onScrollP);
       gsapCtx?.revert();
       animeCleanup?.();
-      if (lenisRafId !== null) cancelAnimationFrame(lenisRafId);
-      lenis?.destroy();
     };
   }, []);
 
