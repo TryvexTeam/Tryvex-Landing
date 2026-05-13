@@ -1,0 +1,30 @@
+import { MetadataRoute } from "next";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: "https://www.tryvex.tech",
+      lastModified: new Date("2026-05-12"),
+      changeFrequency: "monthly",
+      priority: 1,
+    },
+    {
+      url: "https://www.tryvex.tech/servicios",
+      lastModified: new Date("2026-05-12"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://www.tryvex.tech/proceso",
+      lastModified: new Date("2026-05-12"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://www.tryvex.tech/contacto",
+      lastModified: new Date("2026-05-12"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+  ];
+}

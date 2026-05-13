@@ -73,9 +73,9 @@ export default function Home() {
       <span className="eyebrow" data-anim="fade-down"><span className="live"></span> Atendiendo a 14 negocios · Santiago, CL</span>
       <h1 data-split="words">Automatizamos lo aburrido. Tú vendes <em>lo importante.</em></h1>
       <p className="lede" data-anim="fade-up">
-        Tryvex es un studio de software que diseña, construye y mantiene automatizaciones,
-        landing pages y SaaS a medida. Reemplazamos la planilla, el copy-paste y el
-        "lo veo después" con sistemas que corren solos.
+        Tryvex es un studio de software que diseña, construye y mantiene <a href="#services">automatizaciones,
+        landing pages y SaaS a medida</a>. Reemplazamos la planilla, el copy-paste y el
+        "lo veo después" con sistemas que corren solos. Conoce <a href="#process">cómo trabajamos</a> o <a href="#final">agenda una llamada gratuita</a>.
       </p>
       <div className="hero-cta" data-anim="fade-up">
         <a href="#final" className="btn-primary">
@@ -126,19 +126,7 @@ export default function Home() {
     </div>
   </div>
 
-  <div className="wrap" style={{marginTop: "40px"}}>
-    <div className="strip glass" data-anim="fade-up">
-      <div className="strip-label">Construido para equipos en</div>
-      <div className="strip-logos">
-        <span className="strip-logo bold">Verdura.cl</span>
-        <span className="strip-logo serif">Norte & Co.</span>
-        <span className="strip-logo mono">CAPSULE/Lab</span>
-        <span className="strip-logo">Patagonia Bites</span>
-        <span className="strip-logo bold">Polea</span>
-        <span className="strip-logo serif">Mistral Studio</span>
-      </div>
-    </div>
-  </div>
+  {/* strip removido — nombres de clientes se reservan por confidencialidad */}
 </section>
 
 {/* MANIFESTO */}
@@ -171,7 +159,7 @@ export default function Home() {
         <p>Desde un pedido en Shopify hasta una factura SII firmada. Conectamos tus herramientas con flujos hechos a medida que reemplazan trabajo manual.</p>
         <ul className="svc-list">
           <li>Integraciones SII / WhatsApp / Calendar</li>
-          <li>Workflows con n8n, Zapier o código propio</li>
+          <li>Workflows con <a href="https://n8n.io" target="_blank" rel="noopener noreferrer">n8n</a>, <a href="https://zapier.com" target="_blank" rel="noopener noreferrer">Zapier</a> o código propio</li>
           <li>Logs, alertas y panel de control</li>
         </ul>
       </div>
@@ -284,14 +272,14 @@ export default function Home() {
       <div className="quote-author">
         <div className="qa-avatar">C</div>
         <div>
-          <div className="qa-name">Catalina Mella</div>
-          <div className="qa-role">Co-founder · Verdura.cl</div>
+          <div className="qa-name">C.M.</div>
+          <div className="qa-role">Co-founder · Cliente e-commerce</div>
         </div>
       </div>
     </div>
     <div className="quote-card glass" data-anim="fade-left">
       <div className="qc-rule">// case study · 2026</div>
-      <div className="qc-title">Verdura.cl: tres flujos, un panel, cero planillas.</div>
+      <div className="qc-title">E-commerce: tres flujos, un panel, cero planillas.</div>
       <div className="qc-mini">
         <div className="qc-stat">
           <div className="v">−87%</div>
@@ -423,20 +411,20 @@ export default function Home() {
         </div>
         <div>
           <h5>Servicios</h5>
-          <a href="#services">Automatización</a>
-          <a href="#services">Landing pages</a>
-          <a href="#services">SaaS a medida</a>
+          <a href="/servicios">Automatización</a>
+          <a href="/servicios">Landing pages</a>
+          <a href="/servicios">SaaS a medida</a>
         </div>
         <div>
           <h5>Estudio</h5>
-          <a href="#process">Proceso</a>
+          <a href="/proceso">Proceso</a>
           <a href="#offer">Planes</a>
           <a href="#faq">Preguntas</a>
         </div>
         <div>
           <h5>Contacto</h5>
+          <a href="/contacto">Agendar llamada</a>
           <a href="mailto:tryvexentreprise@gmail.com">tryvexentreprise@gmail.com</a>
-          <a href="#">+56 9 ···· ····</a>
           <a href="#">Santiago · CL</a>
         </div>
       </div>
