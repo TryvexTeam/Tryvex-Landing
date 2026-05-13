@@ -148,6 +148,7 @@ export default function LandingClient() {
     /* ── 6. GSAP ScrollTrigger + Anime.js scroll scenes ─────────── */
     let gsapCtx: { revert: () => void } | null = null;
     let animeCleanup: (() => void) | null = null;
+    let checkCounterProgress: (() => void) | null = null;
 
     if (!reduce) {
 
@@ -326,35 +327,43 @@ export default function LandingClient() {
           delay: stagger(100),
         }, 280);
 
-        // Counters fire once on enter — separate from scrub timeline
+        // Counters fire when scroll reaches 70% of the metrics scene
+        // (after metrics are fully revealed) — prevents show→hide→show bug
         let countersRan = false;
-        onScroll({
-          target: ".scene-metrics-wrap",
-          enter: "top 55%",
-          onEnterForward: () => {
-            if (countersRan) return;
+        const metricsWrap = document.querySelector(".scene-metrics-wrap") as HTMLElement | null;
+        const runCounters = () => {
+          document.querySelectorAll(".metric .v").forEach((el) => {
+            const match = (el.textContent || "").match(/^([\d.]+)(.*)$/);
+            if (!match) return;
+            const target = parseFloat(match[1]);
+            const suffix = match[2].replace(/<\/?em>/g, "");
+            const isFloat = match[1].includes(".");
+            const start = performance.now();
+            const dur = 900;
+            const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+            const tick = (now: number) => {
+              const t = Math.min(1, (now - start) / dur);
+              const v = target * ease(t);
+              el.innerHTML =
+                (isFloat ? v.toFixed(1) : Math.round(v).toString()) +
+                "<em>" + suffix + "</em>";
+              if (t < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+          });
+        };
+        checkCounterProgress = () => {
+          if (countersRan || !metricsWrap) return;
+          const rect = metricsWrap.getBoundingClientRect();
+          const range = metricsWrap.offsetHeight - window.innerHeight;
+          const progress = range > 0 ? Math.max(0, -rect.top / range) : 0;
+          if (progress >= 0.7) {
             countersRan = true;
-            document.querySelectorAll(".metric .v").forEach((el) => {
-              const match = (el.textContent || "").match(/^([\d.]+)(.*)$/);
-              if (!match) return;
-              const target = parseFloat(match[1]);
-              const suffix = match[2].replace(/<\/?em>/g, "");
-              const isFloat = match[1].includes(".");
-              const start = performance.now();
-              const dur = 1400;
-              const ease = (t: number) => 1 - Math.pow(1 - t, 3);
-              const tick = (now: number) => {
-                const t = Math.min(1, (now - start) / dur);
-                const v = target * ease(t);
-                el.innerHTML =
-                  (isFloat ? v.toFixed(1) : Math.round(v).toString()) +
-                  "<em>" + suffix + "</em>";
-                if (t < 1) requestAnimationFrame(tick);
-              };
-              requestAnimationFrame(tick);
-            });
-          },
-        });
+            window.removeEventListener("scroll", checkCounterProgress!);
+            runCounters();
+          }
+        };
+        window.addEventListener("scroll", checkCounterProgress, { passive: true });
 
         /* ── Scene C — Final CTA dramatic close ─────────────────── */
         const finalTl = createTimeline({
@@ -403,6 +412,7 @@ export default function LandingClient() {
         btn.removeEventListener("mouseleave", leave);
       });
       window.removeEventListener("scroll", onScrollP);
+      if (checkCounterProgress) window.removeEventListener("scroll", checkCounterProgress);
       gsapCtx?.revert();
       animeCleanup?.();
     };

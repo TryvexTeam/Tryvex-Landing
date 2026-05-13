@@ -567,7 +567,7 @@
 /* ── Scene wrappers — Anime.js v4 scroll-driven pinned sections ── */
 .scene-metrics-wrap {
   position: relative;
-  min-height: 250vh;
+  min-height: 150vh;
 }
 .scene-metrics-wrap > section {
   position: sticky;
