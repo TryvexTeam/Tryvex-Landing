@@ -78,21 +78,12 @@ export async function POST(req: NextRequest) {
 function banner() {
   return `
   <table width="100%" cellpadding="0" cellspacing="0">
-    <tr><td style="padding:44px 24px 28px;text-align:center;">
-      <!-- Spark mark -->
-      <p style="margin:0 0 10px;font-size:18px;color:#e53935;letter-spacing:0.04em;">✦</p>
-      <!-- Wordmark -->
-      <h1 style="margin:0;color:#f4f1ea;font-size:26px;font-weight:800;letter-spacing:0.26em;text-transform:uppercase;line-height:1;">TRYVEX</h1>
-      <p style="margin:5px 0 0;color:#3d3830;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;font-weight:600;">Automatización · IA · Crecimiento</p>
+    <!-- Cream banner — matches logo background -->
+    <tr><td style="background:#edeae2;padding:32px 40px;text-align:center;border-radius:16px 16px 0 0;">
+      <img src="https://tryvex.tech/logo-email.png" width="200" alt="tryvex." style="display:block;margin:0 auto;border:0;max-width:200px;height:auto;"/>
     </td></tr>
-    <!-- Gradient separator -->
-    <tr><td style="padding:0 24px 24px;">
-      <table width="100%" cellpadding="0" cellspacing="0"><tr>
-        <td style="height:1px;background:#1a0808;"></td>
-        <td style="height:1px;width:40%;background:#e53935;"></td>
-        <td style="height:1px;background:#1a0808;"></td>
-      </tr></table>
-    </td></tr>
+    <!-- Transition strip: cream → dark -->
+    <tr><td style="background:linear-gradient(180deg,#edeae2 0%,#090909 100%);height:28px;"></td></tr>
   </table>`;
 }
 
