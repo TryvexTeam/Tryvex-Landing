@@ -63,6 +63,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.tryvex.tech",
   },
+  icons: {
+    icon: [{ url: "/logo-email-dark.png", type: "image/png" }],
+    apple: "/logo-email-dark.png",
+  },
   openGraph: {
     title: "Tryvex — Automatización e Innovación Digital",
     description: "Agencia de software en Santiago.",
