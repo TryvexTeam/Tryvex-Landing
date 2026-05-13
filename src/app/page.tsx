@@ -73,9 +73,9 @@ export default function Home() {
       <span className="eyebrow" data-anim="fade-down"><span className="live"></span> Atendiendo a 14 negocios · Santiago, CL</span>
       <h1 data-split="words">Automatizamos lo aburrido. Tú vendes <em>lo importante.</em></h1>
       <p className="lede" data-anim="fade-up">
-        Tryvex es un studio de software que diseña, construye y mantiene <a href="#services">automatizaciones,
+        Tryvex es un studio de software que diseña, construye y mantiene <a href="/servicios">automatizaciones,
         landing pages y SaaS a medida</a>. Reemplazamos la planilla, el copy-paste y el
-        "lo veo después" con sistemas que corren solos. Conoce <a href="#process">cómo trabajamos</a> o <a href="#final">agenda una llamada gratuita</a>.
+        "lo veo después" con sistemas que corren solos. Conoce <a href="/proceso">cómo trabajamos</a> o <a href="/contacto">agenda una llamada gratuita</a>.
       </p>
       <div className="hero-cta" data-anim="fade-up">
         <a href="#final" className="btn-primary">
@@ -436,6 +436,57 @@ export default function Home() {
   </div>
 </footer>
       <LandingClient />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "¿Trabajan con empresas chicas?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Sí. La mayoría de nuestros clientes son negocios entre 2 y 30 personas. Si la planilla ya te queda chica, calzamos.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "¿Cuánto se demora un proyecto?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Una landing entre 5 y 10 días. Una automatización completa entre 2 y 4 semanas. Un MVP de SaaS entre 4 y 8 semanas.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "¿El código es nuestro?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Sí, sin asteriscos. Te entregamos repositorio, accesos y documentación. Si mañana quieres trabajar con otro equipo, lo puedes hacer.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "¿Atienden fuera de Chile?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Sí. Trabajamos remoto con equipos en LatAm y EE.UU. La mayoría de las herramientas son en español o inglés indistintamente.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "¿Qué pasa si no funciona?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Tenemos garantía de 30 días. Si no entregamos lo prometido, devolvemos el último mes. Es raro que pase, pero está por escrito.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
     </>
   );
 }
