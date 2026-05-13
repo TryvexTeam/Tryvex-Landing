@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export default function LandingClient() {
   useEffect(() => {
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = false; // landing animations always run
 
     /* ── 1. Word-split big headings ──────────────────────────────── */
     document.querySelectorAll('[data-split="words"]').forEach((el) => {
