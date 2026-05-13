@@ -3,6 +3,8 @@ import { Resend } from "resend";
 import { createCalendarEvent } from "@/lib/google-calendar";
 
 const NOTIFY_EMAIL = "tryvexentreprise@gmail.com";
+const FROM_SENDER = "Tryvex <hola@tryvex.tech>";
+const FROM_INTERNAL = "Tryvex Forms <noreply@tryvex.tech>";
 const FALLBACK_MEET = process.env.GOOGLE_MEET_LINK ?? "https://meet.google.com/tryvex-agenda";
 
 interface SchedulePayload {
@@ -12,6 +14,7 @@ interface SchedulePayload {
   date?: string;
   dateISO?: string;
   time?: string;
+  message?: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -27,7 +30,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid body" }, { status: 400 });
   }
 
-  const { name, phone, email, date, dateISO, time } = body;
+  const { name, phone, email, date, dateISO, time, message } = body;
 
   if (!name?.trim() || !email?.trim() || !phone?.trim()) {
     return NextResponse.json(
@@ -40,7 +43,7 @@ export async function POST(req: NextRequest) {
   let meetLink = FALLBACK_MEET;
   if (process.env.GOOGLE_REFRESH_TOKEN && dateISO && time) {
     try {
-      meetLink = await createCalendarEvent({ name, phone, email, dateISO, time });
+      meetLink = await createCalendarEvent({ name, phone, email, dateISO, time, message });
     } catch (err) {
       console.error("[/api/contact] calendar error", err);
     }
@@ -51,16 +54,16 @@ export async function POST(req: NextRequest) {
   try {
     await Promise.all([
       resend.emails.send({
-        from: "Tryvex <tryvexentreprise@gmail.com>",
+        from: FROM_SENDER,
         to: email,
         subject: "Confirmación de llamada · Tryvex",
         html: buildClientEmail({ name, date, time, meetLink }),
       }),
       resend.emails.send({
-        from: "Tryvex Form <tryvexentreprise@gmail.com>",
+        from: FROM_INTERNAL,
         to: NOTIFY_EMAIL,
         subject: `Nueva solicitud de llamada — ${name}`,
-        html: buildInternalEmail({ name, phone, email, date, time }),
+        html: buildInternalEmail({ name, phone, email, date, time, message }),
       }),
     ]);
 
@@ -178,12 +181,14 @@ function buildInternalEmail({
   email,
   date,
   time,
+  message,
 }: {
   name: string;
   phone: string;
   email: string;
   date?: string;
   time?: string;
+  message?: string;
 }) {
   return `<!DOCTYPE html>
 <html lang="es">
@@ -231,8 +236,12 @@ function buildInternalEmail({
                   <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:#f4f1ea;font-size:14px;font-weight:600;">${date}</td>
                 </tr>` : ""}
                 ${time ? `<tr>
-                  <td style="padding:12px 0;color:#7a736b;font-size:13px;">Hora</td>
-                  <td style="padding:12px 0;color:#f4f1ea;font-size:14px;font-weight:600;">${time} hrs</td>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:#7a736b;font-size:13px;">Hora</td>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:#f4f1ea;font-size:14px;font-weight:600;">${time} hrs</td>
+                </tr>` : ""}
+                ${message ? `<tr>
+                  <td style="padding:12px 0;color:#7a736b;font-size:13px;vertical-align:top;">Mensaje</td>
+                  <td style="padding:12px 0;color:#a09a8f;font-size:14px;line-height:1.55;">${message}</td>
                 </tr>` : ""}
               </table>
 

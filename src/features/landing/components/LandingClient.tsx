@@ -320,22 +320,22 @@ export default function LandingClient() {
             leave: "bottom bottom",
             sync: true,
           }),
-          duration: 3000,
+          duration: 1400,
         });
 
         metricsTl.add(".metrics-block", {
           opacity: [0, 1],
           scale: [0.92, 1],
           filter: ["blur(18px)", "blur(0px)"],
-          duration: 900,
+          duration: 500,
         });
 
         metricsTl.add(".metric", {
           opacity: [0, 1],
           translateY: [40, 0],
-          duration: 1200,
-          delay: stagger(120),
-        }, 600);
+          duration: 650,
+          delay: stagger(100),
+        }, 280);
 
         // Counters fire once on enter — separate from scrub timeline
         let countersRan = false;

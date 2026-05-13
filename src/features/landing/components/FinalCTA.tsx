@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { sileo } from "sileo";
 
-const FALLBACK_SLOTS = ["10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+const FALLBACK_SLOTS = ["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"];
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MONTHS_ES = [
   "Ene", "Feb", "Mar", "Abr", "May", "Jun",
@@ -30,13 +30,14 @@ interface ScheduleForm {
   name: string;
   phone: string;
   email: string;
+  message: string;
 }
 
 type View = "cta" | "form" | "success";
 
 export default function FinalCTA() {
   const [view, setView] = useState<View>("cta");
-  const [form, setForm] = useState<ScheduleForm>({ name: "", phone: "", email: "" });
+  const [form, setForm] = useState<ScheduleForm>({ name: "", phone: "", email: "", message: "" });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [availableSlots, setAvailableSlots] = useState<string[]>(FALLBACK_SLOTS);
@@ -69,7 +70,7 @@ export default function FinalCTA() {
     selectedDate !== null &&
     selectedTime !== null;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -231,6 +232,16 @@ export default function FinalCTA() {
                 autoComplete="email"
               />
             </div>
+
+            <textarea
+              name="message"
+              className="sch-msg"
+              placeholder="¿En qué podemos ayudarte? (opcional)"
+              value={form.message}
+              onChange={handleChange}
+              disabled={loading}
+              rows={3}
+            />
 
             <button
               type="submit"

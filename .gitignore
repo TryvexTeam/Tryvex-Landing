@@ -46,3 +46,6 @@ extract-body.ps1
 convert-to-jsx.js
 src/app/body-content.html
 src/app/landing-script.js
+
+.vercel
+.env*.local
