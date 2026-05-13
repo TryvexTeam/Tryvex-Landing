@@ -161,13 +161,13 @@ function buildClientEmail({
               <!-- Google Meet block -->
               <table cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 30px;">
                 <tr>
-                  <td style="background:linear-gradient(135deg,#c62020 0%,#a81a1a 100%);border-radius:12px;padding:22px 26px;">
-                    <p style="margin:0 0 12px;color:rgba(255,255,255,0.55);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">Tu enlace de Google Meet</p>
+                  <td style="background:#edeae2;border-radius:12px;padding:22px 26px;">
+                    <p style="margin:0 0 12px;color:#8a847a;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">Tu enlace de Google Meet</p>
                     <table width="100%" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="color:rgba(255,255,255,0.75);font-size:12px;word-break:break-all;padding-right:12px;">${meetLink}</td>
+                        <td style="color:#6b6560;font-size:12px;word-break:break-all;padding-right:12px;">${meetLink}</td>
                         <td style="white-space:nowrap;">
-                          <a href="${meetLink}" style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.28);color:#fff;text-decoration:none;padding:10px 20px;border-radius:999px;font-weight:600;font-size:12px;letter-spacing:0.03em;">
+                          <a href="${meetLink}" style="display:inline-block;background:#1a1714;border:1px solid rgba(0,0,0,0.12);color:#edeae2;text-decoration:none;padding:10px 20px;border-radius:999px;font-weight:600;font-size:12px;letter-spacing:0.03em;">
                             Abrir →
                           </a>
                         </td>
@@ -280,13 +280,13 @@ function buildInternalEmail({
               <!-- Google Meet block -->
               <table cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 28px;">
                 <tr>
-                  <td style="background:linear-gradient(135deg,#c62020 0%,#a81a1a 100%);border-radius:12px;padding:20px 26px;">
-                    <p style="margin:0 0 10px;color:rgba(255,255,255,0.55);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">Enlace Google Meet de la llamada</p>
+                  <td style="background:#edeae2;border-radius:12px;padding:20px 26px;">
+                    <p style="margin:0 0 10px;color:#8a847a;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;">Enlace Google Meet de la llamada</p>
                     <table width="100%" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="color:rgba(255,255,255,0.75);font-size:12px;word-break:break-all;padding-right:12px;">${meetLink}</td>
+                        <td style="color:#6b6560;font-size:12px;word-break:break-all;padding-right:12px;">${meetLink}</td>
                         <td style="white-space:nowrap;">
-                          <a href="${meetLink}" style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.28);color:#fff;text-decoration:none;padding:10px 20px;border-radius:999px;font-weight:600;font-size:12px;letter-spacing:0.03em;">
+                          <a href="${meetLink}" style="display:inline-block;background:#1a1714;border:1px solid rgba(0,0,0,0.12);color:#edeae2;text-decoration:none;padding:10px 20px;border-radius:999px;font-weight:600;font-size:12px;letter-spacing:0.03em;">
                             Abrir →
                           </a>
                         </td>
