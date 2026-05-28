@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import NavBar, { INNER_LINKS } from "../../components/NavBar";
 
 export const metadata: Metadata = {
   title: "Servicios — Tryvex",
@@ -29,26 +30,7 @@ export default function ServiciosPage() {
         </defs>
       </svg>
 
-      <div className="nav-shell">
-        <nav className="glass">
-          <Link href="/" className="logo">
-            <svg className="logo-mark"><use href="#spark"/></svg>
-            <span className="logo-word">tryvex<span className="dot">.</span></span>
-          </Link>
-          <div className="nav-links">
-            <Link href="/servicios">Servicios</Link>
-            <Link href="/proceso">Proceso</Link>
-            <Link href="/#offer">Planes</Link>
-            <Link href="/#faq">Preguntas</Link>
-          </div>
-          <div className="nav-cta">
-            <Link href="/contacto" className="btn-primary">
-              Agendar
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </Link>
-          </div>
-        </nav>
-      </div>
+      <NavBar links={INNER_LINKS} ctaHref="/contacto" />
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>

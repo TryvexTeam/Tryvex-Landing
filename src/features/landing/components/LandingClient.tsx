@@ -166,7 +166,7 @@ export default function LandingClient() {
               trigger: ".hero",
               start: "top top",
               end: "bottom top",
-              scrub: 1.2,
+              scrub: 0.8,
             };
 
             gsap.to(".hero-visual", {
@@ -182,7 +182,7 @@ export default function LandingClient() {
               rotation: -20,
               scale: 0.8,
               ease: "none",
-              scrollTrigger: { ...heroST, scrub: 2.2 },
+              scrollTrigger: { ...heroST, scrub: 1.4 },
             });
             gsap.to(".fc-2", {
               y: 190,
@@ -190,7 +190,7 @@ export default function LandingClient() {
               rotation: 16,
               scale: 0.82,
               ease: "none",
-              scrollTrigger: { ...heroST, scrub: 2.2 },
+              scrollTrigger: { ...heroST, scrub: 1.4 },
             });
             gsap.to(".hero-col h1", {
               y: -55,
@@ -248,7 +248,7 @@ export default function LandingClient() {
                   rotationX: 0, y: 0, opacity: 1, ease: "none",
                   scrollTrigger: {
                     trigger: el, start: "top 92%", end: "top 32%",
-                    scrub: 1 + i * 0.15,
+                    scrub: 0.65 + i * 0.1,
                   },
                 }
               );
@@ -263,7 +263,7 @@ export default function LandingClient() {
                   rotationY: 0, x: 0, opacity: 1, ease: "none",
                   scrollTrigger: {
                     trigger: el, start: "top 90%", end: "top 30%",
-                    scrub: 1.2 + i * 0.1,
+                    scrub: 0.8 + i * 0.07,
                   },
                 }
               );
@@ -276,7 +276,7 @@ export default function LandingClient() {
                 rotationX: 0, y: 0, opacity: 1, ease: "none",
                 scrollTrigger: {
                   trigger: ".quote-card", start: "top 88%", end: "top 28%",
-                  scrub: 1.4,
+                  scrub: 0.9,
                 },
               }
             );
@@ -289,7 +289,7 @@ export default function LandingClient() {
                   rotationX: 0, y: 0, opacity: 1, ease: "none",
                   scrollTrigger: {
                     trigger: el, start: "top 92%", end: "top 40%",
-                    scrub: 0.9 + i * 0.25,
+                    scrub: 0.6 + i * 0.16,
                   },
                 }
               );
@@ -310,7 +310,7 @@ export default function LandingClient() {
             leave: "bottom bottom",
             sync: true,
           }),
-          duration: 1400,
+          duration: 900,
         });
 
         metricsTl.add(".metrics-block", {
@@ -324,7 +324,7 @@ export default function LandingClient() {
           opacity: [0, 1],
           translateY: [40, 0],
           duration: 650,
-          delay: stagger(100),
+          delay: stagger(60),
         }, 280);
 
         // Counters fire when scroll reaches 70% of the metrics scene
@@ -373,7 +373,7 @@ export default function LandingClient() {
             leave: "bottom bottom",
             sync: true,
           }),
-          duration: 3000,
+          duration: 1800,
         });
 
         finalTl.add(".final", {
@@ -388,7 +388,7 @@ export default function LandingClient() {
           scale: [0.2, 1],
           rotate: [-90, 0],
           duration: 1400,
-          delay: stagger(180),
+          delay: stagger(110),
         }, 300);
 
         finalTl.add(".final .btn-primary", {

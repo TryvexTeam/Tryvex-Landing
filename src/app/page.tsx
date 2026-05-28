@@ -1,13 +1,41 @@
 import React from "react";
+import NavBar from "../components/NavBar";
 import LandingClient from "../features/landing/components/LandingClient";
 import FinalCTA from "../features/landing/components/FinalCTA";
 
-export default function Home() {
+const HOME_LINKS = [
+  { href: "#services", label: "Servicios"  },
+  { href: "#process",  label: "Proceso"    },
+  { href: "#offer",    label: "Planes"     },
+  { href: "#faq",      label: "Preguntas"  },
+  { href: "/team",     label: "Equipo"     },
+];
+
+type Stats = {
+  businesses: number;
+  leads_identificados: number;
+  ultima_ejecucion: string | null;
+};
+
+async function fetchStats(): Promise<Stats> {
+  try {
+    const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const res = await fetch(`${base}/api/stats`, { next: { revalidate: 3600 } });
+    if (!res.ok) return { businesses: 14, leads_identificados: 847, ultima_ejecucion: null };
+    return (await res.json()) as Stats;
+  } catch {
+    return { businesses: 14, leads_identificados: 847, ultima_ejecucion: null };
+  }
+}
+
+export default async function Home() {
+  const stats = await fetchStats();
+  const { businesses, leads_identificados } = stats;
   return (
     <>
 
 ﻿<div className="scroll-progress"></div>
-<div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
+<div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div><div className="b4"></div></div>
 <div className="grain"></div>
 
 <svg width="0" height="0" style={{position: "absolute"}} aria-hidden="true">
@@ -24,30 +52,14 @@ export default function Home() {
 </svg>
 
 {/* NAV */}
-<div className="nav-shell">
-  <nav className="glass">
-    <a href="#" className="logo">
-      <svg className="logo-mark"><use href="#spark"/></svg>
-      <span className="logo-word">tryvex<span className="dot">.</span></span>
-    </a>
-    <div className="nav-links">
-      <a href="#services">Servicios</a>
-      <a href="#process">Proceso</a>
-      <a href="#offer">Planes</a>
-      <a href="#faq">Preguntas</a>
-    </div>
-    <div className="nav-cta">
-      <a href="#offer" className="pill">Hablar con un humano</a>
-      <a href="#final" className="btn-primary">
-        Agendar
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-    </div>
-  </nav>
-</div>
+<NavBar
+  links={HOME_LINKS}
+  ctaHref="#final"
+/>
 
 {/* HERO */}
 <section className="hero">
+  <div className="hero-aurora" aria-hidden="true"><div className="a1"></div><div className="a2"></div><div className="a3"></div></div>
   {/* Scene A — floating spark pieces, scattered by GSAP ScrollTrigger scrub */}
   <svg className="scene-piece sa-p1" viewBox="0 0 100 100" aria-hidden="true">
     <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="var(--red)"/>
@@ -70,7 +82,7 @@ export default function Home() {
   </svg>
   <div className="wrap hero-grid">
     <div className="hero-col">
-      <span className="eyebrow" data-anim="fade-down"><span className="live"></span> Atendiendo a 14 negocios · Santiago, CL</span>
+      <span className="eyebrow" data-anim="fade-down"><span className="live"></span> Atendiendo a {businesses} negocios · Santiago, CL</span>
       <h1 data-split="words">Automatizamos lo aburrido. Tú vendes <em>lo importante.</em></h1>
       <p className="lede" data-anim="fade-up">
         Tryvex es un studio de software que diseña, construye y mantiene <a href="/servicios">automatizaciones,
@@ -85,7 +97,7 @@ export default function Home() {
         <a href="#process" className="btn-ghost">Ver cómo trabajamos →</a>
       </div>
       <div className="hero-meta" data-anim="fade-up">
-        <div><strong>14</strong> · proyectos activos</div>
+        <div><strong>{businesses}</strong> · proyectos activos</div>
         <div><strong>3d</strong> · primer entregable</div>
         <div><strong>0</strong> · contratos atados</div>
       </div>
@@ -150,7 +162,7 @@ export default function Home() {
     </div>
 
     <div className="services" data-stagger>
-      <div className="svc glass">
+      <div className="svc glass dark">
         <div className="svc-head">
           <div className="svc-num">01 — Automatización</div>
           <div className="svc-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/><circle cx="20" cy="17" r="2"/></svg></div>
@@ -162,6 +174,7 @@ export default function Home() {
           <li>Workflows con <a href="https://n8n.io" target="_blank" rel="noopener noreferrer">n8n</a>, <a href="https://zapier.com" target="_blank" rel="noopener noreferrer">Zapier</a> o código propio</li>
           <li>Logs, alertas y panel de control</li>
         </ul>
+        <p className="svc-industries">Usado por restaurantes, automotoras y farmacias</p>
       </div>
       <div className="svc glass">
         <div className="svc-head">
@@ -175,6 +188,7 @@ export default function Home() {
           <li>Tracking de conversiones de salida</li>
           <li>A/B testing y mejora continua</li>
         </ul>
+        <p className="svc-industries">E-commerce, servicios locales, consultoras</p>
       </div>
       <div className="svc glass">
         <div className="svc-head">
@@ -188,6 +202,7 @@ export default function Home() {
           <li>Stack moderno: Next.js + Postgres</li>
           <li>Soporte mensual opcional</li>
         </ul>
+        <p className="svc-industries">Gestión interna, reservas, facturación</p>
       </div>
     </div>
   </div>
@@ -242,8 +257,8 @@ export default function Home() {
       <h2 data-split="words">Lo que nuestros clientes <em>dejaron de hacer</em> a mano.</h2>
       <div className="metrics" data-stagger>
         <div className="metric">
-          <div className="v">312<em>h</em></div>
-          <div className="l">Horas/mes ahorradas en facturación</div>
+          <div className="v">{leads_identificados}<em>+</em></div>
+          <div className="l">Empresas mapeadas en Chile</div>
         </div>
         <div className="metric">
           <div className="v">4.7<em>×</em></div>
@@ -254,8 +269,8 @@ export default function Home() {
           <div className="l">SLA de uptime en flujos críticos</div>
         </div>
         <div className="metric">
-          <div className="v">21<em>d</em></div>
-          <div className="l">Tiempo medio de un MVP a producción</div>
+          <div className="v">{businesses}</div>
+          <div className="l">Clientes activos con Tryvex</div>
         </div>
       </div>
     </div>

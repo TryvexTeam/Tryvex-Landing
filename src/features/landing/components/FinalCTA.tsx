@@ -152,6 +152,7 @@ export default function FinalCTA() {
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
           </button>
+          <p className="final-trust">Sin costo. Sin compromiso. Respuesta en menos de 24h.</p>
         </div>
 
         {/* ── Form — absolute overlay, scrolls if content overflows ── */}
@@ -230,6 +231,7 @@ export default function FinalCTA() {
                 required
                 disabled={loading}
                 autoComplete="email"
+                suppressHydrationWarning
               />
             </div>
 
