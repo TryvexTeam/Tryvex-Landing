@@ -1,0 +1,501 @@
+/* ─── Team Page ─────────────────────────────────────────────── */
+
+/* ─── Hero editorial — 2 columnas ───────────────────────────── */
+
+.team-hero-editorial {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: end;
+  margin-top: 24px;
+}
+
+.team-hero-editorial__h1 {
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ink, #0e0e0e);
+  margin: 0;
+}
+
+.team-hero-editorial__desc {
+  font-size: clamp(14px, 1.3vw, 16px);
+  line-height: 1.75;
+  color: rgba(14, 14, 14, 0.52);
+  margin: 0;
+  padding-bottom: 4px;
+}
+
+@media (max-width: 720px) {
+  .team-hero-editorial {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* ─── Separator before grid ──────────────────────────────────── */
+
+.team-section-divider {
+  border: none;
+  border-top: 1px solid rgba(14, 14, 14, 0.1);
+  margin: 0 0 0;
+}
+
+/* ─── Filtros ────────────────────────────────────────────────── */
+
+.team-filters {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 1px solid rgba(14, 14, 14, 0.1);
+  margin-bottom: 0;
+  padding-bottom: 12px;
+}
+
+.team-filters__label {
+  font-size: 11px;
+  color: rgba(14, 14, 14, 0.4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-right: auto;
+}
+
+.team-filter-btn {
+  background: none;
+  border: none;
+  padding: 4px 14px;
+  font-size: 12px;
+  color: rgba(14, 14, 14, 0.45);
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: color 0.2s ease;
+  border-radius: 0;
+}
+
+.team-filter-btn:hover {
+  color: var(--ink, #0e0e0e);
+}
+
+.team-filter-btn.active {
+  color: var(--ink, #0e0e0e);
+  font-weight: 500;
+}
+
+/* ─── Grid ──────────────────────────────────────────────────── */
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  padding: 48px 0 100px;
+}
+
+/* ─── Card ──────────────────────────────────────────────────── */
+
+.team-card {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.team-card.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.team-card:focus-visible {
+  outline: 2px solid var(--red, #e53935);
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+
+/* ─── Photo frame ───────────────────────────────────────────── */
+
+.team-card__photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: #111;
+}
+
+.team-card__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.team-card:hover .team-card__photo {
+  transform: scale(1.05);
+}
+
+.team-card__photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: rgba(14, 14, 14, 0.06);
+}
+
+/* ─── Hover "+" icon overlay ─────────────────────────────────── */
+
+.team-card__hover-plus {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(14, 14, 14, 0.72);
+  color: rgba(244, 241, 234, 0.9);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 28px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.team-card:hover .team-card__hover-plus {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-card__hover-plus { transition: none; }
+}
+
+/* ─── Info — below the photo ────────────────────────────────── */
+
+.team-card__info {
+  padding: 0 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.team-card__name {
+  font-size: clamp(13px, 1.2vw, 15px);
+  font-weight: 500;
+  color: var(--ink, #0e0e0e);
+  line-height: 1.2;
+  display: block;
+}
+
+.team-card__role {
+  font-size: 11px;
+  color: rgba(14, 14, 14, 0.45);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: block;
+}
+
+/* ─── Tonal card backgrounds ─────────────────────────────────── */
+
+.team-card[data-member="ignacio-navarrete"]     .team-card__photo-frame { background: #0c0c0c; }
+.team-card[data-member="vicente-garcia"]         .team-card__photo-frame { background: #0f0c06; }
+.team-card[data-member="cristian-de-la-fuente"]  .team-card__photo-frame { background: #06090f; }
+.team-card[data-member="joseph-mailens"]         .team-card__photo-frame { background: #070f08; }
+.team-card[data-member="fabian-melivilu"]        .team-card__photo-frame { background: #130808; }
+
+/* ─── Reduced motion ────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .team-card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .team-card__photo { transition: none; }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .team-grid { grid-template-columns: repeat(3, 1fr); gap: 22px; }
+}
+
+@media (max-width: 680px) {
+  .team-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 40px 0 80px; }
+}
+
+@media (max-width: 420px) {
+  .team-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Drawer ────────────────────────────────────────────────── */
+
+.team-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.team-drawer.open {
+  pointer-events: all;
+  visibility: visible;
+}
+
+/* Backdrop — sin blur, overlay semitransparente limpio */
+.team-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 14, 14, 0);
+  transition: background 0.4s ease;
+}
+
+.team-drawer.open .team-drawer__backdrop {
+  background: rgba(14, 14, 14, 0.55);
+}
+
+/* Stagger prelayers — GSAP controls transform */
+.team-drawer__prelayer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(540px, 94vw);
+  height: 100%;
+  pointer-events: none;
+  transform: translateX(100%);
+}
+
+.team-drawer__prelayer--1 {
+  background: var(--red, #e53935);
+  z-index: 6;
+}
+
+.team-drawer__prelayer--2 {
+  background: #1c0808;
+  z-index: 7;
+}
+
+/* Panel — GSAP controls transform */
+.team-drawer__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(540px, 94vw);
+  background: #0e0e0e;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  transform: translateX(100%);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 8;
+  pointer-events: auto;
+}
+
+/* ─── Mobile floating X ─────────────────────────────────────── */
+
+.team-drawer__close-btn--mobile {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .team-drawer__prelayer { width: 100vw; }
+
+  .team-drawer__panel {
+    width: 100vw;
+    border-left: none;
+  }
+
+  .team-drawer__close { display: none; }
+
+  .team-drawer__close-btn--mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(14, 14, 14, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(244, 241, 234, 0.85);
+    cursor: pointer;
+    z-index: 20;
+    transform: translateX(calc(100% + 32px));
+    transition: transform 0.38s 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.2s,
+                color 0.2s;
+  }
+
+  .team-drawer.open .team-drawer__close-btn--mobile {
+    transform: translateX(0);
+  }
+
+  .team-drawer__close-btn--mobile:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--paper, #f4f1ea);
+  }
+
+  .team-drawer__close-btn--mobile:focus-visible {
+    outline: 2px solid var(--red, #e53935);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-drawer__close-btn--mobile {
+    transition: none;
+    transform: translateX(0);
+  }
+}
+
+/* ─── Close button row ──────────────────────────────────────── */
+
+.team-drawer__close {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: flex-start;
+  padding: 20px 28px 0;
+  z-index: 2;
+  background: linear-gradient(to bottom, #0e0e0e 60%, transparent);
+}
+
+.team-drawer__close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(244, 241, 234, 0.7);
+  transition: background 0.2s, color 0.2s;
+}
+
+.team-drawer__close-btn:hover { background: rgba(255, 255, 255, 0.12); color: var(--paper, #f4f1ea); }
+.team-drawer__close-btn:focus-visible { outline: 2px solid var(--red, #e53935); outline-offset: 2px; }
+
+/* ─── Content container ─────────────────────────────────────── */
+
+.team-drawer__content {
+  padding: 20px 28px 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ─── Header: nombre + thumbnail ────────────────────────────── */
+
+.team-drawer__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.team-drawer__header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Thumbnail pequeño en esquina */
+.team-drawer__thumb-wrap {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.team-drawer__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Role */
+.team-drawer__role {
+  font-size: 11px;
+  color: var(--red, #e53935);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Name */
+.team-drawer__name {
+  font-size: clamp(24px, 4.5vw, 34px);
+  font-weight: 700;
+  color: var(--paper, #f4f1ea);
+  line-height: 1.1;
+  margin: 0;
+}
+
+/* ─── LinkedIn link ─────────────────────────────────────────── */
+
+.team-drawer__link-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+
+.team-drawer__linkedin {
+  font-size: 12px;
+  color: rgba(244, 241, 234, 0.45);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+
+.team-drawer__linkedin:hover {
+  color: rgba(244, 241, 234, 0.9);
+}
+
+/* ─── Divider ───────────────────────────────────────────────── */
+
+.team-drawer__divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin-bottom: 28px;
+}
+
+/* ─── Bio ───────────────────────────────────────────────────── */
+
+.team-drawer__bio {
+  font-size: 15px;
+  line-height: 1.72;
+  color: rgba(244, 241, 234, 0.58);
+  margin: 0;
+}
+
+/* ─── Legacy links (portafolio) ─────────────────────────────── */
+
+.team-drawer__links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
