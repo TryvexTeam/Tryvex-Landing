@@ -67,6 +67,28 @@ export async function POST(req: NextRequest) {
       }),
     ]);
 
+    // Registrar la cita en el dashboard interno del equipo (trybot/leads-dashboard).
+    // Fire-and-forget: si el dashboard no responde, la reserva del cliente NO se ve
+    // afectada. Solo corre si está configurado CITAS_INGEST_TOKEN en el entorno.
+    if (process.env.CITAS_INGEST_TOKEN && dateISO && time) {
+      const fecha_hora = `${dateISO}T${time}:00-04:00`; // Chile (UTC-4)
+      fetch("https://leads-dashboard-production-c504.up.railway.app/api/citas/ingest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-ingest-token": process.env.CITAS_INGEST_TOKEN,
+        },
+        body: JSON.stringify({
+          nombre: name,
+          email,
+          telefono: phone,
+          fecha_hora,
+          mensaje: message,
+          origen: "tryvex.tech",
+        }),
+      }).catch((err) => console.error("[/api/contact] citas ingest error", err));
+    }
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[/api/contact] resend error", err);
