@@ -5,6 +5,7 @@ import FinalCTA from "../features/landing/components/FinalCTA";
 
 const HOME_LINKS = [
   { href: "#services", label: "Servicios"  },
+  { href: "/catalogo", label: "Catálogo"   },
   { href: "#process",  label: "Proceso"    },
   { href: "#offer",    label: "Planes"     },
   { href: "#faq",      label: "Preguntas"  },
