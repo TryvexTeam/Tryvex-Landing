@@ -74,9 +74,9 @@ Esa palabra clave cumple dos funciones:
 Formato: `DEMO-` + rubro en mayúsculas y corto (`DEMO-VET`, `DEMO-BARBER`,
 `DEMO-RESTO`). **Cada demo lleva la suya, nunca repetida.**
 
-> ⚠️ El número de WhatsApp está en la constante `WHATSAPP_NUMBER` de `data.ts` y
-> hoy es un relleno (`56900000000`). Se reemplaza una sola vez, cuando exista el
-> número real de Tryvex — no hay que tocarlo en cada demo.
+> El número de WhatsApp de Tryvex vive en la constante `WHATSAPP_NUMBER` de
+> `data.ts` (**+56 9 5035 8818**). Está en un solo lugar: no hay que tocarlo en
+> cada demo.
 
 ## Paso 4 — Captura de la demo (opcional pero recomendado)
 

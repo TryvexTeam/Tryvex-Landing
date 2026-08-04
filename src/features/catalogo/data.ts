@@ -11,8 +11,8 @@
  * (o cambiarle el flag) — nadie toca componentes.
  */
 
-/** Número de WhatsApp de Tryvex (código de país, sin +). TODO: número real. */
-export const WHATSAPP_NUMBER = "56900000000";
+/** Número de WhatsApp de Tryvex (código de país, sin +). */
+export const WHATSAPP_NUMBER = "56950358818";
 
 /** Link click-to-chat con referencia de origen para el router del bot. */
 export function whatsappLink(ref: string): string {
