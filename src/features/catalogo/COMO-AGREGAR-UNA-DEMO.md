@@ -79,6 +79,10 @@ ManyChat**. Avisar al encargado del bot al agregar un nicho nuevo.
 Convención en uso: `DEMO-RESTO`, `DEMO-VET`, `DEMO-BARBER`, `DEMO-ESTETICA`,
 `DEMO-GYM`, `DEMO-CLINICA`, `DEMO-INMO`.
 
+> El número de WhatsApp de Tryvex (**+56 9 5035 8818**) vive en la constante
+> `WHATSAPP_NUMBER` de `data.ts`, en un solo lugar. No hay que escribirlo en cada
+> demo — solo la palabra clave.
+
 ---
 
 ## 5. Probar antes de subir
@@ -111,3 +115,15 @@ Después, abrir un Pull Request en GitHub hacia `main` para que el equipo lo rev
 **Ventaja de una rama por demo:** varias personas pueden agregar demos en paralelo
 sin pisarse. Si dos tocan `data.ts` a la vez, git resuelve el conflicto fácil
 porque son entradas distintas del mismo arreglo.
+
+---
+
+## Errores frecuentes
+
+| Síntoma | Causa |
+|---|---|
+| La demo no aparece en la página | Falta `publicada: true`, o `demoUrl` quedó vacío |
+| El visitante ve un login de Lovable | Se usó la URL de preview en vez de la publicada (paso 1) |
+| El bot responde con el flujo equivocado | `whatsappRef` repetido o mal escrito |
+| La imagen no carga | La ruta no coincide con el archivo en `public/catalogo/` |
+| `npm run build` falla | Falta una coma entre objetos, o un campo obligatorio |
