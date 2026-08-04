@@ -48,11 +48,9 @@ export const demos: Demo[] = [
     descripcion:
       "Reservas de mesa y pedidos por WhatsApp, con el menú siempre al día.",
     incluye: ["Web inmersiva", "Asistente WhatsApp", "Reservas"],
-    // Construida en Lovable ("Vex experiências"). Pendiente de publicar:
-    // al hacer deploy, pegar aquí la URL pública y cambiar publicada a true.
-    demoUrl: "",
+    demoUrl: "https://tryvex-restaurante.lovable.app",
     whatsappRef: "DEMO-RESTO",
-    publicada: false,
+    publicada: true,
   },
 ];
 
