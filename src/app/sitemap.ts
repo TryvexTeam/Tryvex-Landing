@@ -9,6 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: "https://www.tryvex.tech/catalogo",
+      lastModified: new Date("2026-08-03"),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
       url: "https://www.tryvex.tech/servicios",
       lastModified: new Date("2026-05-12"),
       changeFrequency: "monthly",

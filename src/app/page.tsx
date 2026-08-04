@@ -1,10 +1,12 @@
 import React from "react";
 import NavBar from "../components/NavBar";
+import StarField from "../components/StarField";
 import LandingClient from "../features/landing/components/LandingClient";
 import FinalCTA from "../features/landing/components/FinalCTA";
 
 const HOME_LINKS = [
   { href: "#services", label: "Servicios"  },
+  { href: "/catalogo", label: "Catálogo"   },
   { href: "#process",  label: "Proceso"    },
   { href: "#offer",    label: "Planes"     },
   { href: "#faq",      label: "Preguntas"  },
@@ -35,18 +37,27 @@ export default async function Home() {
     <>
 
 ﻿<div className="scroll-progress"></div>
+
+{/* ── VIDEO FIJO — fondo de toda la landing ── */}
+<div className="page-bg-video" aria-hidden="true">
+  <video autoPlay loop muted playsInline>
+    <source src="/hero-bg.mp4" type="video/mp4" />
+  </video>
+</div>
+<div className="page-bg-overlay" aria-hidden="true" />
+
 <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div><div className="b4"></div></div>
 <div className="grain"></div>
 
 <svg width="0" height="0" style={{position: "absolute"}} aria-hidden="true">
   <defs>
     <symbol id="spark" viewBox="0 0 100 100">
-      <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="#0e0e0e"/>
-      <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="#e53935"/>
+      <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="#f0ede5"/>
+      <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="#ff4d49"/>
     </symbol>
     <symbol id="spark-light" viewBox="0 0 100 100">
-      <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="#f4f1ea"/>
-      <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="#e53935"/>
+      <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="#f0ede5"/>
+      <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="#ff4d49"/>
     </symbol>
   </defs>
 </svg>
@@ -59,7 +70,9 @@ export default async function Home() {
 
 {/* HERO */}
 <section className="hero">
-  <div className="hero-aurora" aria-hidden="true"><div className="a1"></div><div className="a2"></div><div className="a3"></div></div>
+  {/* estrellas sobre el video global — z-2 */}
+  <StarField count={220} />
+  <div className="hero-aurora" aria-hidden="true" style={{zIndex:2}}><div className="a1"></div><div className="a2"></div><div className="a3"></div></div>
   {/* Scene A — floating spark pieces, scattered by GSAP ScrollTrigger scrub */}
   <svg className="scene-piece sa-p1" viewBox="0 0 100 100" aria-hidden="true">
     <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="var(--red)"/>

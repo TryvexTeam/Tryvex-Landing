@@ -19,6 +19,7 @@ interface NavBarProps {
 
 const INNER_LINKS: NavLink[] = [
   { href: "/servicios", label: "Servicios" },
+  { href: "/catalogo",  label: "Catálogo"  },
   { href: "/proceso",   label: "Proceso"   },
   { href: "/#offer",    label: "Planes"    },
   { href: "/#faq",      label: "Preguntas" },
