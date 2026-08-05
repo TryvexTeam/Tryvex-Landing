@@ -117,3 +117,22 @@
 }
 .cat-empty h2 { font-size: 1.4rem; margin-bottom: 10px; }
 .cat-empty p { opacity: 0.75; margin-bottom: 22px; }
+
+/* ── Preview del catálogo en el home ──────────────────────────────────────
+   Misma tarjeta que la vitrina completa, pero la grilla se centra y acota el
+   ancho de cada tarjeta: hoy hay una sola demo publicada y con la grilla de
+   tres columnas quedaría flotando en un tercio del ancho. Acepta 1, 2 o 3 sin
+   tocar nada. */
+.cat-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
+  justify-content: center;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.cat-preview-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
