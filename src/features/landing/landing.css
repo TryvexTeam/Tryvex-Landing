@@ -391,9 +391,17 @@
     fill: var(--ink);
     transition: d 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  /* El destello rojo se queda: es la firma del logo y lo que ata el gesto a la
-     marca. Antes se apagaba al plegarse la estrella. */
-  .volver-chispa { fill: var(--red-vivo); }
+  /* El destello rojo se queda —es la firma del logo— y al plegarse la estrella
+     se desplaza hasta quedar justo antes del texto, como si la marca soltara la
+     chispa y esta se posara al inicio de la palabra.
+     El SVG lleva `overflow: visible`, así que puede salir de su viewBox; el
+     desplazamiento va en unidades del viewBox, no en píxeles. */
+  .volver-chispa {
+    fill: var(--red-vivo);
+    transform-box: view-box;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .volver--activo .volver-chispa { transform: translate(32px, 26px); }
 
   /* La etiqueta está siempre visible: el icono solo no comunica a dónde lleva,
      y si aparece recién al pasar por encima nadie sabe que hay algo ahí. */
