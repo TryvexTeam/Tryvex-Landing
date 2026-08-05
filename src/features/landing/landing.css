@@ -376,30 +376,40 @@
 
   /* ======= VOLVER AL INICIO (páginas internas) ======= */
   .volver {
-    /* `flex` y no `inline-flex`: en línea quedaba pegado a la etiqueta de
-       sección y se leía "VOLVER AL INICIO 01 SERVICIOS" de corrido. */
-    display: flex; width: max-content; align-items: center; gap: 9px;
+    display: flex; width: max-content; align-items: center; gap: 12px;
+    margin-bottom: 22px;
+  }
+  .volver-marca { width: 30px; height: 30px; overflow: visible; flex-shrink: 0; }
+
+  /* El morph vive en la propiedad `d`. Ambos trazados comparten estructura
+     (cuatro cúbicas, mismos anclajes), así que el navegador interpola los
+     puntos y la estrella se pliega en triángulo en vez de saltar. */
+  .volver-figura {
+    fill: var(--ink);
+    transition: d 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .volver-chispa {
+    fill: var(--red-vivo);
+    transform-origin: 82px 24px;
+    transition: opacity 0.32s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .volver--activo .volver-chispa { opacity: 0; transform: scale(0.4); }
+
+  /* La etiqueta está siempre visible: el icono solo no comunica a dónde lleva,
+     y si aparece recién al pasar por encima nadie sabe que hay algo ahí. */
+  .volver-texto {
     font-family: 'JetBrains Mono', monospace; font-size: 11px;
     letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--muted-2); margin-bottom: 22px;
+    color: var(--muted-2);
     transition: color 0.28s ease;
   }
-  .volver-flecha {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 26px; height: 26px; border-radius: 50%;
-    border: 1px solid var(--line); background: rgba(255,255,255,0.34);
-    transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-                border-color 0.28s ease, background 0.28s ease;
-  }
-  .volver-flecha svg { width: 13px; height: 13px; }
-  .volver:hover { color: var(--ink); }
-  .volver:hover .volver-flecha {
-    transform: translateX(-4px);
-    border-color: rgba(14,14,14,0.22);
-    background: rgba(255,255,255,0.7);
-  }
-  .volver:focus-visible {
-    outline: 2px solid var(--red); outline-offset: 4px; border-radius: 6px;
+  .volver--activo .volver-texto { color: var(--ink); }
+  .volver:focus-visible { outline: 2px solid var(--red); outline-offset: 6px; border-radius: 8px; }
+
+  /* Sin animación: el triángulo queda fijo, que es la forma que comunica la
+     acción, y la etiqueta siempre visible. */
+  @media (prefers-reduced-motion: reduce) {
+    .volver-figura, .volver-chispa, .volver-texto { transition: none; }
   }
 
   /* ======= HERO ======= */
