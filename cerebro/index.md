@@ -77,7 +77,7 @@ NEXT_PUBLIC_SITE_URL      # base para fetch interno de /api/stats
 | `page.tsx` monolítico | ~507 líneas de markup inline; las secciones no están extraídas a componentes |
 | `landing.css` monolítico | ~1.260 líneas en un solo archivo |
 | Reglas de animación muertas | `[data-anim="rise-blur"]` y `[data-anim="rotate-in"]` existen en `landing.css` pero ningún elemento las usa |
-| **Fotos del equipo rotas** | Las 5 imágenes de `members.ts` apuntan a `/team/*.png\|webp` y `public/team/` no existe — nunca estuvo en git. Da 400 en local y **404 en producción** (`tryvex.tech` y el preview de Vercel). La página `/team` se ve sin fotos |
+| Foto de Ignacio en baja resolución | `ignacio-navarrete.jpg` es 400×400; las otras cuatro van de 720 a 960px. En pantallas de alta densidad se nota más blanda. Reemplazable sin tocar código |
 | `lenis` instalado sin uso | Figura en `package.json` y en las docs como smooth scroll, pero no se importa en ningún archivo: el scroll suave lo da `scroll-behavior: smooth` nativo en `landing.css:28` |
 | Lint con 7 errores previos | `react-hooks/preserve-manual-memoization` en `ExpandNav.tsx` y entidades sin escapar en páginas — anteriores a esta sesión |
 | Duplicación de precios | Los precios viven en `page.tsx` y `contacto/page.tsx` sin fuente única |

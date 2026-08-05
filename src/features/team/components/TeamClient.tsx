@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { members, type Member, type MemberCategory } from "../data/members";
 import TeamCard from "./TeamCard";
 import TeamDrawer from "./TeamDrawer";
@@ -19,8 +19,53 @@ export default function TeamClient() {
   const [selected, setSelected] = useState<Member | null>(null);
   const [filter, setFilter] = useState<FilterValue>("all");
   const handleClose = useCallback(() => setSelected(null), []);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const filtered = filter === "all" ? members : members.filter((m) => m.category === filter);
+
+  /**
+   * Revelado de las tarjetas al entrar en pantalla.
+   *
+   * `equipo.css` deja `.team-card` en opacity 0 y solo la muestra con la clase
+   * `.revealed`, pero nadie la agregaba: la grilla del equipo estaba en blanco
+   * desde el primer despliegue. Se rehace acá, escalonada y respetando
+   * prefers-reduced-motion.
+   *
+   * Depende del filtro porque al cambiarlo React monta tarjetas nuevas que
+   * también necesitan revelarse.
+   */
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const tarjetas = [...grid.querySelectorAll<HTMLElement>(".team-card")];
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduce) {
+      tarjetas.forEach((c) => c.classList.add("revealed"));
+      return;
+    }
+
+    const pendientes: ReturnType<typeof setTimeout>[] = [];
+    const io = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const i = tarjetas.indexOf(e.target as HTMLElement);
+          pendientes.push(setTimeout(() => e.target.classList.add("revealed"), Math.max(0, i) * 80));
+          io.unobserve(e.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+    );
+
+    tarjetas.forEach((c) => io.observe(c));
+
+    return () => {
+      io.disconnect();
+      pendientes.forEach(clearTimeout);
+    };
+  }, [filter]);
 
   return (
     <>
@@ -39,7 +84,7 @@ export default function TeamClient() {
       </div>
 
       <section aria-label="Equipo Tryvex">
-        <div className="team-grid">
+        <div className="team-grid" ref={gridRef}>
           {filtered.map((member) => (
             <TeamCard
               key={member.id}

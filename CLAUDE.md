@@ -171,6 +171,7 @@ Las clases `services`, `process`, `offer` y `quote-card` se excluyen del Interse
 - **El NavBar se renderiza en cada página**, no en el layout. Moverlo al layout lo deja *antes* del BOM invisible que abre `page.tsx`, y el nav sube 24px respecto al original. Si alguna vez se mueve, hay que compensar ese offset
 - **Menú mixto por diseño**: en el home los ítems de sección son anclas (`#services`, `#offer`…) y hacen scroll; en páginas internas son rutas. `GooeyNav` distingue ambos casos y solo espera a la animación cuando hay cambio de página real
 - **Anclas internas**: usar siempre `scrollToSection()` de `src/lib/scroll-to-section.ts`, nunca un `window.scrollTo` a mano. Si la sección destino vive dentro de un `[data-scene]`, su contenido se revela con el scroll: aterrizar en el borde superior deja el fotograma 0 (contenido invisible). El helper detecta ese caso, salta al final de la escena y sin transición. Ya está conectado al CTA del nav, al menú y a los enlaces `href="#..."` de la landing
+- **Fotos del equipo**: viven en `public/team/<id>.jpg`, con el archivo llamado igual que el `id` del miembro. Un miembro solo muestra foto si su id está además en `MEMBERS_WITH_PHOTO` (`TeamClient.tsx`). El marco es 3/4 con `object-fit: cover`, así que una foto horizontal se recorta a los lados
 - **PRPs**: documentar features complejas en `.claude/PRPs/` antes de implementar
 
 ## Comandos
