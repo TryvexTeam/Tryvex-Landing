@@ -20,7 +20,12 @@
     /* Glass tokens â€” macOS Tahoe-style translucency */
     --glass-bg: rgba(255,255,255,0.42);
     --glass-bg-strong: rgba(255,255,255,0.62);
-    --glass-bg-dark: rgba(20,20,22,0.55);
+    /* Vidrio oscuro sobre fondo claro.
+       Estaba en 0.55: compuesto sobre el crema daba rgb(121,119,117), un gris
+       plano y sucio. El desenfoque no ayuda — difumina el fondo, no lo oscurece.
+       A 0.94 sobre #f4f1ea queda en rgb(28,28,27): negro editorial, con el
+       ambiente cálido todavía asomando apenas por los bordes. */
+    --glass-bg-dark: rgba(14,14,14,0.94);
     --glass-border: rgba(255,255,255,0.55);
     --glass-border-dark: rgba(255,255,255,0.10);
     --glass-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 60px -30px rgba(14,14,14,0.18), 0 8px 24px -16px rgba(14,14,14,0.12);
