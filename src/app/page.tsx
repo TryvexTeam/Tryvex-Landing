@@ -3,6 +3,7 @@ import NavBar from "../components/NavBar";
 import LandingClient from "../features/landing/components/LandingClient";
 import FinalCTA from "../features/landing/components/FinalCTA";
 import { demosPublicadas } from "../features/catalogo/data";
+import DemoCard from "../features/catalogo/components/DemoCard";
 import "../features/catalogo/catalogo.css";
 
 /** Preview del catálogo: las primeras demos publicadas. El resto vive en /catalogo. */
@@ -228,34 +229,9 @@ export default async function Home() {
       <p className="sec-sub" data-anim="fade-up">Cada demo de la vitrina es un proyecto real y navegable. Entre, recórralo y converse con el asistente como si fuera un cliente.</p>
     </div>
 
-    <div className="cat-preview-grid" data-stagger>
+    <div className="cat-grid" data-stagger>
       {demosPreview.map((demo) => (
-        <article key={demo.id} className="cat-card glass">
-          <a
-            className="cat-thumb"
-            href={demo.demoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Abrir la demo de ${demo.nicho} en una pestaña nueva`}
-          >
-            {demo.imagen ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={demo.imagen} alt={`Captura de la demo para ${demo.nicho}`} loading="lazy" />
-            ) : (
-              <span className="cat-thumb-fallback">{demo.nicho}</span>
-            )}
-            <span className="cat-tag">{demo.categoria}</span>
-          </a>
-          <div className="cat-body">
-            <h3>{demo.nicho}</h3>
-            <p>{demo.descripcion}</p>
-            <div className="cat-actions">
-              <a className="btn-ghost" href={demo.demoUrl} target="_blank" rel="noopener noreferrer">
-                Ver demo
-              </a>
-            </div>
-          </div>
-        </article>
+        <DemoCard key={demo.id} demo={demo} />
       ))}
     </div>
 

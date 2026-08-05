@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NavBar, { INNER_LINKS } from "../../components/NavBar";
-import { demosPublicadas, whatsappLink } from "../../features/catalogo/data";
+import { demosPublicadas } from "../../features/catalogo/data";
+import DemoCard from "../../features/catalogo/components/DemoCard";
 import "../../features/catalogo/catalogo.css";
 
 export const metadata: Metadata = {
@@ -54,55 +55,7 @@ export default function CatalogoPage() {
             {demosPublicadas.length > 0 ? (
               <div className="cat-grid">
                 {demosPublicadas.map((demo) => (
-                  <article key={demo.id} className="cat-card glass">
-                    <a
-                      className="cat-thumb"
-                      href={demo.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Abrir la demo de ${demo.nicho} en una pestaña nueva`}
-                    >
-                      {demo.imagen ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={demo.imagen}
-                          alt={`Captura de la demo para ${demo.nicho}`}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span className="cat-thumb-fallback">{demo.nicho}</span>
-                      )}
-                      <span className="cat-tag">{demo.categoria}</span>
-                    </a>
-
-                    <div className="cat-body">
-                      <h3>{demo.nicho}</h3>
-                      <p>{demo.descripcion}</p>
-                      <ul className="cat-incluye">
-                        {demo.incluye.map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                      <div className="cat-actions">
-                        <a
-                          className="btn-ghost"
-                          href={demo.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Ver demo
-                        </a>
-                        <a
-                          className="btn-primary"
-                          href={whatsappLink(demo.whatsappRef)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Probar el bot
-                        </a>
-                      </div>
-                    </div>
-                  </article>
+                  <DemoCard key={demo.id} demo={demo} />
                 ))}
               </div>
             ) : (
