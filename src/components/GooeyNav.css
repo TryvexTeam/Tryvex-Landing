@@ -1,24 +1,17 @@
-/* GooeyNav — light theme (cream glass pill nav)
-   Active pill: dark ink blob with white text
-   Particles: ink + Tryvex red + cream
+/* GooeyNav — nav de píldora crema
+   Indicador activo: subrayado rojo que se desliza bajo el título
+   Partículas: ink + rojo Tryvex + crema
 */
 
 :root {
-  --linear-ease: linear(
-    0, 0.068, 0.19 2.7%, 0.804 8.1%, 1.037, 1.199 13.2%, 1.245, 1.27 15.8%,
-    1.274, 1.272 17.4%, 1.249 19.1%, 0.996 28%, 0.949, 0.928 33.3%, 0.926,
-    0.933 36.8%, 1.001 45.6%, 1.013, 1.019 50.8%, 1.018 54.4%, 1 63.1%,
-    0.995 68%, 1.001 85%, 1
-  );
-
-  /* Particle colors — dark ink + Tryvex red + cream */
+  /* Partículas — ink + rojo Tryvex + crema */
   --gooey-color-1: #0e0e0e;
   --gooey-color-2: #e53935;
   --gooey-color-3: #0e0e0e;
   --gooey-color-4: rgba(14, 14, 14, 0.65);
 }
 
-/* ── Container ── */
+/* ── Contenedor ── */
 .gooey-nav-container {
   position: relative;
 }
@@ -27,9 +20,13 @@
   display: flex;
   position: relative;
   transform: translate3d(0, 0, 0.01px);
+  /* Por encima de la capa de partículas: los destellos nunca tapan el título.
+     Sin esto el transform crea contexto de apilamiento con z-index auto y la
+     capa .effect (z-index 1) se pintaba sobre las letras. */
+  z-index: 2;
 }
 
-/* ── Item list ── */
+/* ── Lista de ítems ── */
 .gooey-nav-container nav ul {
   display: flex;
   gap: 0;
@@ -38,28 +35,41 @@
   margin: 0;
   position: relative;
   z-index: 3;
-  /* dark text on light glass background */
   color: var(--ink, #0e0e0e);
 }
 
 .gooey-nav-container nav ul li {
-  border-radius: 100vw;
   position: relative;
   cursor: pointer;
-  transition: color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 0.5px 1.5px transparent;
   color: var(--ink, #0e0e0e);
-  opacity: 0.72;
+  opacity: 0.68;
+  transition: opacity 0.28s ease;
 }
 
 .gooey-nav-container nav ul li a {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
   padding: 0.55em 1em;
   font-size: 13px;
   font-weight: 450;
   text-decoration: none;
   color: inherit;
-  transition: opacity 0.2s ease;
+  letter-spacing: 0.005em;
+}
+
+/* Reserva permanente del ancho en negrita.
+   El ítem activo pasa a peso 560 y eso lo ensancha 1–2px: sin esta copia
+   fantasma, cada cambio de sección al scrollear empujaba a los seis ítems del
+   menú y el nav entero temblaba. */
+.gooey-nav-container nav ul li a::after {
+  content: attr(data-text);
+  font-weight: 560;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
 }
 
 .gooey-nav-container nav ul li:hover {
@@ -67,111 +77,87 @@
 }
 
 .gooey-nav-container nav ul li:focus-within:has(:focus-visible) {
-  box-shadow: 0 0 0.5px 1.5px var(--ink, #0e0e0e);
+  outline: 2px solid var(--ink, #0e0e0e);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
-/* Active pill: dark ink background */
-.gooey-nav-container nav ul li::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 100vw;
-  background: var(--ink, #0e0e0e);
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.3s ease;
-  z-index: -1;
-}
-
+/* Ítem activo: sin fondo, solo peso y opacidad plena */
 .gooey-nav-container nav ul li.active {
-  color: #ffffff;   /* white text on dark active pill */
   opacity: 1;
-  text-shadow: none;
 }
 
-.gooey-nav-container nav ul li.active::after {
-  opacity: 1;
-  transform: scale(1);
+.gooey-nav-container nav ul li.active a {
+  font-weight: 560;
 }
 
-/* ── Effect layers (gooey magic) ── */
-.gooey-nav-container .effect {
+/* ── Subrayado deslizante ── */
+.gooey-nav-container .gooey-underline {
   position: absolute;
+  height: 2px;
   left: 0;
   top: 0;
   width: 0;
-  height: 0;
-  opacity: 1;
+  opacity: 0;
+  z-index: 4;
   pointer-events: none;
-  display: grid;
-  place-items: center;
+  border-radius: 2px;
+  background: var(--red, #e53935);
+  box-shadow: 0 1px 6px -1px rgba(229, 57, 53, 0.55);
+}
+
+/* La transición se activa recién tras el primer pintado, para que no entre
+   deslizándose desde el borde izquierdo al cargar la página. */
+.gooey-nav-container .gooey-underline.is-ready {
+  transition:
+    left 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    top 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease;
+}
+
+/* ── Capa de partículas ── */
+.gooey-nav-container .effect {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   z-index: 1;
 }
 
-.gooey-nav-container .effect.text {
-  font-size: 13px;
-  font-weight: 450;
-  /* matches inactive item color */
-  color: var(--ink, #0e0e0e);
-  opacity: 0.72;
-  transition: color 0.3s ease, opacity 0.3s ease;
-}
-
-.gooey-nav-container .effect.text.active {
-  color: #ffffff;  /* white text on dark active pill */
-  opacity: 1;
-}
-
-.gooey-nav-container .effect.filter {
+/* Un estallido por clic, anclado al centro del título. Al tener tamaño cero,
+   sus partículas quedan centradas exactamente en ese punto. */
+.gooey-nav-container .burst {
+  position: absolute;
+  width: 0;
+  height: 0;
   pointer-events: none;
 }
 
-/* Dark ink active pill blob */
-.gooey-nav-container .effect.filter::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--ink, #0e0e0e);
-  transform: scale(0);
-  opacity: 0;
-  z-index: -1;
-  border-radius: 100vw;
-}
-
-.gooey-nav-container .effect.active::after {
-  animation: gooey-pill 0.3s ease both;
-}
-
-@keyframes gooey-pill {
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* ── Particles ── */
+/* Destellos: puntos pequeños, del tamaño de un signo de puntuación.
+   A 20px tapaban la palabra entera. */
 .particle,
 .point {
   display: block;
   opacity: 0;
-  width: 20px;
-  height: 20px;
+  width: 5px;
+  height: 5px;
   border-radius: 100%;
   transform-origin: center;
 }
 
+/* Nacen en el centro del título (el .burst padre mide 0 y está anclado ahí). */
 .particle {
-  --time: 5s;
+  --time: 700ms;
   position: absolute;
-  top: calc(50% - 8px);
-  left: calc(50% - 8px);
-  animation: gooey-particle calc(var(--time)) ease 1 -350ms;
+  top: -2.5px;
+  left: -2.5px;
+  animation: gooey-particle calc(var(--time)) ease 1 -60ms;
 }
 
 .point {
   background: var(--color);
   opacity: 1;
-  animation: gooey-point calc(var(--time)) ease 1 -350ms;
+  animation: gooey-point calc(var(--time)) ease 1 -60ms;
 }
 
 @keyframes gooey-particle {
@@ -181,7 +167,8 @@
     animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
   }
   70% {
-    transform: rotate(calc(var(--rotate) * 0.5)) translate(calc(var(--end-x) * 1.2), calc(var(--end-y) * 1.2));
+    transform: rotate(calc(var(--rotate) * 0.5))
+      translate(calc(var(--end-x) * 1.2), calc(var(--end-y) * 1.2));
     opacity: 1;
     animation-timing-function: ease;
   }
@@ -189,8 +176,11 @@
     transform: rotate(calc(var(--rotate) * 0.66)) translate(var(--end-x), var(--end-y));
     opacity: 1;
   }
+  /* Siguen alejándose mientras se apagan — antes se replegaban hacia el centro
+     y el conjunto leía como implosión en vez de destello. */
   100% {
-    transform: rotate(calc(var(--rotate) * 1.2)) translate(calc(var(--end-x) * 0.5), calc(var(--end-y) * 0.5));
+    transform: rotate(calc(var(--rotate) * 1.2))
+      translate(calc(var(--end-x) * 1.12), calc(var(--end-y) * 1.12));
     opacity: 1;
   }
 }
@@ -201,13 +191,35 @@
     opacity: 0;
     animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
   }
-  25% { transform: scale(calc(var(--scale) * 0.25)); }
-  38% { opacity: 1; }
+  25% {
+    transform: scale(calc(var(--scale) * 0.25));
+  }
+  38% {
+    opacity: 1;
+  }
   65% {
     transform: scale(var(--scale));
     opacity: 1;
     animation-timing-function: ease;
   }
-  85% { transform: scale(var(--scale)); opacity: 1; }
-  100% { transform: scale(0); opacity: 0; }
+  85% {
+    transform: scale(var(--scale));
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* Sin animación para quien la desactivó en su sistema */
+@media (prefers-reduced-motion: reduce) {
+  .gooey-nav-container .gooey-underline.is-ready {
+    transition: opacity 0.2s ease;
+  }
+  .particle,
+  .point {
+    animation: none;
+    display: none;
+  }
 }
