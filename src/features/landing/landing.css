@@ -344,7 +344,7 @@
     .expand-items { display: none; }
   }
   .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-mark { width: 26px; height: 26px; display: block; }
+  .logo-mark { width: 26px; height: 26px; display: block; overflow: visible; }
   .logo-word { font-weight: 700; font-size: 22px; letter-spacing: -0.04em; }
   .logo-word .dot { color: var(--red); }
 
@@ -356,7 +356,15 @@
     fill: var(--ink);
     transition: d 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .logo-chispa { fill: var(--red); }
+  /* Al plegarse la estrella el destello se desplaza hasta quedar justo antes
+     de la "i" de "inicio", como si la marca lo soltara sobre la palabra.
+     El desplazamiento va en unidades del viewBox, no en píxeles. */
+  .logo-chispa {
+    fill: var(--red);
+    transform-box: view-box;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .logo--activa .logo-chispa { transform: translate(30px, 26px); }
   .logo--volver .logo-word { transition: opacity 0.28s ease; }
   .logo--volver:hover .logo-word { opacity: 0.72; }
   @media (prefers-reduced-motion: reduce) {
@@ -796,6 +804,10 @@
   .foot-top h5 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
   .foot-top a { display: block; padding: 6px 0; font-size: 14px; color: var(--ink); opacity: 0.78; transition: color .2s; }
   .foot-top a:hover { opacity: 1; color: var(--red); }
+  /* `.foot-top a { display:block }` (arriba) le gana en especificidad a
+     `.logo { display:flex }` y dejaba la marca apilada sobre la palabra.
+     Se restituye la disposición horizontal del nav. */
+  .foot-brand .logo { display: flex; align-items: center; gap: 12px; }
   .foot-brand .logo-word { font-size: 32px; }
   .foot-brand p { color: var(--muted); margin-top: 16px; font-size: 14px; max-width: 320px; line-height: 1.55; }
   .foot-bottom {

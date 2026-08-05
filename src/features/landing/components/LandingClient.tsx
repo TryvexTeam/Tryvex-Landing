@@ -377,6 +377,21 @@ export default function LandingClient() {
           duration: 1800,
         });
 
+        /* Los tweens de la estrella y del botón empiezan en 300 y 1800 del
+           timeline. Hasta ese momento los elementos se mostraban en su estado
+           final: la estrella aparecía entera y de golpe saltaba hacia atrás
+           para volver a entrar. Se fija su estado de partida acá — dentro del
+           bloque que solo corre si anime.js cargó, así que si falla la carga
+           siguen visibles en vez de quedar invisibles para siempre. */
+        document.querySelectorAll<HTMLElement>(".final-spark").forEach((el) => {
+          el.style.opacity = "0";
+          el.style.transform = "scale(0.2) rotate(-90deg)";
+        });
+        document.querySelectorAll<HTMLElement>(".final .btn-primary").forEach((el) => {
+          el.style.opacity = "0.7";
+          el.style.transform = "scale(0.95)";
+        });
+
         finalTl.add(".final", {
           opacity: [0, 1],
           scale: [0.88, 1],
