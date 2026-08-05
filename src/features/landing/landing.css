@@ -375,9 +375,12 @@
   .btn-primary svg { width: 14px; height: 14px; }
 
   /* ======= VOLVER AL INICIO (páginas internas) ======= */
+  /* Banda propia, a la izquierda del ancho completo: el enlace queda separado
+     de la columna de texto en vez de encolumnado con el título, que dejaba todo
+     alineado en una sola vertical. */
+  .volver-banda { padding-top: 18px; padding-bottom: 0; }
   .volver {
     display: flex; width: max-content; align-items: center; gap: 12px;
-    margin-bottom: 22px;
   }
   .volver-marca { width: 30px; height: 30px; overflow: visible; flex-shrink: 0; }
 
@@ -388,12 +391,9 @@
     fill: var(--ink);
     transition: d 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .volver-chispa {
-    fill: var(--red-vivo);
-    transform-origin: 82px 24px;
-    transition: opacity 0.32s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .volver--activo .volver-chispa { opacity: 0; transform: scale(0.4); }
+  /* El destello rojo se queda: es la firma del logo y lo que ata el gesto a la
+     marca. Antes se apagaba al plegarse la estrella. */
+  .volver-chispa { fill: var(--red-vivo); }
 
   /* La etiqueta está siempre visible: el icono solo no comunica a dónde lleva,
      y si aparece recién al pasar por encima nadie sabe que hay algo ahí. */

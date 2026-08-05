@@ -20,10 +20,17 @@ import { useState } from "react";
 const ESTRELLA =
   "M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z";
 
-/** Triángulo apuntando a la izquierda, con los mismos cuatro segmentos.
- *  Hacia la izquierda es la dirección que se lee como "volver". */
-const TRIANGULO =
-  "M 84 8 C 58.7 22, 33.3 36, 8 50 C 33.3 64, 58.7 78, 84 92 C 84 78, 84 64, 84 50 C 84 36, 84 22, 84 8 Z";
+/**
+ * Un "menor que" apuntando a la izquierda, con los mismos cuatro segmentos.
+ *
+ * El cuarto anclaje no va sobre el borde derecho sino metido hacia adentro
+ * (56,50): eso abre la muesca que convierte el triángulo macizo en un chevron.
+ * Los brazos se afilan hacia las puntas —ambos bordes convergen en el mismo
+ * vértice— igual que las puntas de la estrella, así que las dos figuras
+ * pertenecen a la misma familia.
+ */
+const CHEVRON =
+  "M 84 8 C 58.7 22, 33.3 36, 8 50 C 33.3 64, 58.7 78, 84 92 C 74.7 78, 65.3 64, 56 50 C 65.3 36, 74.7 22, 84 8 Z";
 
 export default function VolverAlInicio() {
   const [activo, setActivo] = useState(false);
@@ -38,8 +45,8 @@ export default function VolverAlInicio() {
       onBlur={() => setActivo(false)}
     >
       <svg className="volver-marca" viewBox="0 0 100 100" aria-hidden="true">
-        <path className="volver-figura" d={activo ? TRIANGULO : ESTRELLA} />
-        {/* El destello chico del logo se apaga al plegarse la estrella */}
+        <path className="volver-figura" d={activo ? CHEVRON : ESTRELLA} />
+        {/* El destello del logo se mantiene: es la firma de la marca */}
         <path
           className="volver-chispa"
           d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z"

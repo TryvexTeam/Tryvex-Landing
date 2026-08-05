@@ -37,8 +37,8 @@ export default function ProcesoPage() {
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "80px" }}>
-            <VolverAlInicio />
+          <div className="wrap volver-banda"><VolverAlInicio /></div>
+          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "80px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">03</span><span className="sec-label">Proceso</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>De la idea a producción <em>en cuatro pasos.</em></h1>
             <p className="lede" data-anim="fade-up" style={{ maxWidth: "600px" }}>
