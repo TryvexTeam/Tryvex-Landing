@@ -55,6 +55,16 @@
     filter: blur(0);
   }
 
+  /* Elementos del hero con parallax de GSAP.
+     GSAP escribe transform inline y toma como punto de partida el que
+     encuentra al inicializar. Si el reveal les dejó su desplazamiento inicial,
+     lo congela ahí y quedan corridos de forma permanente (el eyebrow 18px
+     arriba, la bajada y los botones 22px abajo). Acá el reveal aporta solo la
+     opacidad: el movimiento de estos tres lo pone GSAP. */
+  .hero-col .eyebrow[data-anim],
+  .hero-col .lede[data-anim],
+  .hero-col .hero-cta[data-anim] { transform: none; }
+
   /* staggered children — applied to wrappers */
   [data-stagger] > * {
     opacity: 0;
