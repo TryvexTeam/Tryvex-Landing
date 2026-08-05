@@ -8,6 +8,7 @@
 - [CLAUDE.md](CLAUDE.md) — Reglas operativas y convenciones del proyecto
 - [skills.md](skills.md) — Mapa de skills FE disponibles (React, animaciones, diseño, a11y, SEO, Vercel)
 - [../BUSINESS_LOGIC.md](../BUSINESS_LOGIC.md) — Contexto de negocio, servicios, precios reales y equipo
+- [../docs/AUDITORIA-2026-08-05.md](../docs/AUDITORIA-2026-08-05.md) — **Trabajo pendiente priorizado.** Cinco auditorías (seguridad, accesibilidad, móvil, SEO, rendimiento). Leer antes de abrir un frente nuevo
 
 ## Estado del proyecto
 
