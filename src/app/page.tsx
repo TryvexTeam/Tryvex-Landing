@@ -2,10 +2,15 @@ import React from "react";
 import NavBar from "../components/NavBar";
 import LandingClient from "../features/landing/components/LandingClient";
 import FinalCTA from "../features/landing/components/FinalCTA";
+import { demosPublicadas } from "../features/catalogo/data";
+import "../features/catalogo/catalogo.css";
+
+/** Preview del catálogo: las primeras demos publicadas. El resto vive en /catalogo. */
+const demosPreview = demosPublicadas.slice(0, 3);
 
 const HOME_LINKS = [
   { href: "#services", label: "Servicios"  },
-  { href: "/catalogo", label: "Catálogo"   },
+  { href: "/catalogo", label: "Catálogo", section: "catalogo" },
   { href: "#process",  label: "Proceso"    },
   { href: "#offer",    label: "Planes"     },
   { href: "#faq",      label: "Preguntas"  },
@@ -209,12 +214,66 @@ export default async function Home() {
   </div>
 </section>
 
+{/* CATÁLOGO — preview de la vitrina completa en /catalogo */}
+<section className="block" id="catalogo">
+  <div className="wrap">
+    <div className="sec-head">
+      <div>
+        <div className="sec-tag" data-anim="fade-down">02 · Catálogo</div>
+        {/* La puntuación va dentro del <em>: si queda suelta tras cerrarlo, el
+            splitter de palabras la trata como palabra propia y la coma puede
+            saltar sola al inicio de la línea siguiente. */}
+        <h2 data-split="words">Véalo funcionando, <em>no en promesas.</em></h2>
+      </div>
+      <p className="sec-sub" data-anim="fade-up">Cada demo de la vitrina es un proyecto real y navegable. Entre, recórralo y converse con el asistente como si fuera un cliente.</p>
+    </div>
+
+    <div className="cat-preview-grid" data-stagger>
+      {demosPreview.map((demo) => (
+        <article key={demo.id} className="cat-card glass">
+          <a
+            className="cat-thumb"
+            href={demo.demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Abrir la demo de ${demo.nicho} en una pestaña nueva`}
+          >
+            {demo.imagen ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={demo.imagen} alt={`Captura de la demo para ${demo.nicho}`} loading="lazy" />
+            ) : (
+              <span className="cat-thumb-fallback">{demo.nicho}</span>
+            )}
+            <span className="cat-tag">{demo.categoria}</span>
+          </a>
+          <div className="cat-body">
+            <h3>{demo.nicho}</h3>
+            <p>{demo.descripcion}</p>
+            <div className="cat-actions">
+              <a className="btn-ghost" href={demo.demoUrl} target="_blank" rel="noopener noreferrer">
+                Ver demo
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div className="cat-preview-more" data-anim="fade-up">
+      <a href="/catalogo" className="btn-primary">
+        Ver catálogo completo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
 {/* PROCESS */}
 <section className="block" id="process">
   <div className="wrap">
     <div className="sec-head">
       <div>
-        <div className="sec-tag" data-anim="fade-down">02 · Proceso</div>
+        <div className="sec-tag" data-anim="fade-down">03 · Proceso</div>
         <h2 data-split="words">De la idea a producción <em>en cuatro pasos.</em></h2>
       </div>
       <p className="sec-sub" data-anim="fade-up">Sin briefs eternos ni reuniones de status. Conversamos, mapeamos, construimos y entregamos.</p>
@@ -254,7 +313,7 @@ export default async function Home() {
 <section className="block">
   <div className="wrap">
     <div className="metrics-block glass dark">
-      <div className="sec-tag">03 · Resultados</div>
+      <div className="sec-tag">04 · Resultados</div>
       <h2 data-split="words">Lo que nuestros clientes <em>dejaron de hacer</em> a mano.</h2>
       <div className="metrics" data-stagger>
         <div className="metric">
@@ -283,7 +342,7 @@ export default async function Home() {
 <section className="block">
   <div className="wrap quote-block">
     <div data-anim="fade-right">
-      <div className="sec-tag">04 · Lo que dicen</div>
+      <div className="sec-tag">05 · Lo que dicen</div>
       <p className="quote">Pasamos de revisar pedidos a las 11pm a no abrir la planilla en tres semanas. El equipo de Tryvex entregó algo que de verdad usamos."</p>
       <div className="quote-author">
         <div className="qa-avatar">C</div>
@@ -328,7 +387,7 @@ export default async function Home() {
   <div className="wrap">
     <div className="sec-head">
       <div>
-        <div className="sec-tag" data-anim="fade-down">05 · Cómo trabajar con nosotros</div>
+        <div className="sec-tag" data-anim="fade-down">06 · Cómo trabajar con nosotros</div>
         <h2 data-split="words">Dos puertas. <em>Mismo equipo.</em></h2>
       </div>
       <p className="sec-sub" data-anim="fade-up">Proyectos puntuales o socio continuo. Si no calzas en ninguno, lo conversamos.</p>
@@ -375,7 +434,7 @@ export default async function Home() {
 <section className="block" id="faq">
   <div className="wrap faq-grid">
     <div data-anim="fade-right">
-      <div className="sec-tag">06 · Preguntas</div>
+      <div className="sec-tag">07 · Preguntas</div>
       <h2 data-split="words">Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h2>
       <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{color: "var(--red)"}}>tryvexentreprise@gmail.com</a> y te contestamos el mismo día.</p>
     </div>

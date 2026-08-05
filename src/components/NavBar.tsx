@@ -5,10 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import GooeyNav from "./GooeyNav";
+import { scrollToSection } from "../lib/scroll-to-section";
 
 export interface NavLink {
   href: string;
   label: string;
+  /** Id de la sección equivalente en la página actual, para el scrollspy. */
+  section?: string;
 }
 
 interface NavBarProps {
@@ -55,12 +58,7 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       if (ctaHref.startsWith("#")) {
         e.preventDefault();
-        const id = ctaHref.slice(1);
-        const el = document.getElementById(id);
-        if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY - 100;
-          window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-        }
+        scrollToSection(ctaHref.slice(1));
       }
       close();
     },
@@ -95,10 +93,8 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
 
           <div className="nav-gooey-wrap">
             <GooeyNav
-              items={links.map(l => ({ label: l.label, href: l.href }))}
-              animationTime={600}
+              items={links.map(l => ({ label: l.label, href: l.href, section: l.section }))}
               particleCount={12}
-              initialActiveIndex={-1}
             />
           </div>
 

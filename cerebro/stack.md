@@ -1,40 +1,71 @@
 # Stack técnico — Decisiones y razones
 
-## Framework: Next.js 15 App Router
+> Sincronizado con `package.json`: 2026-08-05.
 
-**Elegido sobre:** Vite+React (sin backend nativo), Astro 5 (islas, no apps con pagos)
+## Framework: Next.js 16.2.4 App Router
+
+**Elegido sobre:** Vite+React (sin backend nativo), Astro 5 (islas, no apps con lógica de servidor)
 
 **Razones:**
-- API Routes y Server Actions en el mismo repo — Stripe, MercadoPago, n8n sin servidor separado
-- SSR/SSG nativo para SEO perfecto
+- API Routes en el mismo repo — Resend, Google Calendar y Supabase sin servidor separado
+- SSR/ISR nativo para SEO; el home revalida `/api/stats` cada hora
 - Deploy zero-config en Vercel
-- El landing de hoy escala a portal, blog o SaaS sin cambiar tecnología
+- La landing de hoy escala a portal, blog o SaaS sin cambiar tecnología
 
-## Estilos: Tailwind CSS v4 + CSS Variables
+**Nota:** el proyecto arrancó en Next 15 y ya migró a 16, con Turbopack en dev.
 
-**Elegido sobre:** Solo Tailwind (valores oklch imposibles de mantener en JSX), CSS Modules (15+ archivos duplicados)
+## Estilos: CSS custom + Tailwind v4 como complemento
+
+**Realidad del proyecto:** `src/features/landing/landing.css` (~1.260 líneas) hace el trabajo pesado con sus propias CSS Variables. Tailwind v4 se usa solo para utilidades sueltas en JSX.
 
 **Razones:**
-- CSS Variables como fuente de verdad — glassmorphism en un solo lugar
-- Tailwind v4 con `@theme inline` consume los tokens directamente
-- Clases `bg-ink`, `text-vex`, `glass-light` disponibles en todo el proyecto sin repetición
+- El glassmorphism, el grano y las escenas de scroll piden CSS que Tailwind expresa mal
+- Las CSS Variables permiten que GSAP y Anime.js interpolen valores directamente
+- Tailwind cubre lo trivial (layout del `<body>`, espaciados puntuales) sin ensuciar el markup
 
-## Animaciones: GSAP + ScrollTrigger + Framer Motion
+**Deuda:** `src/styles/tokens.css` quedó desconectado. Hay dos declaraciones de tokens que nadie reconcilió — si se unifican, `landing.css` debe ser el destino.
+
+## Animaciones: GSAP + ScrollTrigger + Anime.js v4 + Lenis
 
 | Herramienta | Carril | Efectos |
 |-------------|--------|---------|
-| GSAP + ScrollTrigger | Scroll épico | Pin, scrub, SplitText, parallax multi-capa |
-| Framer Motion | Componentes React | whileHover, AnimatePresence, spring, stagger |
+| GSAP + ScrollTrigger | Scroll épico | Scrub, parallax multi-capa, escenas 3D (`rotationX`/`rotationY`), dispersión del hero |
+| Anime.js v4 | Escenas puntuales | Secuencias de timing fino |
+| ~~Lenis~~ | — | **Instalado pero sin usar.** El smooth scroll lo da `scroll-behavior: smooth` nativo |
+| IntersectionObserver | Reveals simples | Añade `.in` a los `[data-anim]` |
+| Framer Motion | Componentes React | Interacciones de UI aisladas |
 
-**Elegido sobre:** Solo Framer (sin scrub nativo), CSS scroll-driven (Safari parcial, contadores requieren JS)
+**Elegido sobre:** solo Framer Motion (sin scrub nativo), CSS scroll-driven (soporte parcial en Safari)
 
-## Arquitectura de componentes: sections/ + ui/
+**Nota GSAP:** SplitText y DrawSVG requieren GSAP Club / licencia Business para uso comercial. El proyecto implementa el split de palabras a mano (`data-split="words"`) para evitar esa dependencia.
 
-**Elegido sobre:** Flat (20+ archivos sin estructura), Atomic Design (overkill sin Design System formal)
+## Arquitectura de componentes: feature-first
+
+```
+src/features/<feature>/
+├── components/
+├── data/
+└── <feature>.css
+```
+
+**Elegido sobre:** `sections/` + `ui/` (la separación no aguantó cuando la landing y el equipo crecieron con CSS propio), Atomic Design (overkill sin Design System formal)
+
+`src/components/` queda reservado para navegación compartida entre rutas: `NavBar`, `GooeyNav`, `ExpandNav`.
+
+**Deuda:** el markup del home vive inline en `page.tsx` (~507 líneas) en vez de estar extraído a componentes de sección.
+
+## Servicios externos
+
+| Servicio | Para qué | Dónde |
+|----------|----------|-------|
+| Resend | Emails transaccionales del formulario | `/api/contact` |
+| Google Calendar API | Disponibilidad, agenda y recordatorios | `/api/availability`, `/api/reminders`, `src/lib/google-calendar.ts` |
+| Supabase (REST) | Métricas de empresas mapeadas y clientes activos | `/api/stats` |
+| Microsoft Clarity | Analytics de comportamiento | `layout.tsx` |
 
 ## Deploy: Vercel
 
-CI/CD automático, Edge Network, dominio tryvex.cl, zero-config con Next.js.
+CI/CD automático, Edge Network, dominio `www.tryvex.tech`, zero-config con Next.js. `vercel.json` está vacío — toda la configuración es la que Vercel infiere.
 
 ## Dependencias instaladas
 
@@ -42,11 +73,15 @@ CI/CD automático, Edge Network, dominio tryvex.cl, zero-config con Next.js.
 {
   "next": "16.2.4",
   "react": "19.2.4",
-  "framer-motion": "^12.x",
-  "gsap": "^3.x",
-  "zod": "^4.x",
+  "react-dom": "19.2.4",
+  "gsap": "^3.15.0",
+  "animejs": "^4.4.1",
+  "lenis": "^1.3.23",
+  "framer-motion": "^12.38.0",
+  "resend": "^6.12.3",
+  "googleapis": "^171.4.0",
+  "zod": "^4.3.6",
+  "sileo": "^0.1.5",
   "tailwindcss": "^4"
 }
 ```
-
-> **Nota GSAP:** SplitText y DrawSVG requieren GSAP Club o licencia Business para uso comercial.

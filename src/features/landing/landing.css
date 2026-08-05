@@ -38,16 +38,16 @@
       filter 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
   /* will-change con filter solo en los dos tipos que realmente usan blur */
-  [data-anim=”scale-in”],
-  [data-anim=”rise-blur”] { will-change: transform, opacity, filter; }
+  [data-anim="scale-in"],
+  [data-anim="rise-blur"] { will-change: transform, opacity, filter; }
 
-  [data-anim=”fade-up”]    { transform: translateY(22px); }
-  [data-anim=”fade-down”]  { transform: translateY(-18px); }
-  [data-anim=”fade-left”]  { transform: translateX(-32px); }
-  [data-anim=”fade-right”] { transform: translateX(32px); }
-  [data-anim=”scale-in”]   { transform: scale(0.94); filter: blur(3px); }
-  [data-anim=”rise-blur”]  { transform: translateY(36px); filter: blur(6px); }
-  [data-anim=”rotate-in”]  { transform: translateY(24px) rotate(-2deg); }
+  [data-anim="fade-up"]    { transform: translateY(22px); }
+  [data-anim="fade-down"]  { transform: translateY(-18px); }
+  [data-anim="fade-left"]  { transform: translateX(-32px); }
+  [data-anim="fade-right"] { transform: translateX(32px); }
+  [data-anim="scale-in"]   { transform: scale(0.94); filter: blur(3px); }
+  [data-anim="rise-blur"]  { transform: translateY(36px); filter: blur(6px); }
+  [data-anim="rotate-in"]  { transform: translateY(24px) rotate(-2deg); }
 
   [data-anim].in {
     opacity: 1;

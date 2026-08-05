@@ -35,7 +35,7 @@ export default function ProcesoPage() {
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "80px" }}>
-            <span className="eyebrow"><span className="live"></span> 02 · Proceso</span>
+            <span className="eyebrow"><span className="live"></span> 03 · Proceso</span>
             <h1 style={{ marginTop: "16px" }}>De la idea a producción <em>en cuatro pasos.</em></h1>
             <p className="lede" style={{ maxWidth: "600px" }}>
               Sin briefs eternos ni reuniones de status. Conversamos, mapeamos, construimos y entregamos. Así de simple.

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { scrollToSection } from "../../../lib/scroll-to-section";
 
 export default function LandingClient() {
   useEffect(() => {
@@ -404,7 +405,24 @@ export default function LandingClient() {
       });
     }
 
+    /* ── Anclas internas de la página ────────────────────────────
+       Los botones que apuntan a una sección (#final, #process…) se manejan
+       acá en vez de dejar el salto nativo: si la sección vive dentro de una
+       escena animada por scroll, hay que aterrizar en su estado final y no
+       en el fotograma 0. Ver `lib/scroll-to-section`. */
+    const onAnchorClick = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement | null)?.closest?.('a[href^="#"]');
+      if (!a) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      const id = (a.getAttribute("href") || "").slice(1);
+      if (!id || !document.getElementById(id)) return;
+      e.preventDefault();
+      scrollToSection(id);
+    };
+    document.addEventListener("click", onAnchorClick);
+
     return () => {
+      document.removeEventListener("click", onAnchorClick);
       io.disconnect();
       if (stepInterval) clearInterval(stepInterval);
       handlers.forEach(({ move, leave }, btn) => {
