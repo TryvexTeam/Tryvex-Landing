@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { members, type Member, type MemberCategory } from "../data/members";
+import { members, MEMBERS_WITH_PHOTO, type Member, type MemberCategory } from "../data/members";
 import TeamCard from "./TeamCard";
 import TeamDrawer from "./TeamDrawer";
-
-const MEMBERS_WITH_PHOTO = new Set(["ignacio-navarrete", "fabian-melivilu", "vicente-garcia", "joseph-mailens", "cristian-de-la-fuente"]);
 
 type FilterValue = "all" | MemberCategory;
 

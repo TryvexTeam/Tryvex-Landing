@@ -76,3 +76,18 @@ export const members: Member[] = [
     portfolio: "",
   },
 ];
+
+/**
+ * Miembros con foto en `public/team/<id>.jpg`.
+ *
+ * Vive acá, junto a los datos, porque antes cada componente mantenía su propia
+ * copia y se desincronizaron: la del drawer no incluía a Cristian, así que su
+ * retrato salía en la grilla pero no al abrir el perfil.
+ */
+export const MEMBERS_WITH_PHOTO = new Set<string>([
+  "ignacio-navarrete",
+  "vicente-garcia",
+  "cristian-de-la-fuente",
+  "joseph-mailens",
+  "fabian-melivilu",
+]);
