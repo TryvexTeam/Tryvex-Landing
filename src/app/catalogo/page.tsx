@@ -39,7 +39,7 @@ export default function CatalogoPage() {
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "40px" }}>
-            <span className="eyebrow"><span className="live"></span> 02 · Catálogo</span>
+            <span className="eyebrow"><span className="sec-num">02</span><span className="sec-label">Catálogo</span></span>
             <h1 style={{ marginTop: "16px" }}>Vea el trabajo <em>funcionando</em>, no promesas.</h1>
             <p className="lede" style={{ maxWidth: "620px" }}>
               Cada proyecto de esta vitrina es una demostración real y navegable:

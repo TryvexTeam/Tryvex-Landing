@@ -10,6 +10,11 @@
     --line-soft: rgba(14,14,14,0.06);
     --red: #e53935;
     --red-soft: rgba(229,57,53,0.10);
+    /* Rojo de marca profundizado y saturado, para tipografía fina.
+       El #e53935 del logo es un trazo sólido; en serif itálica de trazo
+       delgado el mismo hex se lee lavado y rosado. Este tono le devuelve la
+       intensidad del logo a tamaños chicos. */
+    --red-vivo: #dd1713;
     --cream: #ece8dc;
 
     /* Glass tokens â€” macOS Tahoe-style translucency */
@@ -486,10 +491,25 @@
   /* ======= SECTIONS ======= */
   section.block { padding: 100px 0 40px; position: relative; }
   .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; margin-bottom: 48px; }
-  .sec-tag {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em;
-    color: var(--muted); text-transform: uppercase;
+  /* ======= ETIQUETA DE SECCIÓN =======
+     Marcador editorial, no chip de interfaz: el número va en la misma serif
+     itálica que ya acentúa cada título, y la etiqueta en mono. Antes era una
+     píldora con borde, sombra y punto — un componente pegado encima del
+     contenido, que es justo lo que delata una plantilla. */
+  .sec-tag, .eyebrow {
+    display: inline-flex; align-items: baseline; gap: 11px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase;
+    /* se anula la píldora heredada */
+    background: none; border: none; box-shadow: none; backdrop-filter: none;
+    padding: 0; border-radius: 0;
   }
+  .sec-num {
+    font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400;
+    font-size: 34px; line-height: 1; color: var(--red-vivo);
+    letter-spacing: 0; text-transform: none;
+  }
+  .sec-label { display: inline-block; }
   h2 {
     font-size: clamp(36px, 4.5vw, 60px); font-weight: 600; letter-spacing: -0.035em;
     line-height: 1; margin-top: 18px; max-width: 820px; text-wrap: balance;

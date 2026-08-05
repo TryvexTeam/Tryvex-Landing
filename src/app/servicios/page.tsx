@@ -35,7 +35,7 @@ export default function ServiciosPage() {
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "80px" }}>
-            <span className="eyebrow"><span className="live"></span> 01 · Servicios</span>
+            <span className="eyebrow"><span className="sec-num">01</span><span className="sec-label">Servicios</span></span>
             <h1 style={{ marginTop: "16px" }}>Tres formas de <em>sacar trabajo</em> de tu cabeza.</h1>
             <p className="lede" style={{ maxWidth: "600px" }}>
               Cada servicio se entrega como sistema vivo: deploy continuo, monitoreo y mantención incluida los primeros 90 días. Sin contratos a largo plazo.

@@ -161,7 +161,7 @@ export default async function Home() {
   <div className="wrap">
     <div className="sec-head">
       <div>
-        <div className="sec-tag" data-anim="fade-down">01 · Servicios</div>
+        <div className="sec-tag" data-anim="fade-down"><span className="sec-num">01</span><span className="sec-label">Servicios</span></div>
         <h2 data-split="words">Tres formas de <em>sacar trabajo</em> de tu cabeza.</h2>
       </div>
       <p className="sec-sub" data-anim="fade-up">Cada uno se entrega como sistema vivo: deploy continuo, monitoreo y mantención incluida los primeros 90 días.</p>
@@ -219,7 +219,7 @@ export default async function Home() {
   <div className="wrap">
     <div className="sec-head">
       <div>
-        <div className="sec-tag" data-anim="fade-down">02 · Catálogo</div>
+        <div className="sec-tag" data-anim="fade-down"><span className="sec-num">02</span><span className="sec-label">Catálogo</span></div>
         {/* La puntuación va dentro del <em>: si queda suelta tras cerrarlo, el
             splitter de palabras la trata como palabra propia y la coma puede
             saltar sola al inicio de la línea siguiente. */}
@@ -273,7 +273,7 @@ export default async function Home() {
   <div className="wrap">
     <div className="sec-head">
       <div>
-        <div className="sec-tag" data-anim="fade-down">03 · Proceso</div>
+        <div className="sec-tag" data-anim="fade-down"><span className="sec-num">03</span><span className="sec-label">Proceso</span></div>
         <h2 data-split="words">De la idea a producción <em>en cuatro pasos.</em></h2>
       </div>
       <p className="sec-sub" data-anim="fade-up">Sin briefs eternos ni reuniones de status. Conversamos, mapeamos, construimos y entregamos.</p>
@@ -313,7 +313,7 @@ export default async function Home() {
 <section className="block">
   <div className="wrap">
     <div className="metrics-block glass dark">
-      <div className="sec-tag">04 · Resultados</div>
+      <div className="sec-tag"><span className="sec-num">04</span><span className="sec-label">Resultados</span></div>
       <h2 data-split="words">Lo que nuestros clientes <em>dejaron de hacer</em> a mano.</h2>
       <div className="metrics" data-stagger>
         <div className="metric">
@@ -342,7 +342,7 @@ export default async function Home() {
 <section className="block">
   <div className="wrap quote-block">
     <div data-anim="fade-right">
-      <div className="sec-tag">05 · Lo que dicen</div>
+      <div className="sec-tag"><span className="sec-num">05</span><span className="sec-label">Lo que dicen</span></div>
       <p className="quote">Pasamos de revisar pedidos a las 11pm a no abrir la planilla en tres semanas. El equipo de Tryvex entregó algo que de verdad usamos."</p>
       <div className="quote-author">
         <div className="qa-avatar">C</div>
@@ -387,7 +387,7 @@ export default async function Home() {
   <div className="wrap">
     <div className="sec-head">
       <div>
-        <div className="sec-tag" data-anim="fade-down">06 · Cómo trabajar con nosotros</div>
+        <div className="sec-tag" data-anim="fade-down"><span className="sec-num">06</span><span className="sec-label">Cómo trabajar con nosotros</span></div>
         <h2 data-split="words">Dos puertas. <em>Mismo equipo.</em></h2>
       </div>
       <p className="sec-sub" data-anim="fade-up">Proyectos puntuales o socio continuo. Si no calzas en ninguno, lo conversamos.</p>
@@ -434,7 +434,7 @@ export default async function Home() {
 <section className="block" id="faq">
   <div className="wrap faq-grid">
     <div data-anim="fade-right">
-      <div className="sec-tag">07 · Preguntas</div>
+      <div className="sec-tag"><span className="sec-num">07</span><span className="sec-label">Preguntas</span></div>
       <h2 data-split="words">Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h2>
       <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{color: "var(--red)"}}>tryvexentreprise@gmail.com</a> y te contestamos el mismo día.</p>
     </div>

@@ -36,7 +36,7 @@ export default function ContactoPage() {
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "40px" }}>
-            <span className="eyebrow"><span className="live"></span> 03 · Contacto</span>
+            <span className="eyebrow"><span className="sec-num">03</span><span className="sec-label">Contacto</span></span>
             <h1 style={{ marginTop: "16px" }}>Agenda una llamada <em>de 20 minutos.</em></h1>
             <p className="lede" style={{ maxWidth: "600px" }}>
               Sin compromiso y sin costo. Cuéntanos tu problema y te decimos si podemos ayudarte — y en cuánto tiempo.

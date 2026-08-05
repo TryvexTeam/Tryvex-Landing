@@ -37,7 +37,7 @@ export default function TeamPage() {
       <main>
         <section className="hero">
           <div className="wrap" style={{ paddingTop: "140px", paddingBottom: "40px" }}>
-            <span className="eyebrow"><span className="live"></span> 04 · Equipo</span>
+            <span className="eyebrow"><span className="sec-num">04</span><span className="sec-label">Equipo</span></span>
             <div className="team-hero-editorial">
               <h1 className="team-hero-editorial__h1">
                 El equipo que construye<br />lo que prometemos.
