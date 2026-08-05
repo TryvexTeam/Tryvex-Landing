@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NavBar from "../../components/NavBar";
-import VolverAlInicio from "../../components/VolverAlInicio";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 
 export const metadata: Metadata = {
@@ -38,7 +37,6 @@ export default function PreguntasPage() {
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap volver-banda"><VolverAlInicio /></div>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "60px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">05</span><span className="sec-label">Preguntas</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h1>

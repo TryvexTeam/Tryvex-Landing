@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NavBar from "../../components/NavBar";
-import VolverAlInicio from "../../components/VolverAlInicio";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import FinalCTA from "../../features/landing/components/FinalCTA";
 
@@ -38,7 +37,6 @@ export default function ContactoPage() {
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap volver-banda"><VolverAlInicio /></div>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "40px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">03</span><span className="sec-label">Contacto</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Agenda una llamada <em>de 20 minutos.</em></h1>

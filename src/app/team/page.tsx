@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NavBar from "../../components/NavBar";
-import VolverAlInicio from "../../components/VolverAlInicio";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import TeamClient from "../../features/team/components/TeamClient";
 import "../../features/team/equipo.css";
@@ -39,7 +38,6 @@ export default function TeamPage() {
 
       <main>
         <section className="hero">
-          <div className="wrap volver-banda"><VolverAlInicio /></div>
           <div className="wrap" style={{ paddingTop: "34px", paddingBottom: "40px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">04</span><span className="sec-label">Equipo</span></span>
             <div className="team-hero-editorial">

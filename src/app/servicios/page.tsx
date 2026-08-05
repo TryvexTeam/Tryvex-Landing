@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NavBar from "../../components/NavBar";
-import VolverAlInicio from "../../components/VolverAlInicio";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 
 export const metadata: Metadata = {
@@ -37,7 +36,6 @@ export default function ServiciosPage() {
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap volver-banda"><VolverAlInicio /></div>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "80px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">01</span><span className="sec-label">Servicios</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Tres formas de <em>sacar trabajo</em> de tu cabeza.</h1>

@@ -7,6 +7,16 @@ import type { ReactNode } from "react";
 import GooeyNav from "./GooeyNav";
 import { scrollToSection } from "../lib/scroll-to-section";
 
+/* Trazados del morph de la marca. Comparten estructura —cuatro segmentos
+   cúbicos y los mismos anclajes— para que el navegador pueda interpolarlos
+   punto por punto; con estructuras distintas el icono saltaría. */
+const ESTRELLA =
+  "M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z";
+const CHEVRON =
+  "M 84 8 C 58.7 22, 33.3 36, 8 50 C 33.3 64, 58.7 78, 84 92 C 74.7 78, 65.3 64, 56 50 C 65.3 36, 74.7 22, 84 8 Z";
+const CHISPA =
+  "M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z";
+
 export interface NavLink {
   href: string;
   label: string;
@@ -51,6 +61,8 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
   const pathname = usePathname();
 
   const navLinks = links ?? NAV_LINKS;
+  const enInicio = pathname === "/";
+  const [marcaActiva, setMarcaActiva] = useState(false);
   /* En el home el CTA baja a la sección de agenda; fuera de él va a /contacto. */
   const cta = ctaHref ?? (pathname === "/" ? "#final" : "/contacto");
 
@@ -100,14 +112,43 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  /**
+   * En las páginas internas el logo ES la vuelta al inicio: dice "inicio." en
+   * vez de "tryvex." y su estrella se pliega en chevron al pasar por encima.
+   * Antes había un enlace aparte flotando junto al nav — un segundo control
+   * para algo que este ya hacía, y que además tapaba contenido al scrollear.
+   */
+  const marca = (
+    <Link
+      href="/"
+      className={`logo${enInicio ? "" : " logo--volver"}${marcaActiva ? " logo--activa" : ""}`}
+      onClick={handleLogoClick}
+      aria-label={enInicio ? undefined : "Volver al inicio"}
+      onMouseEnter={() => setMarcaActiva(true)}
+      onMouseLeave={() => setMarcaActiva(false)}
+      onFocus={() => setMarcaActiva(true)}
+      onBlur={() => setMarcaActiva(false)}
+    >
+      {enInicio ? (
+        <svg className="logo-mark"><use href="#spark" /></svg>
+      ) : (
+        <svg className="logo-mark" viewBox="0 0 100 100" aria-hidden="true">
+          <path className="logo-figura" d={marcaActiva ? CHEVRON : ESTRELLA} />
+          <path className="logo-chispa" d={CHISPA} />
+        </svg>
+      )}
+      <span className="logo-word">
+        {enInicio ? "tryvex" : "inicio"}
+        <span className="dot">.</span>
+      </span>
+    </Link>
+  );
+
   return (
     <>
       <div className={`nav-shell${scrolled ? " nav-scrolled" : ""}`}>
         <nav className="nav-pill">
-          <Link href="/" className="logo" onClick={handleLogoClick}>
-            <svg className="logo-mark"><use href="#spark" /></svg>
-            <span className="logo-word">tryvex<span className="dot">.</span></span>
-          </Link>
+          {marca}
 
           <div className="nav-gooey-wrap">
             <GooeyNav
@@ -152,10 +193,7 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
 
         <div className="nav-mobile__panel">
           <div className="nav-mobile__header">
-            <Link href="/" className="logo" onClick={handleLogoClick}>
-              <svg className="logo-mark"><use href="#spark" /></svg>
-              <span className="logo-word">tryvex<span className="dot">.</span></span>
-            </Link>
+            {marca}
             <button className="nav-mobile__close" onClick={close} aria-label="Cerrar menú">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                 <path d="M6 6l12 12M6 18L18 6"/>
