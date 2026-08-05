@@ -684,7 +684,10 @@
     display: flex; flex-direction: column; gap: 18px;
     position: relative; overflow: hidden;
   }
-  .plan.feat { background: rgba(20,20,22,0.78); color: var(--paper); border-color: rgba(255,255,255,0.08); }
+  /* Usa el token, no un valor propio: estaba en rgba(20,20,22,0.78), que sobre
+     el crema daba rgb(69,68,67) — el mismo gris lavado que el resto de las
+     tarjetas oscuras. */
+  .plan.feat { background: var(--glass-bg-dark); color: var(--paper); border-color: rgba(255,255,255,0.08); }
   .plan.feat::before { background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 25%); }
   .plan.feat .plan-tag { color: var(--red); }
   .plan-tag {
