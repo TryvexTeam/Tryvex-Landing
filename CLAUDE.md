@@ -49,6 +49,8 @@ src/
 │   ├── opengraph-image.tsx   # OG image generada
 │   ├── sitemap.ts
 │   ├── catalogo/page.tsx     # Vitrina de demos por rubro
+│   ├── planes/page.tsx       # Modelos de contratación
+│   ├── preguntas/page.tsx    # FAQ + JSON-LD FAQPage
 │   ├── servicios/page.tsx
 │   ├── proceso/page.tsx
 │   ├── contacto/page.tsx
@@ -172,8 +174,10 @@ Las clases `services`, `process`, `offer` y `quote-card` se excluyen del Interse
 - **Títulos con `data-split="words"`**: la puntuación va **dentro** del `<em>`. Si queda suelta al cerrarlo, el splitter la trata como palabra propia y puede saltar sola al inicio de la línea siguiente
 - **Catálogo**: para publicar una demo nueva se agrega una entrada en `src/features/catalogo/data.ts` con `publicada: true` y `demoUrl` real. **Nunca se tocan componentes.** Guía completa en `src/features/catalogo/COMO-AGREGAR-UNA-DEMO.md`. Regla dura: en la página solo aparecen demos publicadas con URL real — nada de "próximamente"
 - **Rutas nuevas**: agregarlas a `INNER_LINKS` en `NavBar.tsx`, a `src/app/sitemap.ts` y a los footers
-- **El NavBar se renderiza en cada página**, no en el layout. Moverlo al layout lo deja *antes* del BOM invisible que abre `page.tsx`, y el nav sube 24px respecto al original. Si alguna vez se mueve, hay que compensar ese offset
-- **Menú mixto por diseño**: en el home los ítems de sección son anclas (`#services`, `#offer`…) y hacen scroll; en páginas internas son rutas. `GooeyNav` distingue ambos casos y solo espera a la animación cuando hay cambio de página real
+- **El NavBar se renderiza en cada página**, no en el layout
+- **Menú único**: `NAV_LINKS` en `NavBar.tsx`. Cada ítem lleva siempre a su página, desde cualquier parte. El campo `section` mantiene el subrayado siguiendo el recorrido del home mientras scrolleas
+- **La separación superior del nav la da `.nav-shell { margin-top: 40px }`**, no un carácter invisible. `page.tsx` tenía un BOM que generaba una línea vacía y empujaba el nav 24px solo en el home: cada navegación movía el layout entero (CLS 0.089 al volver al inicio). No reintroducir el BOM ni bajar ese margen sin medir
+- **Páginas internas**: montan `<RevelarAlScroll />` para el revelado al entrar en pantalla y `<VolverAlInicio />` bajo el nav. `LandingClient` es solo del home (trae además las escenas de GSAP/Anime)
 - **Anclas internas**: usar siempre `scrollToSection()` de `src/lib/scroll-to-section.ts`, nunca un `window.scrollTo` a mano. Si la sección destino vive dentro de un `[data-scene]`, su contenido se revela con el scroll: aterrizar en el borde superior deja el fotograma 0 (contenido invisible). El helper detecta ese caso, salta al final de la escena y sin transición. Ya está conectado al CTA del nav, al menú y a los enlaces `href="#..."` de la landing
 - **Fotos del equipo**: viven en `public/team/<id>.jpg`, con el archivo llamado igual que el `id` del miembro. Un miembro solo muestra foto si su id está además en `MEMBERS_WITH_PHOTO` (`TeamClient.tsx`). El marco es 3/4 con `object-fit: cover`, así que una foto horizontal se recorta a los lados
 - **PRPs**: documentar features complejas en `.claude/PRPs/` antes de implementar

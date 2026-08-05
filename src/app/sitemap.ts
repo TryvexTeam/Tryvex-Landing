@@ -27,6 +27,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: "https://www.tryvex.tech/planes",
+      lastModified: new Date("2026-08-05"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://www.tryvex.tech/preguntas",
+      lastModified: new Date("2026-08-05"),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: "https://www.tryvex.tech/contacto",
       lastModified: new Date("2026-05-12"),
       changeFrequency: "monthly",

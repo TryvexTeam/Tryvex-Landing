@@ -25,6 +25,8 @@
 | `/` | `src/app/page.tsx` | Server Component + `LandingClient` |
 | `/catalogo` | `src/app/catalogo/page.tsx` | Vitrina de demos navegables por rubro (`features/catalogo`) |
 | `/servicios` | `src/app/servicios/page.tsx` | Detalle de las 3 líneas de servicio |
+| `/planes` | `src/app/planes/page.tsx` | Los dos modelos de contratación |
+| `/preguntas` | `src/app/preguntas/page.tsx` | FAQ + JSON-LD `FAQPage` |
 | `/proceso` | `src/app/proceso/page.tsx` | Los 4 pasos del proceso |
 | `/contacto` | `src/app/contacto/page.tsx` | Formulario + precios base + FAQ |
 | `/team` | `src/app/team/page.tsx` | Equipo (`features/team`) |
@@ -81,7 +83,7 @@ NEXT_PUBLIC_SITE_URL      # base para fetch interno de /api/stats
 | `lenis` instalado sin uso | Figura en `package.json` y en las docs como smooth scroll, pero no se importa en ningún archivo: el scroll suave lo da `scroll-behavior: smooth` nativo en `landing.css:28` |
 | Lint con 7 errores previos | `react-hooks/preserve-manual-memoization` en `ExpandNav.tsx` y entidades sin escapar en páginas — anteriores a esta sesión |
 | Duplicación de precios | Los precios viven en `page.tsx` y `contacto/page.tsx` sin fuente única |
-| BOM invisible en `page.tsx` | Un carácter BOM antes de `<div className="scroll-progress">` crea una línea vacía en el `<body>` que empuja el nav 24px hacia abajo. Es parte del look actual: al quitarlo o al mover el nav antes de él, la portada se descuadra |
+
 | Catálogo con una sola demo | `features/catalogo/data.ts` tiene solo `restaurante` publicada. Aparece tanto en `/catalogo` como en el preview del home; con más rubros ambas grillas se llenan solas |
 | FAQ duplicado | El copy del FAQ se repite en el markup y en el JSON-LD de `page.tsx` |
 

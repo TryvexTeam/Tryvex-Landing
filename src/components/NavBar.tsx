@@ -15,26 +15,44 @@ export interface NavLink {
 }
 
 interface NavBarProps {
-  links: NavLink[];
-  ctaHref: string;
+  /** Solo para casos puntuales; por defecto usa NAV_LINKS. */
+  links?: NavLink[];
+  /** Solo para casos puntuales; por defecto se deriva de la ruta actual. */
+  ctaHref?: string;
   desktopCta?: ReactNode;
 }
 
-const INNER_LINKS: NavLink[] = [
-  { href: "/servicios", label: "Servicios" },
-  { href: "/catalogo",  label: "Catálogo"  },
-  { href: "/proceso",   label: "Proceso"   },
-  { href: "/#offer",    label: "Planes"    },
-  { href: "/#faq",      label: "Preguntas" },
-  { href: "/team",      label: "Equipo"    },
+/**
+ * Menú único para todo el sitio: cada ítem lleva siempre a su página.
+ *
+ * Antes había dos listas. En el home los ítems de sección eran anclas y solo
+ * hacían scroll, así que /servicios y /proceso quedaban inalcanzables: había
+ * que entrar primero a Catálogo o Equipo para que el menú cambiara y recién ahí
+ * aparecían. Con una sola lista se llega a cualquier página desde cualquier
+ * parte.
+ *
+ * `section` mantiene el subrayado siguiendo el recorrido del home: el clic va a
+ * la página, pero mientras bajas por la portada se marca la sección visible.
+ */
+const NAV_LINKS: NavLink[] = [
+  { href: "/servicios", label: "Servicios", section: "services"  },
+  { href: "/catalogo",  label: "Catálogo",  section: "catalogo"  },
+  { href: "/proceso",   label: "Proceso",   section: "process"   },
+  { href: "/planes",    label: "Planes",    section: "offer"     },
+  { href: "/preguntas", label: "Preguntas", section: "faq"       },
+  { href: "/team",      label: "Equipo"                          },
 ];
 
-export { INNER_LINKS };
+export { NAV_LINKS };
 
 export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+
+  const navLinks = links ?? NAV_LINKS;
+  /* En el home el CTA baja a la sección de agenda; fuera de él va a /contacto. */
+  const cta = ctaHref ?? (pathname === "/" ? "#final" : "/contacto");
 
   const close = useCallback(() => {
     document.body.style.overflow = "";
@@ -56,13 +74,13 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
   // CTA: manual smooth-scroll for hash hrefs (bypasses Next.js same-route limitation)
   const handleCTA = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (ctaHref.startsWith("#")) {
+      if (cta.startsWith("#")) {
         e.preventDefault();
-        scrollToSection(ctaHref.slice(1));
+        scrollToSection(cta.slice(1));
       }
       close();
     },
-    [ctaHref, close]
+    [cta, close]
   );
 
   useEffect(() => {
@@ -93,14 +111,14 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
 
           <div className="nav-gooey-wrap">
             <GooeyNav
-              items={links.map(l => ({ label: l.label, href: l.href, section: l.section }))}
+              items={navLinks.map(l => ({ label: l.label, href: l.href, section: l.section }))}
               particleCount={12}
             />
           </div>
 
           <div className="nav-cta">
             {desktopCta}
-            <Link href={ctaHref} className="btn-primary" onClick={handleCTA}>
+            <Link href={cta} className="btn-primary" onClick={handleCTA}>
               Agendar
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M13 6l6 6-6 6" />
@@ -146,7 +164,7 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
           </div>
 
           <nav className="nav-mobile__links" aria-label="Navegación principal">
-            {links.map((l) => (
+            {navLinks.map((l) => (
               <Link key={l.href} href={l.href} onClick={close}>
                 {l.label}
               </Link>
@@ -154,7 +172,7 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
           </nav>
 
           <div className="nav-mobile__cta">
-            <Link href={ctaHref} className="btn-primary" onClick={handleCTA}>
+            <Link href={cta} className="btn-primary" onClick={handleCTA}>
               Agendar llamada
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M13 6l6 6-6 6" />

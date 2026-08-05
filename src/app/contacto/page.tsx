@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NavBar, { INNER_LINKS } from "../../components/NavBar";
+import NavBar from "../../components/NavBar";
+import VolverAlInicio from "../../components/VolverAlInicio";
+import RevelarAlScroll from "../../components/RevelarAlScroll";
 import FinalCTA from "../../features/landing/components/FinalCTA";
 
 export const metadata: Metadata = {
@@ -31,14 +33,16 @@ export default function ContactoPage() {
         </defs>
       </svg>
 
-      <NavBar links={INNER_LINKS} ctaHref="/contacto" />
+      <NavBar />
+      <RevelarAlScroll />
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "40px" }}>
-            <span className="eyebrow"><span className="sec-num">03</span><span className="sec-label">Contacto</span></span>
-            <h1 style={{ marginTop: "16px" }}>Agenda una llamada <em>de 20 minutos.</em></h1>
-            <p className="lede" style={{ maxWidth: "600px" }}>
+            <VolverAlInicio />
+            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">03</span><span className="sec-label">Contacto</span></span>
+            <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Agenda una llamada <em>de 20 minutos.</em></h1>
+            <p className="lede" data-anim="fade-up" style={{ maxWidth: "600px" }}>
               Sin compromiso y sin costo. Cuéntanos tu problema y te decimos si podemos ayudarte — y en cuánto tiempo.
             </p>
           </div>
@@ -95,8 +99,8 @@ export default function ContactoPage() {
               <div>
                 <h5>Estudio</h5>
                 <Link href="/proceso">Proceso</Link>
-                <Link href="/#offer">Planes</Link>
-                <Link href="/#faq">Preguntas</Link>
+                <Link href="/planes">Planes</Link>
+                <Link href="/preguntas">Preguntas</Link>
               </div>
               <div>
                 <h5>Contacto</h5>

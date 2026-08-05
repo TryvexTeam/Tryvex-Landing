@@ -9,14 +9,6 @@ import "../features/catalogo/catalogo.css";
 /** Preview del catálogo: las primeras demos publicadas. El resto vive en /catalogo. */
 const demosPreview = demosPublicadas.slice(0, 3);
 
-const HOME_LINKS = [
-  { href: "#services", label: "Servicios"  },
-  { href: "/catalogo", label: "Catálogo", section: "catalogo" },
-  { href: "#process",  label: "Proceso"    },
-  { href: "#offer",    label: "Planes"     },
-  { href: "#faq",      label: "Preguntas"  },
-  { href: "/team",     label: "Equipo"     },
-];
 
 type Stats = {
   businesses: number;
@@ -41,7 +33,7 @@ export default async function Home() {
   return (
     <>
 
-﻿<div className="scroll-progress"></div>
+<div className="scroll-progress"></div>
 <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div><div className="b4"></div></div>
 <div className="grain"></div>
 
@@ -59,10 +51,7 @@ export default async function Home() {
 </svg>
 
 {/* NAV */}
-<NavBar
-  links={HOME_LINKS}
-  ctaHref="#final"
-/>
+<NavBar />
 
 {/* HERO */}
 <section className="hero">

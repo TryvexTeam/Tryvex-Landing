@@ -151,6 +151,12 @@
   /* ======= AMBIENT BACKGROUND â€” colored blurred light blobs that the glass layers refract ======= */
   .ambient {
     position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+    /* Los blobs quedan recortados contra el borde superior de la ventana y,
+       como el desenfoque no puede desvanecerse más allá del corte, dejaban un
+       canto duro rosado sobre el nav que se leía como un fallo de pintado al
+       volver arriba. La máscara los apaga antes de llegar al borde. */
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+    mask-image: linear-gradient(180deg, transparent 0, #000 140px);
   }
   .ambient::before, .ambient::after, .ambient .b1, .ambient .b2, .ambient .b3 {
     content: ''; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.85;
@@ -218,7 +224,12 @@
   /* ======= NAV ======= */
   .nav-shell {
     position: sticky; top: 16px; z-index: 50;
-    margin: 16px 0 0; padding: 0 20px;
+    /* 40px, no 16: en el home un carácter BOM invisible al inicio del markup
+       generaba una línea vacía que empujaba el nav 24px hacia abajo. Las
+       páginas internas no lo tenían, así que cada navegación movía el layout
+       entero y se veía como un tiriteo. Ahora la separación la da el CSS y es
+       la misma en todas partes. */
+    margin: 40px 0 0; padding: 0 20px;
   }
   .nav-pill {
     height: 60px;
@@ -362,6 +373,34 @@
   }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -10px rgba(14,14,14,0.55); }
   .btn-primary svg { width: 14px; height: 14px; }
+
+  /* ======= VOLVER AL INICIO (páginas internas) ======= */
+  .volver {
+    /* `flex` y no `inline-flex`: en línea quedaba pegado a la etiqueta de
+       sección y se leía "VOLVER AL INICIO 01 SERVICIOS" de corrido. */
+    display: flex; width: max-content; align-items: center; gap: 9px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted-2); margin-bottom: 22px;
+    transition: color 0.28s ease;
+  }
+  .volver-flecha {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1px solid var(--line); background: rgba(255,255,255,0.34);
+    transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.28s ease, background 0.28s ease;
+  }
+  .volver-flecha svg { width: 13px; height: 13px; }
+  .volver:hover { color: var(--ink); }
+  .volver:hover .volver-flecha {
+    transform: translateX(-4px);
+    border-color: rgba(14,14,14,0.22);
+    background: rgba(255,255,255,0.7);
+  }
+  .volver:focus-visible {
+    outline: 2px solid var(--red); outline-offset: 4px; border-radius: 6px;
+  }
 
   /* ======= HERO ======= */
   .hero {
