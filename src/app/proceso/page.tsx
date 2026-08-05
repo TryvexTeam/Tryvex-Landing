@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
+import BloqueResultados from "../../features/landing/components/BloqueResultados";
+import { fetchStats } from "../../features/landing/stats";
 
 export const metadata: Metadata = {
   title: "Proceso — Tryvex",
@@ -16,7 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProcesoPage() {
+export default async function ProcesoPage() {
+  const stats = await fetchStats();
+
   return (
     <>
       <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
@@ -83,26 +87,8 @@ export default function ProcesoPage() {
 
             </div>
 
-            <div className="metrics-block glass dark" style={{ marginTop: "64px" }}>
-              <div className="sec-tag">Números que importan</div>
-              <div className="metrics" style={{ marginTop: "32px" }}>
-                <div className="metric">
-                  <div className="v">3<em>d</em></div>
-                  <div className="l">Primer entregable funcional</div>
-                </div>
-                <div className="metric">
-                  <div className="v">14</div>
-                  <div className="l">Negocios activos ahora mismo</div>
-                </div>
-                <div className="metric">
-                  <div className="v">90<em>d</em></div>
-                  <div className="l">Mantención post-entrega incluida</div>
-                </div>
-                <div className="metric">
-                  <div className="v">0</div>
-                  <div className="l">Contratos de permanencia</div>
-                </div>
-              </div>
+            <div style={{ marginTop: "64px" }}>
+              <BloqueResultados stats={stats} />
             </div>
 
             <div style={{ textAlign: "center", marginTop: "64px", paddingBottom: "40px" }}>

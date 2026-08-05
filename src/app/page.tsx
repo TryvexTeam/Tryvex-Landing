@@ -4,32 +4,18 @@ import LandingClient from "../features/landing/components/LandingClient";
 import FinalCTA from "../features/landing/components/FinalCTA";
 import { demosPublicadas } from "../features/catalogo/data";
 import DemoCard from "../features/catalogo/components/DemoCard";
+import BloqueResultados from "../features/landing/components/BloqueResultados";
+import { fetchStats } from "../features/landing/stats";
 import "../features/catalogo/catalogo.css";
 
 /** Preview del catálogo: las primeras demos publicadas. El resto vive en /catalogo. */
 const demosPreview = demosPublicadas.slice(0, 3);
 
 
-type Stats = {
-  businesses: number;
-  leads_identificados: number;
-  ultima_ejecucion: string | null;
-};
-
-async function fetchStats(): Promise<Stats> {
-  try {
-    const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const res = await fetch(`${base}/api/stats`, { next: { revalidate: 3600 } });
-    if (!res.ok) return { businesses: 14, leads_identificados: 847, ultima_ejecucion: null };
-    return (await res.json()) as Stats;
-  } catch {
-    return { businesses: 14, leads_identificados: 847, ultima_ejecucion: null };
-  }
-}
 
 export default async function Home() {
   const stats = await fetchStats();
-  const { businesses, leads_identificados } = stats;
+  const { businesses } = stats;
   return (
     <>
 
@@ -277,28 +263,7 @@ export default async function Home() {
 <div className="scene-metrics-wrap" data-scene="metrics">
 <section className="block">
   <div className="wrap">
-    <div className="metrics-block glass dark">
-      <div className="sec-tag"><span className="sec-num">04</span><span className="sec-label">Resultados</span></div>
-      <h2 data-split="words">Lo que nuestros clientes <em>dejaron de hacer</em> a mano.</h2>
-      <div className="metrics" data-stagger>
-        <div className="metric">
-          <div className="v">{leads_identificados}<em>+</em></div>
-          <div className="l">Empresas mapeadas en Chile</div>
-        </div>
-        <div className="metric">
-          <div className="v">4.7<em>×</em></div>
-          <div className="l">Conversión promedio en landings nuevas</div>
-        </div>
-        <div className="metric">
-          <div className="v">98<em>%</em></div>
-          <div className="l">SLA de uptime en flujos críticos</div>
-        </div>
-        <div className="metric">
-          <div className="v">{businesses}</div>
-          <div className="l">Clientes activos con Tryvex</div>
-        </div>
-      </div>
-    </div>
+    <BloqueResultados stats={stats} num="04" conSplit />
   </div>
 </section>
 </div>{/* /scene-metrics-wrap */}
