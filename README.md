@@ -1,6 +1,8 @@
 # Tryvex Landing
 
-Landing page oficial de Tryvex — agencia de software en Santiago especializada en automatizaciones, landing pages y productos SaaS.
+Landing page oficial de Tryvex — software studio en Santiago especializado en automatizaciones, landing pages y productos SaaS a medida.
+
+🌐 **En producción:** [www.tryvex.tech](https://www.tryvex.tech)
 
 ---
 
@@ -8,11 +10,17 @@ Landing page oficial de Tryvex — agencia de software en Santiago especializada
 
 | Capa | Tecnología |
 |------|-----------|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16.2.4 (App Router) |
+| Runtime UI | React 19.2 |
 | Lenguaje | TypeScript |
-| Estilos | Tailwind CSS v4 + CSS Variables |
+| Estilos | CSS custom (`landing.css`) + Tailwind v4 para utilidades |
 | Animaciones scroll | GSAP + ScrollTrigger |
+| Animaciones de escena | Anime.js v4 |
+| Smooth scroll | `scroll-behavior: smooth` nativo (Lenis instalado, sin uso) |
 | Animaciones UI | Framer Motion |
+| Emails | Resend |
+| Agenda | Google Calendar API |
+| Datos | Supabase (REST) |
 | Deploy | Vercel |
 
 ---
@@ -22,60 +30,97 @@ Landing page oficial de Tryvex — agencia de software en Santiago especializada
 ```
 src/
 ├── app/
-│   ├── layout.tsx          ← metadata SEO + fuentes (Geist, Instrument Serif)
-│   ├── page.tsx            ← composición de las 11 secciones
-│   └── globals.css         ← Tailwind @theme + tokens globales
-├── components/
-│   ├── sections/           ← Navbar, Hero, LogoStrip, Services, Process,
-│   │                          Metrics, Testimonial, Pricing, FAQ, CTAFinal, Footer
-│   └── ui/                 ← GlassCard, AnimatedText, Counter, SectionWrapper, Button
-├── hooks/                  ← useScrollProgress, useReducedMotion
+│   ├── layout.tsx            ← metadata SEO, JSON-LD, fuentes, Clarity, Toaster
+│   ├── page.tsx              ← home: markup de todas las secciones
+│   ├── globals.css
+│   ├── icon.tsx              ← favicon generado
+│   ├── opengraph-image.tsx   ← OG image generada
+│   ├── sitemap.ts
+│   ├── catalogo/             ← vitrina de demos navegables por rubro
+│   ├── servicios/ proceso/ contacto/ team/
+│   └── api/
+│       ├── contact/          ← formulario → Resend
+│       ├── availability/     ← slots de agenda → Google Calendar
+│       ├── reminders/        ← recordatorios + ingesta al dashboard
+│       └── stats/            ← métricas del hero → Supabase (ISR 1h)
+├── features/
+│   ├── landing/              ← LandingClient, ContactForm, FinalCTA + landing.css
+│   ├── catalogo/             ← data.ts (demos) + catalogo.css + guía del equipo
+│   └── team/                 ← TeamClient, TeamCard, TeamDrawer + data + equipo.css
+├── components/               ← NavBar, GooeyNav, ExpandNav (navegación compartida)
+├── lib/
+│   └── google-calendar.ts
 └── styles/
-    └── tokens.css          ← CSS Variables del sistema visual Tryvex
+    └── tokens.css            ← ⚠️ actualmente desconectado de landing.css
 
 cerebro/
-├── index.md                ← catálogo de nodos (leer primero en cada sesión)
-├── CLAUDE.md               ← reglas y convenciones del proyecto
-└── stack.md                ← decisiones técnicas y sus razones
+├── index.md                  ← catálogo de nodos (leer primero en cada sesión)
+├── CLAUDE.md                 ← reglas y convenciones del proyecto
+├── stack.md                  ← decisiones técnicas y sus razones
+└── skills.md                 ← mapa de skills FE
 
-docs/
-└── superpowers/specs/
-    └── 2026-04-28-tryvex-landing-nextjs-migration-design.md
+CLAUDE.md                     ← instrucciones para agentes
+BUSINESS_LOGIC.md             ← negocio, servicios, precios y equipo
 ```
 
 ---
 
 ## Sistema de colores
 
+Declarados en el `:root` de `src/features/landing/landing.css`:
+
 ```css
---color-ink:    #0e0e0e              /* negro editorial  → bg-ink,    text-ink    */
---color-paper:  #f4f1ea              /* crema cálido     → bg-paper,  text-paper  */
---color-vex:    oklch(65% .18 28)    /* rojo-naranja     → bg-vex,    text-vex    */
---color-signal: oklch(65% .12 250)   /* azul acero       → bg-signal, text-signal */
+--paper:  #f4f1ea   /* crema cálido — fondo principal */
+--ink:    #0e0e0e   /* negro editorial — texto principal */
+--red:    #e53935   /* color de marca — acentos y CTAs */
+--muted:  #6b6863   /* texto secundario */
+--cream:  #ece8dc   /* bloques cálidos */
 ```
 
-Clases Tailwind disponibles: `bg-ink`, `text-paper`, `text-vex`, `text-signal`, `glass-light`, `glass-dark`
-
----
-
-## Plan de fases
-
-| Fase | Contenido | Estado |
-|------|-----------|--------|
-| F1 | Scaffold Next.js 15 + TypeScript + Tailwind v4 + tokens + fuentes | ✅ Completada |
-| F2 | UI components: GlassCard, AnimatedText, Counter, SectionWrapper, Button | ✅ Completada |
-| F3 | 11 secciones en React — fidelidad visual completa, deployable en Vercel | ✅ Completada |
-| F4 | GSAP ScrollTrigger + Framer Motion — animaciones de nivel agencia | ⏳ Pendiente |
+Más glass tokens estilo macOS Tahoe: `--glass-bg`, `--glass-bg-strong`, `--glass-bg-dark`, `--glass-border`, `--glass-shadow`.
 
 ---
 
 ## Desarrollo local
 
 ```bash
-npm run dev    # servidor en http://localhost:3000
-npm run build  # build de producción
-npm run lint   # ESLint
+npm install
+npm run dev       # http://localhost:3000 (Turbopack)
+npm run build     # build de producción
+npm run lint      # ESLint
+npx tsc --noEmit  # type check
 ```
+
+### Variables de entorno
+
+Crear `.env.local` con:
+
+```
+RESEND_API_KEY
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
+GOOGLE_REFRESH_TOKEN
+GOOGLE_CALENDAR_ID
+GOOGLE_MEET_LINK
+SUPABASE_URL
+SUPABASE_SERVICE_KEY
+CITAS_INGEST_TOKEN
+NEXT_PUBLIC_SITE_URL
+```
+
+Sin ellas el sitio levanta igual: `/api/stats` cae a valores de fallback y las rutas de contacto y agenda fallan al invocarse.
+
+---
+
+## ⚠️ Este repo está en producción
+
+- Nunca push directo a `main` — siempre rama + PR
+- Verificar todo cambio en `localhost:3000` antes de proponerlo
+- Al tocar precios, sincronizar `src/app/page.tsx`, `src/app/contacto/page.tsx` y `BUSINESS_LOGIC.md`
+
+### Publicar una demo en el catálogo
+
+Se agrega una entrada en `src/features/catalogo/data.ts` con `publicada: true` y `demoUrl` real. No se tocan componentes. Guía completa: `src/features/catalogo/COMO-AGREGAR-UNA-DEMO.md`.
 
 ---
 
@@ -91,5 +136,6 @@ Este proyecto usa el sistema `claude-brain` para contexto acumulado entre sesion
 
 ## Contacto
 
-- hola@tryvex.cl
-- ignacio@tryvex.cl (Ignacio Navarrete, Co-founder · CEO)
+- tryvexentreprise@gmail.com
+- Ignacio Navarrete — Fundador · CEO
+- Santiago, Región Metropolitana, Chile
