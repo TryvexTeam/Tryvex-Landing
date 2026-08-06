@@ -64,10 +64,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.tryvex.tech",
   },
-  icons: {
-    icon: [{ url: "/logo-email-dark.png", type: "image/png" }],
-    apple: "/logo-email-dark.png",
-  },
+  /* Sin bloque `icons`. Apuntaba a `/logo-email-dark.png`, que es el logotipo
+     completo con la palabra: a 16px en la pestaña queda como una mancha, y el
+     navegador podía elegirlo por encima del ícono bueno. Ahora los tres los
+     resuelven las convenciones de archivo —`favicon.ico`, `icon.tsx` y
+     `apple-icon.tsx`—, todos con la estrella y en su tamaño correcto. */
   openGraph: {
     title: "Tryvex — Automatización e Innovación Digital",
     description: "Agencia de software en Santiago.",
