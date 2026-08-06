@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { z } from "zod";
 import { createCalendarEvent } from "@/lib/google-calendar";
+import { esquemaAgenda } from "@/lib/validacion-agenda";
 import { escaparHtml } from "@/lib/html";
 
 const NOTIFY_EMAIL = "tryvexentreprise@gmail.com";
@@ -14,16 +14,13 @@ const FALLBACK_MEET = process.env.GOOGLE_MEET_LINK ?? "https://meet.google.com/t
  * a la dirección que escribe el visitante: sin esquema, la ruta era un relay
  * abierto — cualquiera podía mandar correo desde `hola@tryvex.tech` a quien
  * quisiera y quemar la reputación SPF/DKIM del dominio.
+ *
+ * El esquema vive en `lib/validacion-agenda` y lo comparte el formulario. Acá
+ * tenía uno propio que solo miraba longitudes, así que "Vice34nteb" con
+ * teléfono "+42313ds" pasaba y el visitante veía "¡Quedamos para la llamada!"
+ * con datos por los que nadie lo puede contactar. Dos copias de las mismas
+ * reglas siempre terminan divergiendo; ahora hay una sola.
  */
-const esquemaAgenda = z.object({
-  name: z.string().trim().min(2).max(80),
-  phone: z.string().trim().min(6).max(30),
-  email: z.string().trim().email().max(120),
-  date: z.string().trim().max(60).optional(),
-  dateISO: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  time: z.string().trim().regex(/^\d{2}:\d{2}$/).optional(),
-  message: z.string().trim().max(2000).optional(),
-});
 
 /**
  * Freno por IP en memoria. No es un rate-limit distribuido — cada instancia

@@ -1153,11 +1153,11 @@
 @media (max-width: 768px) {
   .final { padding: 48px 20px 64px; }
 
-  .fv-shell {
-    overflow: visible;
-    min-height: 540px;
-  }
-  .fv--overlay.fv--active { justify-content: flex-start; padding-top: 4px; }
+  /* Los overrides móviles de `.fv-shell` y `.fv--overlay` NO van acá: sus
+     reglas base se definen más abajo con la misma especificidad y un @media no
+     añade especificidad, solo condiciona. Puestos acá perdían en silencio —el
+     `min-height: 540px` móvil nunca se aplicó—. Viven al final del bloque
+     `.sch-*`. Mismo caso que `.scene-final-wrap` al cierre del archivo. */
 
   .sch-day {
     flex-direction: column;
@@ -1191,8 +1191,15 @@
   position: relative;
   width: 100%;
   overflow: visible;
-  padding-bottom: 56px;
   min-height: 440px;
+  /* El panel mide más que la vista del CTA porque tiene que dar cabida al
+     formulario, que va encima como capa absoluta. Sin centrar, ese sobrante se
+     acumulaba entero debajo del CTA —230px de vacío bajo "Sin costo. Sin
+     compromiso."— y la tarjeta se veía descolgada. Las capas absolutas están
+     fuera del flujo, así que esto solo mueve al CTA. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .fv {
   width: 100%;
@@ -1230,7 +1237,11 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  /* 10 y no 12: cada campo aporta ya su franja de 20px para el aviso, así que
+     con 12 el formulario respiraba de más y la tarjeta pasaba de 768px de alto
+     —justo el viewport de un portátil— y el botón de confirmar quedaba pegado
+     al borde inferior. */
+  gap: 10px;
 }
 .sch-label {
   font-size: 14px;
@@ -1311,6 +1322,13 @@
   letter-spacing: 0.04em;
 }
 .sch-time:hover { border-color: rgba(229,57,53,0.45); }
+/* Apagados mientras se consultan los del día nuevo — conservan su sitio para
+   que el bloque no cambie de alto. Ver el comentario en `FinalCTA`. */
+.sch-time:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.sch-time:disabled:hover { border-color: rgba(255,255,255,0.1); }
 .sch-time--sel {
   background: var(--red);
   border-color: var(--red);
@@ -1321,12 +1339,34 @@
 .sch-inputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  /* El hueco vertical lo aporta el `padding-bottom` reservado de cada celda;
+     acá solo hace falta la separación horizontal. */
+  column-gap: 10px;
+  row-gap: 0;
 }
-/* El nombre ocupa la fila completa. Se apunta por `name` y no por `:first-child`:
-   los campos llevan una <label> oculta delante, así que el input ya no es el
-   primer hijo de la grilla. */
-.sch-inputs input[name="name"] {
+/* Cada campo es una celda con su etiqueta, su input y su aviso. Antes el aviso
+   era hermano directo de los inputs y, al ocupar la fila completa, partía las
+   dos columnas: teléfono y correo se iban uno debajo del otro en cuanto
+   aparecía un error. Dentro de su celda, el aviso ya no mueve a los vecinos. */
+.sch-campo {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  /* Espacio reservado para el aviso, esté o no. El aviso va posicionado dentro
+     de esta franja, así que aparecer y desaparecer no mueve nada.
+
+     Importa más de lo que parece: sin esto, tres errores empujaban el botón de
+     confirmar 63px hacia abajo y en móvil lo sacaban de la pantalla. Y como la
+     tarjeta vive dentro de una escena de scroll con altura fija, crecer también
+     descuadraba la animación.
+
+     Esta franja es además la separación entre filas: por eso `.sch-inputs`
+     lleva `row-gap: 0`. Si se toca uno hay que mirar el otro. */
+  position: relative;
+  padding-bottom: 20px;
+}
+.sch-campo--ancho {
   grid-column: 1 / -1;
 }
 .sch-inputs input {
@@ -1383,8 +1423,95 @@
 }
 .sch-msg:disabled { opacity: 0.45; }
 
-/* `.sch-error` quedó sin uso: los errores del formulario los muestra el toast
-   de sileo, no un párrafo dentro del panel. */
+/* Aviso por campo del formulario de agenda.
+   El toast de sileo sigue existiendo para los fallos de red, pero no sirve para
+   decir QUÉ campo está mal: por eso el aviso va pegado a su campo.
+
+   Va apuntado desde `.final` a propósito. `.final p` fija `margin: 22px auto
+   32px` para el cuerpo de texto de la tarjeta, y con un tipo en el selector le
+   gana a `.sch-aviso` a secas: el aviso heredaba 54px de margen y cada campo
+   medía 117px en vez de 65. Cuatro campos, 216px de más — el formulario se
+   salía de la tarjeta y `overflow: hidden` lo cortaba. */
+.final .sch-aviso {
+  /* Absoluto dentro de la franja reservada del campo: no empuja a nadie.
+     El panel centra su texto; el aviso no lo hereda y se pega al borde
+     izquierdo de su campo, que es donde el ojo lo busca. Los mensajes son
+     cortos a propósito, para que entren en una línea incluso en la columna
+     angosta del teléfono. */
+  /* Se renderiza SIEMPRE, vacío cuando no hay nada que decir, y con alto fijo.
+     Así aparecer o desaparecer no cambia una sola medida: el botón de confirmar
+     no se mueve —antes bajaba 46px en escritorio y se salía de pantalla en
+     móvil— y la tarjeta, que vive dentro de una escena de scroll, conserva su
+     altura y no descuadra la animación.
+
+     Los mensajes son cortos a propósito para entrar en esta única línea, incluso
+     en la columna angosta del teléfono. */
+  position: absolute;
+  left: 18px;
+  right: 0;
+  bottom: 2px;
+  height: 16px;
+  overflow: hidden;
+  margin: 0;
+  text-align: left;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ff9d94;
+}
+
+/* Misma franja, mismo alto y misma posición que un aviso de error; solo cambia
+   el color. Lo que falta hacer no es un fallo del visitante, y pintarlo de rojo
+   lo trataría como tal. */
+.final .sch-aviso--guia { color: rgba(244,241,234,0.5); }
+
+/* El borde rojo acompana al texto: solo con color no basta para quien no
+   distingue rojo del resto (WCAG 1.4.1, "el color no es el unico medio"). */
+.sch-inputs input[aria-invalid="true"],
+.sch-msg[aria-invalid="true"] {
+  border-color: #ff9d94;
+  background: rgba(255, 157, 148, 0.07);
+}
+
+/* ── Alto del panel según la vista más alta ──────────────────────
+   La tarjeta la mide la vista del CTA, que va en flujo; el formulario es una
+   capa absoluta encima y no aporta alto. Si el formulario mide más que el
+   panel, `.final { overflow: hidden }` lo corta. Por eso el piso de
+   `.fv-shell` se fija a mano, medido con el formulario abierto en cada
+   ancho. Al agregar o quitar un campo hay que volver a medirlo.
+
+   Cuánto puede sobresalir el formulario depende del `padding` de `.final`, que
+   NO es el mismo en todos los anchos: 48/64 hasta 768, 28 entre 769 y 980
+   —regla de la línea 1090—, y 90 de 981 para arriba. Por eso los cortes de
+   abajo siguen esos mismos límites y no otros. Medido con el formulario abierto
+   en cada franja: 672px hasta 480, 604 hasta 768, 539 de ahí en adelante.
+
+   Va después de la regla base a propósito: un @media no añade especificidad.
+   Antes vivía arriba, junto a `.final`, y el valor móvil no se aplicaba. */
+@media (max-width: 768px) {
+  .fv-shell {
+    overflow: visible;
+    min-height: 685px;
+  }
+  .fv--overlay.fv--active { justify-content: flex-start; padding-top: 4px; }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Desde 481 los días caben en una fila y el rótulo en una línea: el
+     formulario baja a 604 y con el piso de 685 la tarjeta quedaba con 81px de
+     vacío. */
+  .fv-shell { min-height: 620px; }
+}
+@media (min-width: 769px) {
+  /* 470 y no el alto exacto del formulario (519): el resto lo absorbe el
+     `padding: 90px` de `.final`, donde sobra sitio. Subirlo hasta 519 dejaba la
+     tarjeta en 800px y no entraba en un portátil de 768. */
+  .fv-shell { min-height: 470px; }
+}
+@media (min-width: 769px) and (max-width: 980px) {
+  /* Acá `.final` tiene 28px de padding, no 90: el sobrante del formulario ya no
+     cabe en el margen de la tarjeta y `overflow: hidden` cortaba 5px del botón
+     de confirmar. En esta franja el panel tiene que contenerlo entero. */
+  .fv-shell { min-height: 550px; }
+}
 
 /* Success */
 .sch-ok-tag {
