@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NavBar, { INNER_LINKS } from "../../components/NavBar";
+import NavBar from "../../components/NavBar";
+import RevelarAlScroll from "../../components/RevelarAlScroll";
 
 export const metadata: Metadata = {
   title: "Servicios — Tryvex",
@@ -30,14 +31,15 @@ export default function ServiciosPage() {
         </defs>
       </svg>
 
-      <NavBar links={INNER_LINKS} ctaHref="/contacto" />
+      <NavBar />
+      <RevelarAlScroll />
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "80px" }}>
-            <span className="eyebrow"><span className="live"></span> 01 · Servicios</span>
-            <h1 style={{ marginTop: "16px" }}>Tres formas de <em>sacar trabajo</em> de tu cabeza.</h1>
-            <p className="lede" style={{ maxWidth: "600px" }}>
+          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "80px" }}>
+            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">01</span><span className="sec-label">Servicios</span></span>
+            <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Tres formas de <em>sacar trabajo</em> de tu cabeza.</h1>
+            <p className="lede" data-anim="fade-up" style={{ maxWidth: "600px" }}>
               Cada servicio se entrega como sistema vivo: deploy continuo, monitoreo y mantención incluida los primeros 90 días. Sin contratos a largo plazo.
             </p>
           </div>
@@ -45,7 +47,7 @@ export default function ServiciosPage() {
 
         <section className="block">
           <div className="wrap">
-            <div className="services" style={{ marginTop: "0" }}>
+            <div className="services" data-stagger style={{ marginTop: "0" }}>
 
               <div className="svc glass">
                 <div className="svc-head">
@@ -148,8 +150,8 @@ export default function ServiciosPage() {
               <div>
                 <h5>Estudio</h5>
                 <Link href="/proceso">Proceso</Link>
-                <Link href="/#offer">Planes</Link>
-                <Link href="/#faq">Preguntas</Link>
+                <Link href="/planes">Planes</Link>
+                <Link href="/preguntas">Preguntas</Link>
               </div>
               <div>
                 <h5>Contacto</h5>

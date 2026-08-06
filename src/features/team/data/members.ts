@@ -13,6 +13,11 @@ export type Member = {
   category: MemberCategory;
 };
 
+/**
+ * Las fotos viven en `public/team/<id>.jpg` — el archivo se llama igual que el
+ * `id` del miembro, para que no haya que adivinar la correspondencia.
+ * Un miembro solo muestra foto si su id está en MEMBERS_WITH_PHOTO (TeamClient).
+ */
 export const members: Member[] = [
   {
     id: "ignacio-navarrete",
@@ -21,8 +26,8 @@ export const members: Member[] = [
     category: "core",
     bioShort: "",
     bio: "Fundador de Tryvex. Lleva años construyendo sistemas que hacen el trabajo pesado por las empresas — desde automatizar procesos que consumían horas hasta lanzar productos digitales que funcionan desde el primer día. Obsesionado con que la tecnología sea invisible: que el cliente solo vea los resultados.",
-    photo: "/team/ignacio-navarrete-v2.png",
-    photoWide: "/team/ignacio-navarrete-v2.png",
+    photo: "/team/ignacio-navarrete.jpg",
+    photoWide: "/team/ignacio-navarrete.jpg",
     linkedin: "",
     portfolio: "",
   },
@@ -33,7 +38,7 @@ export const members: Member[] = [
     category: "core",
     bioShort: "",
     bio: "",
-    photo: "/team/vicente-garcia.webp",
+    photo: "/team/vicente-garcia.jpg",
     linkedin: "",
     portfolio: "",
   },
@@ -44,7 +49,7 @@ export const members: Member[] = [
     category: "core",
     bioShort: "",
     bio: "",
-    photo: "/team/cristian.png",
+    photo: "/team/cristian-de-la-fuente.jpg",
     linkedin: "",
     portfolio: "",
   },
@@ -55,7 +60,7 @@ export const members: Member[] = [
     category: "core",
     bioShort: "",
     bio: "",
-    photo: "/team/joseph-mailens.webp",
+    photo: "/team/joseph-mailens.jpg",
     linkedin: "",
     portfolio: "",
   },
@@ -66,8 +71,23 @@ export const members: Member[] = [
     category: "core",
     bioShort: "",
     bio: "",
-    photo: "/team/fabian-melivilu.png",
+    photo: "/team/fabian-melivilu.jpg",
     linkedin: "",
     portfolio: "",
   },
 ];
+
+/**
+ * Miembros con foto en `public/team/<id>.jpg`.
+ *
+ * Vive acá, junto a los datos, porque antes cada componente mantenía su propia
+ * copia y se desincronizaron: la del drawer no incluía a Cristian, así que su
+ * retrato salía en la grilla pero no al abrir el perfil.
+ */
+export const MEMBERS_WITH_PHOTO = new Set<string>([
+  "ignacio-navarrete",
+  "vicente-garcia",
+  "cristian-de-la-fuente",
+  "joseph-mailens",
+  "fabian-melivilu",
+]);

@@ -10,12 +10,22 @@
     --line-soft: rgba(14,14,14,0.06);
     --red: #e53935;
     --red-soft: rgba(229,57,53,0.10);
+    /* Rojo de marca profundizado y saturado, para tipografía fina.
+       El #e53935 del logo es un trazo sólido; en serif itálica de trazo
+       delgado el mismo hex se lee lavado y rosado. Este tono le devuelve la
+       intensidad del logo a tamaños chicos. */
+    --red-vivo: #dd1713;
     --cream: #ece8dc;
 
     /* Glass tokens â€” macOS Tahoe-style translucency */
     --glass-bg: rgba(255,255,255,0.42);
     --glass-bg-strong: rgba(255,255,255,0.62);
-    --glass-bg-dark: rgba(20,20,22,0.55);
+    /* Vidrio oscuro sobre fondo claro.
+       Estaba en 0.55: compuesto sobre el crema daba rgb(121,119,117), un gris
+       plano y sucio. El desenfoque no ayuda — difumina el fondo, no lo oscurece.
+       A 0.94 sobre #f4f1ea queda en rgb(28,28,27): negro editorial, con el
+       ambiente cálido todavía asomando apenas por los bordes. */
+    --glass-bg-dark: rgba(14,14,14,0.94);
     --glass-border: rgba(255,255,255,0.55);
     --glass-border-dark: rgba(255,255,255,0.10);
     --glass-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 30px 60px -30px rgba(14,14,14,0.18), 0 8px 24px -16px rgba(14,14,14,0.12);
@@ -54,6 +64,16 @@
     transform: translate(0,0) scale(1) rotate(0);
     filter: blur(0);
   }
+
+  /* Elementos del hero con parallax de GSAP.
+     GSAP escribe transform inline y toma como punto de partida el que
+     encuentra al inicializar. Si el reveal les dejó su desplazamiento inicial,
+     lo congela ahí y quedan corridos de forma permanente (el eyebrow 18px
+     arriba, la bajada y los botones 22px abajo). Acá el reveal aporta solo la
+     opacidad: el movimiento de estos tres lo pone GSAP. */
+  .hero-col .eyebrow[data-anim],
+  .hero-col .lede[data-anim],
+  .hero-col .hero-cta[data-anim] { transform: none; }
 
   /* staggered children — applied to wrappers */
   [data-stagger] > * {
@@ -131,6 +151,12 @@
   /* ======= AMBIENT BACKGROUND â€” colored blurred light blobs that the glass layers refract ======= */
   .ambient {
     position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+    /* Los blobs quedan recortados contra el borde superior de la ventana y,
+       como el desenfoque no puede desvanecerse más allá del corte, dejaban un
+       canto duro rosado sobre el nav que se leía como un fallo de pintado al
+       volver arriba. La máscara los apaga antes de llegar al borde. */
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+    mask-image: linear-gradient(180deg, transparent 0, #000 140px);
   }
   .ambient::before, .ambient::after, .ambient .b1, .ambient .b2, .ambient .b3 {
     content: ''; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.85;
@@ -198,7 +224,12 @@
   /* ======= NAV ======= */
   .nav-shell {
     position: sticky; top: 16px; z-index: 50;
-    margin: 16px 0 0; padding: 0 20px;
+    /* 40px, no 16: en el home un carácter BOM invisible al inicio del markup
+       generaba una línea vacía que empujaba el nav 24px hacia abajo. Las
+       páginas internas no lo tenían, así que cada navegación movía el layout
+       entero y se veía como un tiriteo. Ahora la separación la da el CSS y es
+       la misma en todas partes. */
+    margin: 40px 0 0; padding: 0 20px;
   }
   .nav-pill {
     height: 60px;
@@ -313,9 +344,32 @@
     .expand-items { display: none; }
   }
   .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-mark { width: 26px; height: 26px; display: block; }
+  .logo-mark { width: 26px; height: 26px; display: block; overflow: visible; }
   .logo-word { font-weight: 700; font-size: 22px; letter-spacing: -0.04em; }
   .logo-word .dot { color: var(--red); }
+
+  /* Fuera del home la marca hace de vuelta al inicio: la estrella se pliega en
+     un "menor que". El morph vive en la propiedad `d` y solo funciona porque
+     ambos trazados comparten estructura. El destello rojo se mantiene: es la
+     firma del logo. */
+  .logo-figura {
+    fill: var(--ink);
+    transition: d 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Al plegarse la estrella el destello se desplaza hasta quedar justo antes
+     de la "i" de "inicio", como si la marca lo soltara sobre la palabra.
+     El desplazamiento va en unidades del viewBox, no en píxeles. */
+  .logo-chispa {
+    fill: var(--red);
+    transform-box: view-box;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .logo--activa .logo-chispa { transform: translate(30px, 26px); }
+  .logo--volver .logo-word { transition: opacity 0.28s ease; }
+  .logo--volver:hover .logo-word { opacity: 0.72; }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-figura { transition: none; }
+  }
   .nav-links { display: flex; gap: 4px; padding: 4px; border-radius: 999px;
     background: rgba(14,14,14,0.04); border: 1px solid var(--line-soft); }
   .nav-links a {
@@ -476,10 +530,25 @@
   /* ======= SECTIONS ======= */
   section.block { padding: 100px 0 40px; position: relative; }
   .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; margin-bottom: 48px; }
-  .sec-tag {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em;
-    color: var(--muted); text-transform: uppercase;
+  /* ======= ETIQUETA DE SECCIÓN =======
+     Marcador editorial, no chip de interfaz: el número va en la misma serif
+     itálica que ya acentúa cada título, y la etiqueta en mono. Antes era una
+     píldora con borde, sombra y punto — un componente pegado encima del
+     contenido, que es justo lo que delata una plantilla. */
+  .sec-tag, .eyebrow {
+    display: inline-flex; align-items: baseline; gap: 11px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase;
+    /* se anula la píldora heredada */
+    background: none; border: none; box-shadow: none; backdrop-filter: none;
+    padding: 0; border-radius: 0;
   }
+  .sec-num {
+    font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400;
+    font-size: 34px; line-height: 1; color: var(--red-vivo);
+    letter-spacing: 0; text-transform: none;
+  }
+  .sec-label { display: inline-block; }
   h2 {
     font-size: clamp(36px, 4.5vw, 60px); font-weight: 600; letter-spacing: -0.035em;
     line-height: 1; margin-top: 18px; max-width: 820px; text-wrap: balance;
@@ -649,7 +718,10 @@
     display: flex; flex-direction: column; gap: 18px;
     position: relative; overflow: hidden;
   }
-  .plan.feat { background: rgba(20,20,22,0.78); color: var(--paper); border-color: rgba(255,255,255,0.08); }
+  /* Usa el token, no un valor propio: estaba en rgba(20,20,22,0.78), que sobre
+     el crema daba rgb(69,68,67) — el mismo gris lavado que el resto de las
+     tarjetas oscuras. */
+  .plan.feat { background: var(--glass-bg-dark); color: var(--paper); border-color: rgba(255,255,255,0.08); }
   .plan.feat::before { background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 25%); }
   .plan.feat .plan-tag { color: var(--red); }
   .plan-tag {
@@ -732,6 +804,10 @@
   .foot-top h5 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
   .foot-top a { display: block; padding: 6px 0; font-size: 14px; color: var(--ink); opacity: 0.78; transition: color .2s; }
   .foot-top a:hover { opacity: 1; color: var(--red); }
+  /* `.foot-top a { display:block }` (arriba) le gana en especificidad a
+     `.logo { display:flex }` y dejaba la marca apilada sobre la palabra.
+     Se restituye la disposición horizontal del nav. */
+  .foot-brand .logo { display: flex; align-items: center; gap: 12px; }
   .foot-brand .logo-word { font-size: 32px; }
   .foot-brand p { color: var(--muted); margin-top: 16px; font-size: 14px; max-width: 320px; line-height: 1.55; }
   .foot-bottom {

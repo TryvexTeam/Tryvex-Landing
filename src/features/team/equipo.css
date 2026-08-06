@@ -499,3 +499,23 @@
   flex-wrap: wrap;
   margin-top: 28px;
 }
+
+/* ── El nav se retira mientras el perfil está abierto ──────────────────────
+   El drawer entra por la derecha y el menú flotante le quedaba encima. La
+   clase la pone TeamDrawer en el <body> al abrir y la quita al cerrar.
+   La transición va en .nav-shell (que no tenía ninguna; la de .nav-pill anima
+   otras propiedades y no se pisa). */
+.nav-shell {
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+body.team-drawer-abierto .nav-shell {
+  opacity: 0;
+  transform: translateY(-14px);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-shell { transition: opacity 0.15s ease; }
+  body.team-drawer-abierto .nav-shell { transform: none; }
+}

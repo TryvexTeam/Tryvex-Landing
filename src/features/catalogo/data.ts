@@ -34,7 +34,8 @@ export interface Demo {
   demoUrl: string;
   /** Palabra clave que abre el flujo demo de este nicho en el bot. */
   whatsappRef: string;
-  /** Captura 16:10 en /public/catalogo/. Sin ella se dibuja una portada de marca. */
+  /** Captura de la portada del sitio, a ancho completo, en /public/catalogo/.
+   *  Sin ella se dibuja una portada de marca con la categoría. */
   imagen?: string;
   /** Solo las publicadas se muestran. */
   publicada: boolean;
@@ -50,6 +51,7 @@ export const demos: Demo[] = [
     incluye: ["Web inmersiva", "Asistente WhatsApp", "Reservas"],
     demoUrl: "https://tryvex-restaurante.lovable.app",
     whatsappRef: "DEMO-RESTO",
+    imagen: "/catalogo/restaurante.jpg",
     publicada: true,
   },
 ];

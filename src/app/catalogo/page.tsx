@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NavBar, { INNER_LINKS } from "../../components/NavBar";
-import { demosPublicadas, whatsappLink } from "../../features/catalogo/data";
+import NavBar from "../../components/NavBar";
+import RevelarAlScroll from "../../components/RevelarAlScroll";
+import { demosPublicadas } from "../../features/catalogo/data";
+import DemoCard from "../../features/catalogo/components/DemoCard";
 import "../../features/catalogo/catalogo.css";
 
 export const metadata: Metadata = {
@@ -34,14 +36,15 @@ export default function CatalogoPage() {
         </defs>
       </svg>
 
-      <NavBar links={INNER_LINKS} ctaHref="/contacto" />
+      <NavBar />
+      <RevelarAlScroll />
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "40px" }}>
-            <span className="eyebrow"><span className="live"></span> 02 · Catálogo</span>
-            <h1 style={{ marginTop: "16px" }}>Vea el trabajo <em>funcionando</em>, no promesas.</h1>
-            <p className="lede" style={{ maxWidth: "620px" }}>
+          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "40px" }}>
+            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">02</span><span className="sec-label">Catálogo</span></span>
+            <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Vea el trabajo <em>funcionando</em>, no promesas.</h1>
+            <p className="lede" data-anim="fade-up" style={{ maxWidth: "620px" }}>
               Cada proyecto de esta vitrina es una demostración real y navegable:
               entre, recórrala y converse con el asistente como si fuera un cliente.
               Si aparece acá, funciona.
@@ -52,57 +55,9 @@ export default function CatalogoPage() {
         <section className="block">
           <div className="wrap">
             {demosPublicadas.length > 0 ? (
-              <div className="cat-grid">
+              <div className="cat-grid" data-stagger>
                 {demosPublicadas.map((demo) => (
-                  <article key={demo.id} className="cat-card glass">
-                    <a
-                      className="cat-thumb"
-                      href={demo.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Abrir la demo de ${demo.nicho} en una pestaña nueva`}
-                    >
-                      {demo.imagen ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={demo.imagen}
-                          alt={`Captura de la demo para ${demo.nicho}`}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span className="cat-thumb-fallback">{demo.nicho}</span>
-                      )}
-                      <span className="cat-tag">{demo.categoria}</span>
-                    </a>
-
-                    <div className="cat-body">
-                      <h3>{demo.nicho}</h3>
-                      <p>{demo.descripcion}</p>
-                      <ul className="cat-incluye">
-                        {demo.incluye.map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                      <div className="cat-actions">
-                        <a
-                          className="btn-ghost"
-                          href={demo.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Ver demo
-                        </a>
-                        <a
-                          className="btn-primary"
-                          href={whatsappLink(demo.whatsappRef)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Probar el bot
-                        </a>
-                      </div>
-                    </div>
-                  </article>
+                  <DemoCard key={demo.id} demo={demo} />
                 ))}
               </div>
             ) : (
@@ -123,7 +78,7 @@ export default function CatalogoPage() {
 
         <section className="block" style={{ paddingTop: "0" }}>
           <div className="wrap" style={{ maxWidth: "680px", textAlign: "center", paddingBottom: "100px" }}>
-            <h2 style={{ fontSize: "1.6rem", marginBottom: "12px" }}>
+            <h2 data-anim="fade-up" style={{ fontSize: "1.6rem", marginBottom: "12px" }}>
               ¿No encuentra su rubro? Lo construimos igual.
             </h2>
             <p className="lede" style={{ margin: "0 auto 24px" }}>
@@ -158,8 +113,8 @@ export default function CatalogoPage() {
                 <h5>Estudio</h5>
                 <Link href="/catalogo">Catálogo</Link>
                 <Link href="/proceso">Proceso</Link>
-                <Link href="/#offer">Planes</Link>
-                <Link href="/#faq">Preguntas</Link>
+                <Link href="/planes">Planes</Link>
+                <Link href="/preguntas">Preguntas</Link>
               </div>
               <div>
                 <h5>Contacto</h5>

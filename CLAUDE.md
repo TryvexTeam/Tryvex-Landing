@@ -49,6 +49,8 @@ src/
 │   ├── opengraph-image.tsx   # OG image generada
 │   ├── sitemap.ts
 │   ├── catalogo/page.tsx     # Vitrina de demos por rubro
+│   ├── planes/page.tsx       # Modelos de contratación
+│   ├── preguntas/page.tsx    # FAQ + JSON-LD FAQPage
 │   ├── servicios/page.tsx
 │   ├── proceso/page.tsx
 │   ├── contacto/page.tsx
@@ -163,14 +165,22 @@ Las clases `services`, `process`, `offer` y `quote-card` se excluyen del Interse
 - **Precios**: viven duplicados en `src/app/page.tsx` (`#offer`) y `src/app/contacto/page.tsx`. Al cambiarlos, sincronizar ambos **y** `BUSINESS_LOGIC.md`
 - **FAQ**: el copy está duplicado en el markup y en el JSON-LD de `page.tsx` — actualizar los dos
 - **Scrollspy de ítems que van a otra página**: un `NavLink` puede declarar `section: "<id>"`. El clic sigue yendo a `href`, pero el subrayado lo marca cuando esa sección cruza la pantalla. Es lo que hace que el catálogo no se salte al bajar por el home
-- **Catálogo en el home**: la sección `#catalogo` es un preview que lee `demosPublicadas.slice(0, 3)` de `features/catalogo/data.ts`. Al publicar una demo aparece sola, sin tocar el home. La grilla `.cat-preview-grid` se adapta a 1, 2 o 3 tarjetas
+- **Tarjeta de demo**: existe una sola, `features/catalogo/components/DemoCard.tsx`, usada por `/catalogo` y por el preview del home. No duplicar el markup: antes estaba escrito en las dos páginas
+- **Portadas del catálogo**: captura de la portada del sitio **a ancho completo** en `public/catalogo/`, referenciada desde el campo `imagen` de `data.ts`. Recortar los lados para forzar un formato más alto parte el contenido a media palabra y deja de leerse como una web. La grilla `.cat-grid` usa `auto-fit` con tope por pieza: 1 demo queda grande y centrada, y de ahí en adelante se arma sola
+- **Catálogo en el home**: la sección `#catalogo` es un preview que lee `demosPublicadas.slice(0, 3)` de `features/catalogo/data.ts`. Al publicar una demo aparece sola, sin tocar el home
+- **Etiqueta de sección**: `<span className="sec-num">NN</span><span className="sec-label">Etiqueta</span>` dentro de `.sec-tag` (home) o `.eyebrow` (páginas internas). El número va en Instrument Serif itálica con `--red-vivo`; la etiqueta en mono. **No volver a la píldora** con fondo, borde y punto: es un chip de interfaz pegado sobre contenido editorial y es lo que hace que la página se lea como plantilla
+- **`--red-vivo` vs `--red`**: el rojo del logo (`#e53935`) es un trazo sólido. En tipografía fina se lee lavado, así que para texto chico va `--red-vivo` (`#dd1713`), que le devuelve la misma presencia
 - **Numeración de secciones**: el home lleva una secuencia correlativa en los `.sec-tag` (01→07). Al insertar o quitar una sección hay que renumerar las siguientes y alinear el `eyebrow` de la página interna equivalente
 - **Títulos con `data-split="words"`**: la puntuación va **dentro** del `<em>`. Si queda suelta al cerrarlo, el splitter la trata como palabra propia y puede saltar sola al inicio de la línea siguiente
 - **Catálogo**: para publicar una demo nueva se agrega una entrada en `src/features/catalogo/data.ts` con `publicada: true` y `demoUrl` real. **Nunca se tocan componentes.** Guía completa en `src/features/catalogo/COMO-AGREGAR-UNA-DEMO.md`. Regla dura: en la página solo aparecen demos publicadas con URL real — nada de "próximamente"
 - **Rutas nuevas**: agregarlas a `INNER_LINKS` en `NavBar.tsx`, a `src/app/sitemap.ts` y a los footers
-- **El NavBar se renderiza en cada página**, no en el layout. Moverlo al layout lo deja *antes* del BOM invisible que abre `page.tsx`, y el nav sube 24px respecto al original. Si alguna vez se mueve, hay que compensar ese offset
-- **Menú mixto por diseño**: en el home los ítems de sección son anclas (`#services`, `#offer`…) y hacen scroll; en páginas internas son rutas. `GooeyNav` distingue ambos casos y solo espera a la animación cuando hay cambio de página real
+- **El NavBar se renderiza en cada página**, no en el layout
+- **Menú único**: `NAV_LINKS` en `NavBar.tsx`. Cada ítem lleva siempre a su página, desde cualquier parte. El campo `section` mantiene el subrayado siguiendo el recorrido del home mientras scrolleas
+- **La separación superior del nav la da `.nav-shell { margin-top: 40px }`**, no un carácter invisible. `page.tsx` tenía un BOM que generaba una línea vacía y empujaba el nav 24px solo en el home: cada navegación movía el layout entero (CLS 0.089 al volver al inicio). No reintroducir el BOM ni bajar ese margen sin medir
+- **La marca del nav es la vuelta al inicio**: fuera del home dice `inicio.` en vez de `tryvex.` y su estrella se pliega en un chevron al pasar por encima. Es un morph real de la propiedad `d`, y solo funciona porque **ambos trazados comparten estructura** — cuatro segmentos cúbicos con los mismos anclajes. Si se edita uno hay que mantener esa correspondencia o el icono deja de interpolar y salta. No agregar un control aparte: el logo ya enlazaba al inicio
+- **Páginas internas**: montan `<RevelarAlScroll />` para el revelado al entrar en pantalla. `LandingClient` es solo del home (trae además las escenas de GSAP/Anime)
 - **Anclas internas**: usar siempre `scrollToSection()` de `src/lib/scroll-to-section.ts`, nunca un `window.scrollTo` a mano. Si la sección destino vive dentro de un `[data-scene]`, su contenido se revela con el scroll: aterrizar en el borde superior deja el fotograma 0 (contenido invisible). El helper detecta ese caso, salta al final de la escena y sin transición. Ya está conectado al CTA del nav, al menú y a los enlaces `href="#..."` de la landing
+- **Fotos del equipo**: viven en `public/team/<id>.jpg`, con el archivo llamado igual que el `id` del miembro. Un miembro solo muestra foto si su id está además en `MEMBERS_WITH_PHOTO` (`TeamClient.tsx`). El marco es 3/4 con `object-fit: cover`, así que una foto horizontal se recorta a los lados
 - **PRPs**: documentar features complejas en `.claude/PRPs/` antes de implementar
 
 ## Comandos

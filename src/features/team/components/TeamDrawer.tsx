@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import type { Member } from "../data/members";
+import { MEMBERS_WITH_PHOTO, type Member } from "../data/members";
 
-const MEMBERS_WITH_PHOTO = new Set(["ignacio-navarrete", "fabian-melivilu", "vicente-garcia", "joseph-mailens"]);
+/** Marca en el <body> mientras el perfil está abierto. */
+const BODY_DRAWER_ABIERTO = "team-drawer-abierto";
 
 interface TeamDrawerProps {
   member: Member | null;
@@ -32,7 +33,13 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
     tlRef.current?.kill();
     gsap.set([l1, l2, panel], { x: 0 });
 
-    const staggerEls = Array.from(panel.querySelectorAll<HTMLElement>("[data-stagger]"));
+        /* Atributo propio, no `data-stagger`.
+       `landing.css` trae una regla global `[data-stagger] > * { opacity: 0 }`
+       pensada para el reveal del home, que solo se levanta cuando el contenedor
+       recibe `.in` — algo que en /team nunca ocurre. Al reutilizar el mismo
+       nombre acá, el nombre y la miniatura del perfil quedaban invisibles
+       (la biografía se salvaba porque ella misma lleva el atributo). */
+    const staggerEls = Array.from(panel.querySelectorAll<HTMLElement>("[data-drawer-stagger]"));
     if (staggerEls.length) gsap.set(staggerEls, { y: 20, opacity: 0 });
 
     const tl = gsap.timeline();
@@ -67,18 +74,28 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
     });
   }, []);
 
+  /**
+   * Con el perfil abierto marcamos el <body>. El CSS usa esa marca para retirar
+   * el nav flotante: el panel entra por la derecha y el menú quedaba encima,
+   * compitiendo con el perfil. Al cerrar se quita la marca y el nav vuelve.
+   */
   useEffect(() => {
     if (isOpen) {
       hasOpenedRef.current = true;
       document.body.style.overflow = "hidden";
+      document.body.classList.add(BODY_DRAWER_ABIERTO);
       playOpen();
       const t = setTimeout(() => closeRef.current?.focus(), 300);
       return () => clearTimeout(t);
     } else if (hasOpenedRef.current) {
       document.body.style.overflow = "";
+      document.body.classList.remove(BODY_DRAWER_ABIERTO);
       playClose();
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+      document.body.classList.remove(BODY_DRAWER_ABIERTO);
+    };
   }, [isOpen, member, playOpen, playClose]);
 
   useEffect(() => {
@@ -137,7 +154,7 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
         {member && (
           <div className="team-drawer__content">
             {/* Header: nombre + thumbnail */}
-            <div data-stagger className="team-drawer__header">
+            <div data-drawer-stagger className="team-drawer__header">
               <div className="team-drawer__header-text">
                 <p className="team-drawer__role">{member.role}</p>
                 <h2 className="team-drawer__name" id="drawer-member-name">
@@ -160,7 +177,7 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
 
             {/* LinkedIn como texto link simple */}
             {member.linkedin && (
-              <div data-stagger className="team-drawer__link-row">
+              <div data-drawer-stagger className="team-drawer__link-row">
                 <a
                   href={member.linkedin}
                   target="_blank"
@@ -172,16 +189,16 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
               </div>
             )}
 
-            <div data-stagger className="team-drawer__divider" />
+            <div data-drawer-stagger className="team-drawer__divider" />
 
             {/* Bio */}
             {member.bio && (
-              <p data-stagger className="team-drawer__bio">{member.bio}</p>
+              <p data-drawer-stagger className="team-drawer__bio">{member.bio}</p>
             )}
 
             {/* Portafolio (si existe, como enlace secundario) */}
             {member.portfolio && (
-              <div data-stagger className="team-drawer__links">
+              <div data-drawer-stagger className="team-drawer__links">
                 <a
                   href={member.portfolio}
                   target="_blank"

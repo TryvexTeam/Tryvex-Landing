@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NavBar, { INNER_LINKS } from "../../components/NavBar";
+import NavBar from "../../components/NavBar";
+import RevelarAlScroll from "../../components/RevelarAlScroll";
+import BloqueResultados from "../../features/landing/components/BloqueResultados";
+import { fetchStats } from "../../features/landing/stats";
 
 export const metadata: Metadata = {
   title: "Proceso — Tryvex",
@@ -15,7 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProcesoPage() {
+export default async function ProcesoPage() {
+  const stats = await fetchStats();
+
   return (
     <>
       <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
@@ -30,14 +35,15 @@ export default function ProcesoPage() {
         </defs>
       </svg>
 
-      <NavBar links={INNER_LINKS} ctaHref="/contacto" />
+      <NavBar />
+      <RevelarAlScroll />
 
       <main>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "140px", paddingBottom: "80px" }}>
-            <span className="eyebrow"><span className="live"></span> 03 · Proceso</span>
-            <h1 style={{ marginTop: "16px" }}>De la idea a producción <em>en cuatro pasos.</em></h1>
-            <p className="lede" style={{ maxWidth: "600px" }}>
+          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "80px" }}>
+            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">03</span><span className="sec-label">Proceso</span></span>
+            <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>De la idea a producción <em>en cuatro pasos.</em></h1>
+            <p className="lede" data-anim="fade-up" style={{ maxWidth: "600px" }}>
               Sin briefs eternos ni reuniones de status. Conversamos, mapeamos, construimos y entregamos. Así de simple.
             </p>
           </div>
@@ -45,7 +51,7 @@ export default function ProcesoPage() {
 
         <section className="block">
           <div className="wrap">
-            <div className="process" style={{ marginTop: "0" }}>
+            <div className="process" data-stagger style={{ marginTop: "0" }}>
 
               <div className="step glass">
                 <div className="step-num">01</div>
@@ -81,26 +87,8 @@ export default function ProcesoPage() {
 
             </div>
 
-            <div className="metrics-block glass dark" style={{ marginTop: "64px" }}>
-              <div className="sec-tag">Números que importan</div>
-              <div className="metrics" style={{ marginTop: "32px" }}>
-                <div className="metric">
-                  <div className="v">3<em>d</em></div>
-                  <div className="l">Primer entregable funcional</div>
-                </div>
-                <div className="metric">
-                  <div className="v">14</div>
-                  <div className="l">Negocios activos ahora mismo</div>
-                </div>
-                <div className="metric">
-                  <div className="v">90<em>d</em></div>
-                  <div className="l">Mantención post-entrega incluida</div>
-                </div>
-                <div className="metric">
-                  <div className="v">0</div>
-                  <div className="l">Contratos de permanencia</div>
-                </div>
-              </div>
+            <div style={{ marginTop: "64px" }}>
+              <BloqueResultados stats={stats} />
             </div>
 
             <div style={{ textAlign: "center", marginTop: "64px", paddingBottom: "40px" }}>
@@ -136,8 +124,8 @@ export default function ProcesoPage() {
               <div>
                 <h5>Estudio</h5>
                 <Link href="/proceso">Proceso</Link>
-                <Link href="/#offer">Planes</Link>
-                <Link href="/#faq">Preguntas</Link>
+                <Link href="/planes">Planes</Link>
+                <Link href="/preguntas">Preguntas</Link>
               </div>
               <div>
                 <h5>Contacto</h5>

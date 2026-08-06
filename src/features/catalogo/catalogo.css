@@ -1,44 +1,52 @@
 /* ── Catálogo de demostraciones ─────────────────────────────────────────── */
 
+/* Grilla que se acomoda a cuántas demos haya publicadas.
+   Antes eran tres columnas fijas: con una sola demo la tarjeta quedaba flotando
+   arriba a la izquierda y dos tercios de la página en blanco. Con `auto-fit` y
+   un ancho máximo por pieza, una demo ocupa una tarjeta grande y centrada, dos
+   se reparten, y de tres en adelante se arma la grilla. Sin tocar data.ts. */
 .cat-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 48px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 560px));
+  justify-content: center;
+  gap: 28px;
+  margin-top: 56px;
 }
-@media (max-width: 980px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 640px) { .cat-grid { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .cat-grid { grid-template-columns: 1fr; gap: 20px; }
+}
 
 .cat-card {
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius-lg, 24px);
+  border-radius: 20px;
   overflow: hidden;
-  transition: transform var(--duration-normal, 400ms) var(--ease-out-expo, ease),
-              box-shadow var(--duration-normal, 400ms) var(--ease-out-expo, ease);
+  background: var(--cream, #ece8dc);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.cat-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 24px 48px -24px rgba(14, 14, 14, 0.35);
-}
+.cat-card:hover { transform: translateY(-4px); }
 
-/* La imagen completa es el enlace a la demo */
+/* ── Portada: la captura es la pieza y el enlace ── */
 .cat-thumb {
   position: relative;
   display: block;
-  aspect-ratio: 16 / 10;
+  /* Proporción de una captura de portada a ancho completo. Recortar los lados
+     para forzar un formato más alto parte el contenido del sitio a media
+     palabra y deja de leerse como una web. */
+  aspect-ratio: 1360 / 578;
   overflow: hidden;
-  background: var(--color-ink-base, #0e0e0e);
+  background: var(--ink, #0e0e0e);
 }
-.cat-thumb img {
+.cat-shot {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--duration-slow, 700ms) var(--ease-out-expo, ease);
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.cat-card:hover .cat-thumb img { transform: scale(1.04); }
+.cat-card:hover .cat-shot { transform: scale(1.03); }
 
-/* Portada de marca cuando aún no hay captura */
+/* Portada de marca mientras una demo no tenga captura */
 .cat-thumb-fallback {
   width: 100%;
   height: 100%;
@@ -47,64 +55,90 @@
   justify-content: center;
   padding: 24px;
   text-align: center;
-  color: var(--color-paper-base, #f4f1ea);
-  font-weight: 700;
-  font-size: 1.25rem;
-  letter-spacing: -0.01em;
-  background:
-    radial-gradient(120% 90% at 20% 0%, rgba(229, 57, 53, 0.35), transparent 60%),
-    var(--color-ink-base, #0e0e0e);
-}
-
-.cat-tag {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  padding: 5px 12px;
-  border-radius: var(--radius-pill, 9999px);
+  color: rgba(244, 241, 234, 0.9);
+  font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background:
+    radial-gradient(120% 90% at 20% 0%, rgba(229, 57, 53, 0.32), transparent 60%),
+    var(--ink, #0e0e0e);
+}
+
+/* Pista de que la portada es clicable — aparece al pasar por encima */
+.cat-ver {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink, #0e0e0e);
+  background: rgba(244, 241, 234, 0.94);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.cat-ver svg { width: 13px; height: 13px; }
+.cat-card:hover .cat-ver,
+.cat-thumb:focus-visible .cat-ver { opacity: 1; transform: translateY(0); }
+
+/* ── Pie: identificación mínima + una sola acción ── */
+.cat-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px 18px;
+}
+.cat-ident { min-width: 0; }
+.cat-cat {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted-2, #98948c);
+  margin-bottom: 5px;
+}
+.cat-ident h3 {
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--color-paper-base, #f4f1ea);
-  background: rgba(14, 14, 14, 0.72);
-  backdrop-filter: blur(8px);
+  letter-spacing: -0.01em;
+  color: var(--ink, #0e0e0e);
+}
+.cat-ident p {
+  margin: 3px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted, #6b6863);
 }
 
-.cat-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 10px;
-  padding: 20px 22px 22px;
+.cat-cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--paper, #f4f1ea);
+  background: var(--ink, #0e0e0e);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
 }
-.cat-body h3 { font-size: 1.15rem; margin: 0; }
-.cat-body p { margin: 0; font-size: 0.92rem; opacity: 0.75; flex: 1; }
+.cat-cta:hover { transform: translateY(-1px); opacity: 0.9; }
+.cat-cta:focus-visible { outline: 2px solid var(--red, #e53935); outline-offset: 2px; }
 
-.cat-incluye {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  list-style: none;
-  padding: 0;
-  margin: 2px 0 6px;
-}
-.cat-incluye li {
-  font-size: 11.5px;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill, 9999px);
-  border: 1px solid rgba(14, 14, 14, 0.18);
-}
-
-.cat-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.cat-actions .btn-primary,
-.cat-actions .btn-ghost {
-  flex: 1;
-  justify-content: center;
-  min-height: 44px;
-  text-align: center;
+@media (max-width: 460px) {
+  .cat-foot { flex-direction: column; align-items: stretch; gap: 12px; }
+  .cat-cta { justify-content: center; }
 }
 
 /* Estado vacío — mientras el catálogo se llena */
@@ -118,21 +152,9 @@
 .cat-empty h2 { font-size: 1.4rem; margin-bottom: 10px; }
 .cat-empty p { opacity: 0.75; margin-bottom: 22px; }
 
-/* ── Preview del catálogo en el home ──────────────────────────────────────
-   Misma tarjeta que la vitrina completa, pero la grilla se centra y acota el
-   ancho de cada tarjeta: hoy hay una sola demo publicada y con la grilla de
-   tres columnas quedaría flotando en un tercio del ancho. Acepta 1, 2 o 3 sin
-   tocar nada. */
-.cat-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
-  justify-content: center;
-  gap: 24px;
-  margin-top: 48px;
-}
-
+/* Enlace a la vitrina completa, bajo el preview del home */
 .cat-preview-more {
   display: flex;
   justify-content: center;
-  margin-top: 48px;
+  margin-top: 44px;
 }

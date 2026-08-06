@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import NavBar, { INNER_LINKS } from "../../components/NavBar";
+import NavBar from "../../components/NavBar";
+import RevelarAlScroll from "../../components/RevelarAlScroll";
 import TeamClient from "../../features/team/components/TeamClient";
 import "../../features/team/equipo.css";
 
@@ -32,14 +33,15 @@ export default function TeamPage() {
         </defs>
       </svg>
 
-      <NavBar links={INNER_LINKS} ctaHref="/contacto" />
+      <NavBar />
+      <RevelarAlScroll />
 
       <main>
         <section className="hero">
-          <div className="wrap" style={{ paddingTop: "140px", paddingBottom: "40px" }}>
-            <span className="eyebrow"><span className="live"></span> 04 · Equipo</span>
+          <div className="wrap" style={{ paddingTop: "34px", paddingBottom: "40px" }}>
+            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">04</span><span className="sec-label">Equipo</span></span>
             <div className="team-hero-editorial">
-              <h1 className="team-hero-editorial__h1">
+              <h1 data-anim="fade-up" className="team-hero-editorial__h1">
                 El equipo que construye<br />lo que prometemos.
               </h1>
               <p className="team-hero-editorial__desc">
@@ -78,8 +80,8 @@ export default function TeamPage() {
                 <h5>Estudio</h5>
                 <Link href="/proceso">Proceso</Link>
                 <Link href="/team">Equipo</Link>
-                <Link href="/#offer">Planes</Link>
-                <Link href="/#faq">Preguntas</Link>
+                <Link href="/planes">Planes</Link>
+                <Link href="/preguntas">Preguntas</Link>
               </div>
               <div>
                 <h5>Contacto</h5>

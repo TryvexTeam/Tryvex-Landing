@@ -22,8 +22,12 @@ export function scrollToSection(id: string): void {
   if (escena) {
     const caja = escena.getBoundingClientRect();
     const finDeEscena = caja.top + window.scrollY + caja.height - window.innerHeight;
-    // "instant" fuerza el salto aunque el CSS declare scroll-behavior: smooth.
-    window.scrollTo({ top: Math.max(0, finDeEscena), behavior: "instant" });
+    /* Scroll suave, pero al FINAL de la escena y no a su borde superior.
+       El problema original no era la animación sino el punto de llegada: al
+       aterrizar en el borde de arriba quedabas en el fotograma 0, con el
+       contenido invisible y cientos de píxeles por delante. Yendo al final se
+       ve la escena armarse durante el viaje y se llega con todo montado. */
+    window.scrollTo({ top: Math.max(0, finDeEscena), behavior: "smooth" });
     return;
   }
 
