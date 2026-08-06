@@ -53,7 +53,7 @@ export default function LandingClient() {
     /* ── 2. Intersection observer reveals ───────────────────────── */
     const gsapStaggerClasses = ["services", "process", "offer"];
     const gsapAnimClasses = ["quote-card"];
-    // Anime.js controls these — skip IO
+    // Anime.js controla estos — se saltan el observer
     const animeSelectors = [".metrics-block", ".final", ".final-spark"];
 
     const io = new IntersectionObserver(
@@ -388,34 +388,19 @@ export default function LandingClient() {
           duration: 1800,
         });
 
-        /* Los tweens de la estrella y del botón empiezan en 300 y 1800 del
-           timeline. Hasta ese momento los elementos se mostraban en su estado
-           final: la estrella aparecía entera y de golpe saltaba hacia atrás
-           para volver a entrar. Se fija su estado de partida acá — dentro del
-           bloque que solo corre si anime.js cargó, así que si falla la carga
-           siguen visibles en vez de quedar invisibles para siempre.
-
-           El estado de partida solo se aplica si la escena todavía está por
-           delante. Fijarlo siempre dejaba la estrella invisible cuando la
-           página cargaba ya scrolleada —al volver con el botón atrás, al
-           recargar a media página o al llegar con un ancla—: el timeline es
-           scrub y no recibe evento hasta que te mueves, así que nadie la
-           devolvía a la vista. Ese era el "a veces está, a veces no". */
-        const escenaFinal = document.querySelector<HTMLElement>(".scene-final-wrap");
-        const escenaPorDelante = escenaFinal
-          ? escenaFinal.getBoundingClientRect().top > 0
-          : true;
-
-        if (escenaPorDelante) {
-          document.querySelectorAll<HTMLElement>(".final-spark").forEach((el) => {
-            el.style.opacity = "0";
-            el.style.transform = "scale(0.2) rotate(-90deg)";
-          });
-          document.querySelectorAll<HTMLElement>(".final .btn-primary").forEach((el) => {
-            el.style.opacity = "0.7";
-            el.style.transform = "scale(0.95)";
-          });
-        }
+        /* Los tweens empiezan en distintos puntos del timeline. Hasta que les
+           toca, los elementos se mostraban en su estado final y de golpe
+           saltaban hacia atrás para volver a entrar. Se fija su estado de
+           partida acá — dentro del bloque que solo corre si anime.js cargó, así
+           que si falla la carga siguen visibles en vez de quedar invisibles. */
+        document.querySelectorAll<HTMLElement>(".final-spark").forEach((el) => {
+          el.style.opacity = "0";
+          el.style.transform = "scale(0.2) rotate(-90deg)";
+        });
+        document.querySelectorAll<HTMLElement>(".final .btn-primary").forEach((el) => {
+          el.style.opacity = "0.7";
+          el.style.transform = "scale(0.95)";
+        });
 
         finalTl.add(".final", {
           opacity: [0, 1],
@@ -424,13 +409,23 @@ export default function LandingClient() {
           duration: 1200,
         });
 
+        /* La estrella gira al entrar y al salir: es una animación de scroll y
+           así debe quedarse.
+
+           Lo que sí cambió es *cuándo*. Arrancaba en 300 y duraba 1400, o sea
+           terminaba en 1700 de un timeline de 1800: a mitad de la escena la
+           tarjeta ya estaba en 0.98 de opacidad y la estrella recién en 0.78, y
+           al 10% la tarjeta se veía en 0.39 con la estrella todavía en cero. Ese
+           desfase es lo que se leía como "la estrella no está": no faltaba,
+           venía muy por detrás. Ahora comparte el arranque y la duración de la
+           tarjeta, así que giran y aparecen juntas. */
         finalTl.add(".final-spark", {
           opacity: [0, 1],
           scale: [0.2, 1],
           rotate: [-90, 0],
-          duration: 1400,
+          duration: 1200,
           delay: stagger(110),
-        }, 300);
+        }, 0);
 
         finalTl.add(".final .btn-primary", {
           scale: [0.95, 1],
@@ -438,7 +433,33 @@ export default function LandingClient() {
           duration: 800,
         }, 1800);
 
+        /**
+         * Pone el timeline donde corresponde según dónde está el scroll ahora.
+         *
+         * El scrub solo avanza cuando llega un evento de scroll. Si la página
+         * carga con la escena ya alcanzada —el botón atrás, una recarga a media
+         * página, un enlace con ancla— no llega ninguno: el timeline se queda
+         * en el fotograma 0 y la estrella sigue con el `opacity: 0` que se le
+         * acaba de fijar arriba, aunque la tarjeta esté a la vista. El usuario
+         * ve el bloque sin estrella hasta que mueve la rueda. Esa era la mitad
+         * intermitente del problema, la que dependía de cómo hubieras llegado.
+         */
+        const alinearConElScroll = () => {
+          const escena = document.querySelector<HTMLElement>(".scene-final-wrap");
+          if (!escena) return;
+          const recorrido = escena.offsetHeight - window.innerHeight;
+          const avance = Math.min(
+            1,
+            Math.max(0, -escena.getBoundingClientRect().top / (recorrido || 1))
+          );
+          finalTl.seek(finalTl.duration * avance);
+        };
+        requestAnimationFrame(alinearConElScroll);
+        // El bfcache restaura la posición sin disparar scroll.
+        window.addEventListener("pageshow", alinearConElScroll);
+
         animeCleanup = () => {
+          window.removeEventListener("pageshow", alinearConElScroll);
           metricsTl.pause();
           finalTl.pause();
         };

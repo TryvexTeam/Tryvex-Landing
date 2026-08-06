@@ -1391,3 +1391,27 @@
   .scene-metrics-wrap > section,
   .scene-final-wrap > section { position: static; min-height: 0; }
 }
+
+/* ======= DESBORDE HORIZONTAL EN MOVIL =======
+   Las animaciones de entrada desplazan las tarjetas en el eje X antes de
+   revelarlas: `.step` arranca en x = ±72px y suma una rotacion 3D sobre Y con
+   perspectiva, y los adornos del hero se dispersan con x de hasta 140. En
+   escritorio sobra espacio; en un viewport de 393px con tarjetas de 353 eso se
+   sale de la pantalla, el navegador ensancha el viewport para acomodarlo y toda
+   la pagina se renderiza un 13% mas chica (393 reales contra 539 renderizados).
+
+   El recorte va en las secciones, nunca en `html`: ahi `clip` —y `hidden`—
+   rompen el `position: sticky` del nav y dejan a ScrollTrigger sin contenedor
+   de scroll, apagando todas las escenas de GSAP. En un elemento normal `clip`
+   no crea contenedor de scroll y no arrastra ninguno de esos efectos.
+
+   Solo en movil: en escritorio el desplazamiento cabe de sobra dentro del
+   ancho, y recortar ahi cortaria la animacion contra el borde del contenedor. */
+@media (max-width: 768px) {
+  section.hero,
+  section.block,
+  .scene-metrics-wrap,
+  .scene-final-wrap {
+    overflow-x: clip;
+  }
+}

@@ -126,6 +126,9 @@ export default function FinalCTA() {
 
   return (
     <div className="final glass dark">
+      {/* Sin `data-anim`: la anima el timeline de la escena final en
+          LandingClient, con scrub. Gira al entrar y al salir — eso es
+          deliberado, es una animación de scroll. */}
       <svg className="final-spark">
         <use href="#spark-light" />
       </svg>
