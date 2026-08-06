@@ -35,7 +35,7 @@ export default function CatalogoPage() {
 
       <main id="contenido" tabIndex={-1}>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "40px" }}>
+          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "60px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">02</span><span className="sec-label">Catálogo</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Vea el trabajo <em>funcionando</em>, no promesas.</h1>
             <p className="lede" data-anim="fade-up" style={{ maxWidth: "620px" }}>

@@ -30,8 +30,8 @@ export default function ContactoPage() {
 
       <main id="contenido" tabIndex={-1}>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "40px" }}>
-            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">03</span><span className="sec-label">Contacto</span></span>
+          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "60px" }}>
+            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">07</span><span className="sec-label">Contacto</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Agenda una llamada <em>de 20 minutos.</em></h1>
             <p className="lede" data-anim="fade-up" style={{ maxWidth: "600px" }}>
               Sin compromiso y sin costo. Cuéntanos tu problema y te decimos si podemos ayudarte — y en cuánto tiempo.

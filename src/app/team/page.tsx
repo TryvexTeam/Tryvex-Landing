@@ -30,12 +30,15 @@ export default function TeamPage() {
       <RevelarAlScroll />
 
       <main id="contenido" tabIndex={-1}>
-        <section className="hero">
+        {/* `paddingBottom: 0` como las otras seis internas: `.hero` trae 60px
+            propios que acá se sumaban a los 60 del `.wrap`, dejando el doble de
+            aire entre la bajada y el contenido que en el resto del sitio. */}
+        <section className="hero" style={{ paddingBottom: "0" }}>
           {/* Mismo bloque de 800px centrado que el resto de las internas. Era la
               única ruta con el hero a ancho completo (1280) y en dos columnas:
               su h1 arrancaba 240px más a la izquierda que el de las demás. */}
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "60px" }}>
-            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">04</span><span className="sec-label">Equipo</span></span>
+            <span className="eyebrow" data-anim="fade-down"><span className="sec-num">06</span><span className="sec-label">Equipo</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>
               El equipo que construye <em>lo que prometemos.</em>
             </h1>

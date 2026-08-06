@@ -29,7 +29,7 @@ export default function ServiciosPage() {
 
       <main id="contenido" tabIndex={-1}>
         <section className="hero" style={{ paddingBottom: "0" }}>
-          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "80px" }}>
+          <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "60px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">01</span><span className="sec-label">Servicios</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Tres formas de <em>sacar trabajo</em> de tu cabeza.</h1>
             <p className="lede" data-anim="fade-up" style={{ maxWidth: "600px" }}>
