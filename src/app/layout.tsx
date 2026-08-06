@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sileo";
@@ -51,6 +51,24 @@ const jsonLd = {
       dateModified: "2026-05-12",
     },
   ],
+};
+
+/**
+ * El sitio es de tema claro y punto.
+ *
+ * No lo declaraba en ninguna parte, y cuando una página se calla, los
+ * navegadores con oscurecido automático se toman la libertad de invertirla.
+ * En un iPhone con el sistema en oscuro la landing se veía negra con el texto
+ * en claro: el crema #f4f1ea convertido en casi negro, los rojos sobreviviendo
+ * porque el algoritmo respeta los matices. Nada de eso es diseño nuestro.
+ *
+ * `colorScheme: "light"` es la señal de "esta página ya resolvió sus colores,
+ * no la toques". `themeColor` va con el mismo crema del papel para que la barra
+ * del navegador acompañe en vez de cortar con una franja blanca o negra.
+ */
+export const viewport: Viewport = {
+  colorScheme: "light",
+  themeColor: "#f4f1ea",
 };
 
 export const metadata: Metadata = {

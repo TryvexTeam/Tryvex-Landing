@@ -1,5 +1,17 @@
 
   :root {
+    /* Declaración explícita del esquema, además del `<meta name="color-scheme">`
+       que emite el layout. Los dos dicen lo mismo a propósito: el meta llega
+       antes —en el head, sin esperar la hoja de estilos— y esta línea cubre el
+       caso de que el navegador priorice el CSS. Sin ninguna de las dos, el
+       oscurecido automático de algunos navegadores invierte la página entera:
+       en un iPhone con el sistema en oscuro, el papel crema salía negro.
+
+       Es también lo que evita que los controles nativos —campos del formulario,
+       menús desplegables, barras de scroll— se pinten oscuros dentro de una
+       página clara. */
+    color-scheme: light;
+
     --paper: #f4f1ea;
     --paper-2: #efece4;
     --ink: #0e0e0e;
@@ -242,11 +254,21 @@
   .ambient {
     position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
     /* Los blobs quedan recortados contra el borde superior de la ventana y,
-       como el desenfoque no puede desvanecerse más allá del corte, dejaban un
-       canto duro rosado sobre el nav que se leía como un fallo de pintado al
-       volver arriba. La máscara los apaga antes de llegar al borde. */
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 140px);
-    mask-image: linear-gradient(180deg, transparent 0, #000 140px);
+       como el desenfoque no puede desvanecerse más allá del corte, dejan un
+       canto duro rosado sobre el nav que se lee como un fallo de pintado.
+
+       La máscara los apaga antes de llegar al borde. Iba de transparente a
+       opaco en 140px, y no alcanzaba: el resplandor entraba tan rápido que su
+       propio arranque se veía como una línea nítida cruzando la página entera
+       justo encima del nav, en todas las rutas.
+
+       Ahora se mantiene del todo transparente los primeros 160px —el nav vive
+       entre los 16 y los 76 cuando está pegado, así que queda holgado— y recién
+       ahí empieza un fundido de 240px, largo como para que el ojo no encuentre
+       dónde empieza. Se comparó contra un fundido único de 420px, que todavía
+       dejaba banda visible. */
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, transparent 160px, #000 400px);
+    mask-image: linear-gradient(180deg, transparent 0, transparent 160px, #000 400px);
   }
   .ambient::before, .ambient::after, .ambient .b1, .ambient .b2, .ambient .b3 {
     content: ''; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.85;
