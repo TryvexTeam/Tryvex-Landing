@@ -15,11 +15,14 @@ interface TeamDrawerProps {
 export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
   const isOpen = member !== null;
 
+  const rootRef      = useRef<HTMLDivElement>(null);
   const panelRef     = useRef<HTMLDivElement>(null);
   const layer1Ref    = useRef<HTMLDivElement>(null);
   const layer2Ref    = useRef<HTMLDivElement>(null);
   const closeRef     = useRef<HTMLButtonElement>(null);
   const hasOpenedRef = useRef(false);
+  /** Quién abrió el perfil: al cerrar el foco vuelve ahí, no al <body>. */
+  const disparadorRef = useRef<HTMLElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tlRef = useRef<any>(null);
 
@@ -81,6 +84,9 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
    */
   useEffect(() => {
     if (isOpen) {
+      if (!hasOpenedRef.current) {
+        disparadorRef.current = document.activeElement as HTMLElement | null;
+      }
       hasOpenedRef.current = true;
       document.body.style.overflow = "hidden";
       document.body.classList.add(BODY_DRAWER_ABIERTO);
@@ -91,6 +97,9 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
       document.body.style.overflow = "";
       document.body.classList.remove(BODY_DRAWER_ABIERTO);
       playClose();
+      hasOpenedRef.current = false;
+      disparadorRef.current?.focus();
+      disparadorRef.current = null;
     }
     return () => {
       document.body.style.overflow = "";
@@ -104,6 +113,52 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
 
+  /**
+   * El diálogo declara `aria-modal="true"`, pero el foco se escapaba: doce Tab
+   * y doce veces afuera. Acá se cierra el ciclo dentro del panel. El resto de la
+   * página queda fuera del recorrido porque el contenedor lleva `inert` mientras
+   * está cerrado y el foco no puede salir mientras está abierto.
+   */
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const enfocables = () => {
+      const raiz = rootRef.current;
+      if (!raiz) return [];
+      const sel = 'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])';
+      // `offsetParent` descarta lo que está oculto por CSS (la X flotante solo
+      // existe en móvil, el botón del panel solo en escritorio).
+      return Array.from(raiz.querySelectorAll<HTMLElement>(sel)).filter(
+        (el) => el.offsetParent !== null && el.tabIndex !== -1
+      );
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const raiz = rootRef.current;
+      if (!raiz) return;
+
+      const lista = enfocables();
+      if (!lista.length) return;
+
+      const primero = lista[0];
+      const ultimo  = lista[lista.length - 1];
+      const activo  = document.activeElement as HTMLElement | null;
+      const adentro = activo ? raiz.contains(activo) : false;
+
+      if (e.shiftKey && (!adentro || activo === primero)) {
+        e.preventDefault();
+        ultimo.focus();
+      } else if (!e.shiftKey && (!adentro || activo === ultimo)) {
+        e.preventDefault();
+        primero.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, member]);
+
   const closeIcon = (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M18 6L6 18M6 6l12 12" />
@@ -114,11 +169,13 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
 
   return (
     <div
+      ref={rootRef}
       className={`team-drawer${isOpen ? " open" : ""}`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="drawer-member-name"
       aria-hidden={!isOpen}
+      inert={!isOpen}
     >
       {/* Backdrop — sin blur */}
       <div className="team-drawer__backdrop" onClick={onClose} aria-hidden="true" />

@@ -5,7 +5,16 @@ import { scrollToSection } from "../../../lib/scroll-to-section";
 
 export default function LandingClient() {
   useEffect(() => {
-    const reduce = false; // landing animations always run
+    /**
+     * Preferencia real del sistema. Estaba fijada en `false` con el comentario
+     * "landing animations always run", pero toda la maquinaria para respetarla
+     * ya estaba escrita: esta bandera gobierna el bloque completo de GSAP y
+     * Anime (más abajo) y la lista de elementos que el IntersectionObserver
+     * deja pasar. Con la preferencia activa no se construye ninguna escena de
+     * scroll, y el observer se encarga de revelar todo el contenido de una vez
+     * — nada queda invisible.
+     */
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     /* ── 1. Word-split big headings ──────────────────────────────── */
     document.querySelectorAll('[data-split="words"]').forEach((el) => {
@@ -44,7 +53,7 @@ export default function LandingClient() {
     /* ── 2. Intersection observer reveals ───────────────────────── */
     const gsapStaggerClasses = ["services", "process", "offer"];
     const gsapAnimClasses = ["quote-card"];
-    // Anime.js controls these — skip IO
+    // Anime.js controla estos — se saltan el observer
     const animeSelectors = [".metrics-block", ".final", ".final-spark"];
 
     const io = new IntersectionObserver(
@@ -131,9 +140,11 @@ export default function LandingClient() {
     const updateProgress = () => {
       const max =
         document.documentElement.scrollHeight - window.innerHeight;
+      // Razón 0–1 sin unidad: el CSS la consume como `scaleX(var(--sp))`.
+      // Antes salía en porcentaje porque la barra animaba su `width`.
       progress?.style.setProperty(
         "--sp",
-        (Math.min(1, window.scrollY / (max || 1)) * 100).toFixed(2) + "%"
+        Math.min(1, window.scrollY / (max || 1)).toFixed(4)
       );
       pTicking = false;
     };
@@ -170,26 +181,47 @@ export default function LandingClient() {
               scrub: 0.8,
             };
 
+            /**
+             * Bajo los 980px el hero pasa a una sola columna: el bloque visual
+             * deja de estar al lado del texto y queda debajo. Con el mismo
+             * recorrido de escritorio, el chip de "Pedido nuevo · Shopify" sube
+             * 230px y termina tapando el 100% de "14 · proyectos activos"
+             * —medido a scrollY 460 en un iPhone 12—.
+             *
+             * La animación se queda: lo que cambia es cuánto viajan. En una
+             * columna el recorrido baja a un tercio, y el CSS les reserva una
+             * banda propia arriba y abajo de la tarjeta. Se siguen moviendo con
+             * el scroll, pero dentro de su espacio, sin cruzar texto.
+             */
+            const dosColumnas = window.innerWidth > 980;
+            const chip = (escritorio: number, movil: number) =>
+              dosColumnas ? escritorio : movil;
+
+            /* La tarjeta también viaja, y ese era el resto del problema: subía
+               140px mientras el chip subía 46, así que lo alcanzaba por abajo y
+               volvía a pisarle el texto. En una columna las dos velocidades se
+               acercan, y la diferencia entre ambas —que es lo que se percibe
+               como profundidad— se mantiene. */
             gsap.to(".hero-visual", {
-              y: -140,
-              rotation: -4,
-              scale: 0.94,
+              y: chip(-140, -58),
+              rotation: chip(-4, -2),
+              scale: chip(0.94, 0.985),
               ease: "none",
               scrollTrigger: heroST,
             });
             gsap.to(".fc-1", {
-              y: -230,
-              x: 60,
-              rotation: -20,
-              scale: 0.8,
+              y: chip(-230, -46),
+              x: chip(60, 10),
+              rotation: chip(-20, -6),
+              scale: chip(0.8, 0.94),
               ease: "none",
               scrollTrigger: { ...heroST, scrub: 1.4 },
             });
             gsap.to(".fc-2", {
-              y: 190,
-              x: -50,
-              rotation: 16,
-              scale: 0.82,
+              y: chip(190, 38),
+              x: chip(-50, -10),
+              rotation: chip(16, 5),
+              scale: chip(0.82, 0.94),
               ease: "none",
               scrollTrigger: { ...heroST, scrub: 1.4 },
             });
@@ -377,12 +409,11 @@ export default function LandingClient() {
           duration: 1800,
         });
 
-        /* Los tweens de la estrella y del botón empiezan en 300 y 1800 del
-           timeline. Hasta ese momento los elementos se mostraban en su estado
-           final: la estrella aparecía entera y de golpe saltaba hacia atrás
-           para volver a entrar. Se fija su estado de partida acá — dentro del
-           bloque que solo corre si anime.js cargó, así que si falla la carga
-           siguen visibles en vez de quedar invisibles para siempre. */
+        /* Los tweens empiezan en distintos puntos del timeline. Hasta que les
+           toca, los elementos se mostraban en su estado final y de golpe
+           saltaban hacia atrás para volver a entrar. Se fija su estado de
+           partida acá — dentro del bloque que solo corre si anime.js cargó, así
+           que si falla la carga siguen visibles en vez de quedar invisibles. */
         document.querySelectorAll<HTMLElement>(".final-spark").forEach((el) => {
           el.style.opacity = "0";
           el.style.transform = "scale(0.2) rotate(-90deg)";
@@ -399,13 +430,23 @@ export default function LandingClient() {
           duration: 1200,
         });
 
+        /* La estrella gira al entrar y al salir: es una animación de scroll y
+           así debe quedarse.
+
+           Lo que sí cambió es *cuándo*. Arrancaba en 300 y duraba 1400, o sea
+           terminaba en 1700 de un timeline de 1800: a mitad de la escena la
+           tarjeta ya estaba en 0.98 de opacidad y la estrella recién en 0.78, y
+           al 10% la tarjeta se veía en 0.39 con la estrella todavía en cero. Ese
+           desfase es lo que se leía como "la estrella no está": no faltaba,
+           venía muy por detrás. Ahora comparte el arranque y la duración de la
+           tarjeta, así que giran y aparecen juntas. */
         finalTl.add(".final-spark", {
           opacity: [0, 1],
           scale: [0.2, 1],
           rotate: [-90, 0],
-          duration: 1400,
+          duration: 1200,
           delay: stagger(110),
-        }, 300);
+        }, 0);
 
         finalTl.add(".final .btn-primary", {
           scale: [0.95, 1],
@@ -413,7 +454,33 @@ export default function LandingClient() {
           duration: 800,
         }, 1800);
 
+        /**
+         * Pone el timeline donde corresponde según dónde está el scroll ahora.
+         *
+         * El scrub solo avanza cuando llega un evento de scroll. Si la página
+         * carga con la escena ya alcanzada —el botón atrás, una recarga a media
+         * página, un enlace con ancla— no llega ninguno: el timeline se queda
+         * en el fotograma 0 y la estrella sigue con el `opacity: 0` que se le
+         * acaba de fijar arriba, aunque la tarjeta esté a la vista. El usuario
+         * ve el bloque sin estrella hasta que mueve la rueda. Esa era la mitad
+         * intermitente del problema, la que dependía de cómo hubieras llegado.
+         */
+        const alinearConElScroll = () => {
+          const escena = document.querySelector<HTMLElement>(".scene-final-wrap");
+          if (!escena) return;
+          const recorrido = escena.offsetHeight - window.innerHeight;
+          const avance = Math.min(
+            1,
+            Math.max(0, -escena.getBoundingClientRect().top / (recorrido || 1))
+          );
+          finalTl.seek(finalTl.duration * avance);
+        };
+        requestAnimationFrame(alinearConElScroll);
+        // El bfcache restaura la posición sin disparar scroll.
+        window.addEventListener("pageshow", alinearConElScroll);
+
         animeCleanup = () => {
+          window.removeEventListener("pageshow", alinearConElScroll);
           metricsTl.pause();
           finalTl.pause();
         };
@@ -428,6 +495,11 @@ export default function LandingClient() {
     const onAnchorClick = (e: MouseEvent) => {
       const a = (e.target as HTMLElement | null)?.closest?.('a[href^="#"]');
       if (!a) return;
+      /* El salto al contenido queda fuera: necesita el comportamiento nativo,
+         que además de desplazar mueve el foco al destino. Interceptado acá,
+         hacía scroll pero dejaba el foco en el enlace, y el Tab siguiente
+         devolvía al menú — es decir, el skip-link no saltaba nada. */
+      if (a.classList.contains("salto-al-contenido")) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       const id = (a.getAttribute("href") || "").slice(1);
       if (!id || !document.getElementById(id)) return;

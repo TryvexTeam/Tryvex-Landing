@@ -95,8 +95,20 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
     [cta, close]
   );
 
+  /**
+   * Umbral con histéresis: la píldora se compacta pasando los 80px y solo
+   * vuelve a su tamaño por debajo de 50. Con un único límite, un
+   * microdesplazamiento sobre los 80 —o el rebote del scroll suave— alternaba
+   * el estado varias veces por segundo. El alto del contenedor está reservado
+   * en CSS, así que el cambio ya no mueve el layout; esto evita además el
+   * parpadeo de la sombra y de la propia transición.
+   */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled((antes) => (antes ? y > 50 : y > 80));
+    };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -111,6 +123,18 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  /**
+   * Escape cierra el menú. Es la salida que todo el mundo prueba primero en un
+   * panel a pantalla completa, y quien navega con teclado no tenía ninguna:
+   * había que tabular hasta el botón de cerrar.
+   */
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, close]);
 
   /**
    * En las páginas internas el logo ES la vuelta al inicio: dice "inicio." en
@@ -186,7 +210,11 @@ export default function NavBar({ links, ctaHref, desktopCta }: NavBarProps) {
         id="nav-mobile-menu"
         className={`nav-mobile${open ? " nav-mobile--open" : ""}`}
         aria-hidden={!open}
+        /* Cerrado, el panel seguía siendo tabulable: seis enlaces y dos botones
+           invisibles en el recorrido del teclado, en todas las rutas. */
+        inert={!open}
         role="dialog"
+        aria-modal="true"
         aria-label="Menú de navegación"
       >
         <div className="nav-mobile__backdrop" onClick={close} aria-hidden="true" />

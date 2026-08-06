@@ -46,7 +46,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: "https://www.tryvex.tech/team",
-      lastModified: new Date(),
+      // Fecha fija, como el resto: con `new Date()` el valor cambiaba en cada
+      // build sin que la página hubiera cambiado, y Google termina ignorando el
+      // `lastmod` de todo el archivo cuando detecta que no es de fiar.
+      // Al editar /team hay que subir esta fecha a mano.
+      lastModified: new Date("2026-08-05"),
       changeFrequency: "monthly",
       priority: 0.7,
     },

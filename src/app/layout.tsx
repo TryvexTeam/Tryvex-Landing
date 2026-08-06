@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Instrument_Serif } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sileo";
+import SparkDefs from "../components/SparkDefs";
 import "./globals.css";
 import "../features/landing/landing.css";
 
@@ -10,10 +11,9 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+/* Geist Mono se precargaba en las 8 rutas (23,1 KB por visita) y no la pedía
+   ni una regla: todo el CSS monoespaciado apunta a `--mono`, la pila del
+   sistema. Nadie usa tampoco la utilidad `font-mono` de Tailwind. */
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
@@ -53,6 +53,24 @@ const jsonLd = {
   ],
 };
 
+/**
+ * El sitio es de tema claro y punto.
+ *
+ * No lo declaraba en ninguna parte, y cuando una página se calla, los
+ * navegadores con oscurecido automático se toman la libertad de invertirla.
+ * En un iPhone con el sistema en oscuro la landing se veía negra con el texto
+ * en claro: el crema #f4f1ea convertido en casi negro, los rojos sobreviviendo
+ * porque el algoritmo respeta los matices. Nada de eso es diseño nuestro.
+ *
+ * `colorScheme: "light"` es la señal de "esta página ya resolvió sus colores,
+ * no la toques". `themeColor` va con el mismo crema del papel para que la barra
+ * del navegador acompañe en vez de cortar con una franja blanca o negra.
+ */
+export const viewport: Viewport = {
+  colorScheme: "light",
+  themeColor: "#f4f1ea",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.tryvex.tech"),
   title: "Tryvex — Automatización e Innovación Digital",
@@ -64,10 +82,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.tryvex.tech",
   },
-  icons: {
-    icon: [{ url: "/logo-email-dark.png", type: "image/png" }],
-    apple: "/logo-email-dark.png",
-  },
+  /* Sin bloque `icons`. Apuntaba a `/logo-email-dark.png`, que es el logotipo
+     completo con la palabra: a 16px en la pestaña queda como una mancha, y el
+     navegador podía elegirlo por encima del ícono bueno. Ahora los tres los
+     resuelven las convenciones de archivo —`favicon.ico`, `icon.tsx` y
+     `apple-icon.tsx`—, todos con la estrella y en su tamaño correcto. */
   openGraph: {
     title: "Tryvex — Automatización e Innovación Digital",
     description: "Agencia de software en Santiago.",
@@ -85,13 +104,22 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-paper text-ink">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Primer elemento enfocable del documento. Sin él, llegar al contenido
+            con teclado costaba pasar por la marca, los seis ítems del menú y el
+            CTA, en cada una de las ocho rutas. Solo se ve al recibir foco. */}
+        <a href="#contenido" className="salto-al-contenido">
+          Saltar al contenido
+        </a>
+        {/* Antes de los hijos: los `<use href="#spark">` del NavBar y de los
+            footers necesitan el símbolo ya definido en el documento. */}
+        <SparkDefs />
         {children}
         <Toaster position="bottom-right" theme="dark" />
         <Script

@@ -3,7 +3,9 @@
 
 @theme inline {
   --font-sans:  var(--font-geist-sans);
-  --font-mono:  var(--font-geist-mono);
+  /* Apunta a la pila del sistema (`--mono`, en landing.css). Antes resolvía a
+     Geist Mono, que se descargaba en cada ruta sin que nadie la pidiera. */
+  --font-mono:  var(--mono);
   --font-serif: var(--font-instrument-serif);
 
   --color-ink:    var(--color-ink-base);

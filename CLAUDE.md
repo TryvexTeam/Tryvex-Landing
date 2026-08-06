@@ -17,7 +17,7 @@ La landing sirve tráfico real en `https://www.tryvex.tech`. Reglas no negociabl
 |------|-----------|
 | Framework | Next.js 16.2.4 + React 19.2 + TypeScript (App Router) |
 | Estilos | CSS custom (`landing.css`) + Tailwind v4 para utilidades |
-| Animaciones | GSAP ScrollTrigger + Anime.js v4 + Framer Motion (Lenis instalado, sin uso) |
+| Animaciones | GSAP ScrollTrigger + Anime.js v4 (respetan `prefers-reduced-motion`) |
 | Emails | Resend |
 | Agenda | Google Calendar API |
 | Datos | Supabase (REST) |
@@ -163,17 +163,28 @@ Las clases `services`, `process`, `offer` y `quote-card` se excluyen del Interse
 - **Animaciones**: importar GSAP y Anime.js dinámicamente (`await import()`) — SSR. Registrar plugins en `useEffect` y limpiar con `ctx.revert()`. Respetar `prefers-reduced-motion`
 - **CSS**: los estilos de landing van en `src/features/landing/landing.css`, no en `globals.css`. Nunca hardcodear colores — usar las CSS Variables del `:root` de `landing.css`
 - **Precios**: viven duplicados en `src/app/page.tsx` (`#offer`) y `src/app/contacto/page.tsx`. Al cambiarlos, sincronizar ambos **y** `BUSINESS_LOGIC.md`
-- **FAQ**: el copy está duplicado en el markup y en el JSON-LD de `page.tsx` — actualizar los dos
+- **FAQ**: el JSON-LD de `FAQPage` vive **solo** en `/preguntas`. Estaba repetido en el home con el mismo contenido: dos URLs compitiendo por el mismo resultado enriquecido. El home conserva su sección `#faq` visible, pero sin schema
+- **`opengraph-image`**: la convención de archivo de Next asocia la imagen solo a su segmento. Cada ruta tiene su `opengraph-image.tsx` reexportando el del raíz (`export { default, alt, size, contentType } from "../opengraph-image"`). Sin ese archivo la ruta se comparte sin imagen — y no se nota hasta que alguien pega el enlace en WhatsApp
 - **Scrollspy de ítems que van a otra página**: un `NavLink` puede declarar `section: "<id>"`. El clic sigue yendo a `href`, pero el subrayado lo marca cuando esa sección cruza la pantalla. Es lo que hace que el catálogo no se salte al bajar por el home
 - **Tarjeta de demo**: existe una sola, `features/catalogo/components/DemoCard.tsx`, usada por `/catalogo` y por el preview del home. No duplicar el markup: antes estaba escrito en las dos páginas
 - **Portadas del catálogo**: captura de la portada del sitio **a ancho completo** en `public/catalogo/`, referenciada desde el campo `imagen` de `data.ts`. Recortar los lados para forzar un formato más alto parte el contenido a media palabra y deja de leerse como una web. La grilla `.cat-grid` usa `auto-fit` con tope por pieza: 1 demo queda grande y centrada, y de ahí en adelante se arma sola
 - **Catálogo en el home**: la sección `#catalogo` es un preview que lee `demosPublicadas.slice(0, 3)` de `features/catalogo/data.ts`. Al publicar una demo aparece sola, sin tocar el home
 - **Etiqueta de sección**: `<span className="sec-num">NN</span><span className="sec-label">Etiqueta</span>` dentro de `.sec-tag` (home) o `.eyebrow` (páginas internas). El número va en Instrument Serif itálica con `--red-vivo`; la etiqueta en mono. **No volver a la píldora** con fondo, borde y punto: es un chip de interfaz pegado sobre contenido editorial y es lo que hace que la página se lea como plantilla
 - **`--red-vivo` vs `--red`**: el rojo del logo (`#e53935`) es un trazo sólido. En tipografía fina se lee lavado, así que para texto chico va `--red-vivo` (`#dd1713`), que le devuelve la misma presencia
-- **Numeración de secciones**: el home lleva una secuencia correlativa en los `.sec-tag` (01→07). Al insertar o quitar una sección hay que renumerar las siguientes y alinear el `eyebrow` de la página interna equivalente
+- **Numeración de secciones**: hay **dos secuencias independientes**, y cada una tiene que ser continua por su cuenta.
+  - En el home, los `.sec-tag` van 01→07 siguiendo el recorrido de la portada. Al insertar o quitar una sección, renumerar las siguientes.
+  - En las rutas internas, el `eyebrow` va 01→07 en el orden del menú (Servicios · Catálogo · Proceso · Planes · Preguntas · Equipo) y Contacto cierra en 07.
+
+  **No espejar los números del home en las internas.** Se probó y da 01, 02, 03, 06, 07, 08, 09: al navegar entre páginas, saltarse el 04 y el 05 se lee como error, no como referencia cruzada. Además `/contacto` y `/team` no tienen sección equivalente en el home, así que la correspondencia no existe para todas. Antes de esto, `/contacto` repetía el 03 de Proceso y `/team` el 04 de Planes
 - **Títulos con `data-split="words"`**: la puntuación va **dentro** del `<em>`. Si queda suelta al cerrarlo, el splitter la trata como palabra propia y puede saltar sola al inicio de la línea siguiente
 - **Catálogo**: para publicar una demo nueva se agrega una entrada en `src/features/catalogo/data.ts` con `publicada: true` y `demoUrl` real. **Nunca se tocan componentes.** Guía completa en `src/features/catalogo/COMO-AGREGAR-UNA-DEMO.md`. Regla dura: en la página solo aparecen demos publicadas con URL real — nada de "próximamente"
-- **Rutas nuevas**: agregarlas a `INNER_LINKS` en `NavBar.tsx`, a `src/app/sitemap.ts` y a los footers
+- **Rutas nuevas**: agregarlas a `NAV_LINKS` en `NavBar.tsx`, a `src/app/sitemap.ts` (con fecha **literal**, nunca `new Date()`: un `lastmod` que cambia en cada build hace que Google ignore la señal de todo el archivo), a `SiteFooter.tsx` si corresponde, y crear su `opengraph-image.tsx`
+- **Footer**: uno solo, `src/components/SiteFooter.tsx`. La prop `revelar` es exclusiva del home (es donde entra con animación de scroll). No volver a copiarlo por página: ya había divergido en tres rutas
+- **`<symbol id="spark">`**: vive en `SparkDefs`, montado una vez en el layout. Ninguna página declara sus propios `<defs>`
+- **Horarios reservables**: fuente única en `src/lib/horarios.ts`. Los consumen `google-calendar.ts`, `/api/availability` y `FinalCTA`. Estaban en los tres por separado y el de la API ofrecía horas de mañana que no se atienden
+- **Encabezados**: un `h1` por página y sin saltos de nivel. Las tarjetas del catálogo llevan prop `nivel` (2 en `/catalogo`, 3 en el home) y el CSS apunta por rango — `.cat-ident :is(h2,h3)`, `.step :is(h2,h3,h4)` — para que el estilo no dependa de la etiqueta
+- **`prefers-reduced-motion`**: activo. `LandingClient` lee la preferencia y, si está puesta, no construye ninguna escena de GSAP/Anime; el IntersectionObserver revela todo el contenido de una vez. Regla dura: reducir movimiento **nunca** puede ocultar contenido
+- **Imágenes generadas** (`icon.tsx`, `opengraph-image.tsx`): sin `export const runtime = "edge"`. Ese export desactiva la generación estática y las convierte en funciones que corren en cada request
 - **El NavBar se renderiza en cada página**, no en el layout
 - **Menú único**: `NAV_LINKS` en `NavBar.tsx`. Cada ítem lleva siempre a su página, desde cualquier parte. El campo `section` mantiene el subrayado siguiendo el recorrido del home mientras scrolleas
 - **La separación superior del nav la da `.nav-shell { margin-top: 40px }`**, no un carácter invisible. `page.tsx` tenía un BOM que generaba una línea vacía y empujaba el nav 24px solo en el home: cada navegación movía el layout entero (CLS 0.089 al volver al inicio). No reintroducir el BOM ni bajar ese margen sin medir
@@ -200,8 +211,16 @@ No hay `.env.local` en el repo. Sin él la landing **igual levanta**: `/api/stat
 
 | Ítem | Detalle |
 |------|---------|
-| Reglas de animación muertas | `[data-anim="rise-blur"]` y `[data-anim="rotate-in"]` están definidas en `landing.css` pero ningún elemento las usa |
-| `tokens.css` huérfano | Define tokens que `landing.css` no consume; este último declara los suyos en `:root` |
-| `page.tsx` monolítico | ~507 líneas de markup inline, secciones sin extraer a componentes |
-| `landing.css` monolítico | ~1.260 líneas en un solo archivo |
-| Precios y FAQ duplicados | Sin fuente única de verdad |
+| `page.tsx` monolítico | ~400 líneas de markup inline, secciones sin extraer a componentes |
+| `landing.css` monolítico | ~1.300 líneas en un solo archivo |
+| Precios duplicados | Viven en `page.tsx` (`#offer`) y en `contacto/page.tsx`. Sin fuente única |
+| Mojibake en comentarios | Algunos comentarios de `landing.css` traen `â€”` en vez de `—`. Solo comentarios, no afecta al render |
+
+### Resuelto en la auditoría del 2026-08-05
+
+`ExpandNav.tsx` y `ContactForm.tsx` (huérfanos) · `framer-motion` y `lenis`
+(instaladas sin importar) · Geist Mono (se precargaba sin uso; la mono ahora es
+`var(--mono)`, del sistema) · CSS muerto (`.nav-links`, `.strip-*`, `.cf-*`,
+`rise-blur`, `rotate-in`) · `tokens.css` (redefinía tres tokens de vidrio con
+valores viejos; ganaba uno u otro según el orden de los `import`) · footer y
+`<symbol>` repetidos ocho veces · FAQ duplicado entre el home y `/preguntas`.
