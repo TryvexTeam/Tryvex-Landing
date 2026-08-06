@@ -317,66 +317,12 @@
   pointer-events: auto;
 }
 
-/* ─── Mobile floating X ─────────────────────────────────────── */
-
-.team-drawer__close-btn--mobile {
-  display: none;
-}
-
-@media (max-width: 680px) {
-  .team-drawer__prelayer { width: 100vw; }
-
-  .team-drawer__panel {
-    width: 100vw;
-    border-left: none;
-  }
-
-  .team-drawer__close { display: none; }
-
-  .team-drawer__close-btn--mobile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(14, 14, 14, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: rgba(244, 241, 234, 0.85);
-    cursor: pointer;
-    z-index: 20;
-    transform: translateX(calc(100% + 32px));
-    transition: transform 0.38s 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-                background 0.2s,
-                color 0.2s;
-  }
-
-  .team-drawer.open .team-drawer__close-btn--mobile {
-    transform: translateX(0);
-  }
-
-  .team-drawer__close-btn--mobile:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: var(--paper, #f4f1ea);
-  }
-
-  .team-drawer__close-btn--mobile:focus-visible {
-    outline: 2px solid var(--red, #e53935);
-    outline-offset: 2px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .team-drawer__close-btn--mobile {
-    transition: none;
-    transform: translateX(0);
-  }
-}
-
-/* ─── Close button row ──────────────────────────────────────── */
+/* ─── Botón de cerrar del panel ─────────────────────────────────
+   Va ANTES del bloque de móvil a propósito. Estas reglas vivían más abajo en
+   el archivo, después del `@media (max-width: 680px)` que las apaga. Con la
+   misma especificidad gana la última, y un media query no aporta ninguna: el
+   `display: none` del bloque móvil nunca se aplicaba y en pantallas chicas
+   quedaban dos equis a la vez, la del panel y la flotante. */
 
 .team-drawer__close {
   position: sticky;
@@ -392,8 +338,8 @@
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -404,6 +350,23 @@
 
 .team-drawer__close-btn:hover { background: rgba(255, 255, 255, 0.12); color: var(--paper, #f4f1ea); }
 .team-drawer__close-btn:focus-visible { outline: 2px solid var(--red, #e53935); outline-offset: 2px; }
+
+/* ─── Mobile floating X ─────────────────────────────────────── */
+
+.team-drawer__close-btn--mobile {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-drawer__close-btn--mobile {
+    transition: none;
+    transform: translateX(0);
+  }
+}
+
+/* El bloque de `.team-drawer__close` que estaba acá subió arriba del media
+   query de móvil. Acá abajo quedaba después del `display: none` que lo apaga
+   en pantallas chicas, así que lo anulaba y salían dos equis. */
 
 /* ─── Content container ─────────────────────────────────────── */
 
@@ -534,4 +497,67 @@ body.team-drawer-abierto .nav-shell {
 @media (prefers-reduced-motion: reduce) {
   .nav-shell { transition: opacity 0.15s ease; }
   body.team-drawer-abierto .nav-shell { transform: none; }
+}
+
+
+/* ══ AJUSTES DE MÓVIL DEL PERFIL ══
+   Este bloque vive al final del archivo a propósito.
+
+   Estaba más arriba, y varias de las reglas que apaga —`.team-drawer__close`,
+   `.team-drawer__content`— se definen después. A igual especificidad gana la
+   última, y un @media no aporta ninguna: sus overrides no se aplicaban nunca.
+   De ahí salían las dos equis a la vez en pantallas chicas, y la X encima de la
+   foto del perfil. Puesto al final, gana como corresponde.
+
+   Si se agregan reglas nuevas del drawer, van ANTES de este bloque. ══ */
+@media (max-width: 680px) {
+  .team-drawer__prelayer { width: 100vw; }
+
+  .team-drawer__panel {
+    width: 100vw;
+    border-left: none;
+  }
+
+  .team-drawer__close { display: none; }
+
+  /* La X flotante ocupa de los 16 a los 60 px. El contenido arranca en 72 para
+     dejarle una banda propia: antes caía justo encima de la foto del perfil y
+     le tapaba parte de la cara. 12px de aire, lo justo para que no se toquen
+     sin abrir un hueco grande. */
+  .team-drawer__content { padding-top: 72px; }
+
+  .team-drawer__close-btn--mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(14, 14, 14, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(244, 241, 234, 0.85);
+    cursor: pointer;
+    z-index: 20;
+    transform: translateX(calc(100% + 32px));
+    transition: transform 0.38s 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.2s,
+                color 0.2s;
+  }
+
+  .team-drawer.open .team-drawer__close-btn--mobile {
+    transform: translateX(0);
+  }
+
+  .team-drawer__close-btn--mobile:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--paper, #f4f1ea);
+  }
+
+  .team-drawer__close-btn--mobile:focus-visible {
+    outline: 2px solid var(--red, #e53935);
+    outline-offset: 2px;
+  }
 }
