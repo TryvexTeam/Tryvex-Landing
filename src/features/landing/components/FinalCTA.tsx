@@ -65,7 +65,20 @@ export default function FinalCTA() {
 
   const workingDays = useMemo(() => getWorkingDays(7), []);
 
+  /**
+   * Elige un día, o lo suelta si ya estaba elegido.
+   *
+   * La hora se va con el día: una hora sin día no significa nada, y dejarla
+   * marcada al cambiar de día arrastraba una selección que en el día nuevo
+   * podía estar ocupada — el visitante creía tener las 18:00 y el servidor le
+   * decía que no.
+   */
   const handleDaySelect = async (day: Date) => {
+    if (selectedDate?.getTime() === day.getTime()) {
+      setSelectedDate(null);
+      setSelectedTime(null);
+      return;
+    }
     setSelectedDate(day);
     setSelectedTime(null);
     setLoadingSlots(true);
@@ -238,6 +251,7 @@ export default function FinalCTA() {
                     type="button"
                     className={`sch-day${isSelected ? " sch-day--sel" : ""}`}
                     onClick={() => handleDaySelect(day)}
+                    aria-pressed={isSelected}
                   >
                     <span className="sch-day-name">{DAYS_ES[day.getDay()]}</span>
                     <span className="sch-day-num">{day.getDate()}</span>
@@ -247,23 +261,48 @@ export default function FinalCTA() {
               })}
             </div>
 
-            <div className={`sch-times${selectedDate ? " sch-times--open" : ""}`}>
-              {loadingSlots ? (
-                <span style={{ fontSize: "12px", color: "rgba(244,241,234,0.4)" }}>
-                  Cargando horarios…
-                </span>
-              ) : (
-                availableSlots.map((t) => (
+            {/* La franja del aviso va dentro de la misma celda que los horarios,
+                no como bloque aparte: así reutiliza el hueco reservado en vez de
+                sumar otro. */}
+            <div className="sch-campo">
+              {/* Mientras carga, los horarios siguen en pantalla apagados en vez
+                  de dar paso a un "Cargando horarios…". Ese cambio sustituía dos
+                  filas de píldoras por una línea de texto: el bloque se encogía
+                  46px y el formulario entero daba un salto al elegir el día, y
+                  otro al volver. Apagados no se pueden pulsar, así que nadie
+                  reserva una hora del día anterior. */}
+              <div className={`sch-times${selectedDate ? " sch-times--open" : ""}`}>
+                {availableSlots.map((t) => (
                   <button
                     key={t}
                     type="button"
                     className={`sch-time${selectedTime === t ? " sch-time--sel" : ""}`}
-                    onClick={() => setSelectedTime(t)}
+                    /* Segundo clic sobre la hora elegida la suelta. */
+                    onClick={() =>
+                      setSelectedTime((prev) => (prev === t ? null : t))
+                    }
+                    disabled={loadingSlots}
+                    aria-pressed={selectedTime === t}
                   >
                     {t}
                   </button>
-                ))
-              )}
+                ))}
+              </div>
+              {/* Con el día puesto y sin hora, el botón de confirmar queda
+                  apagado. Apagarlo sin decir por qué deja al visitante
+                  adivinando —el mismo criterio que en los campos—, así que el
+                  hueco reservado bajo los horarios dice qué falta.
+
+                  Va en tono neutro y no en rojo: no es un dato mal escrito, es
+                  el paso siguiente. `role="status"` lo anuncia al lector de
+                  pantalla, que si no ve el botón apagarse no se entera. */}
+              <p className="sch-aviso sch-aviso--guia" role="status">
+                {loadingSlots
+                  ? "Buscando horarios libres…"
+                  : selectedDate && !selectedTime
+                    ? "Ahora elige la hora."
+                    : ""}
+              </p>
             </div>
 
             {/* Las etiquetas van ocultas a la vista pero presentes para el lector
