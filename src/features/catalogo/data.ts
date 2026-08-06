@@ -54,6 +54,18 @@ export const demos: Demo[] = [
     imagen: "/catalogo/restaurante.jpg",
     publicada: true,
   },
+  {
+    id: "concesionaria",
+    nicho: "Concesionaria de autos",
+    categoria: "Automotriz",
+    descripcion:
+      "El inventario a la vista las 24 horas, con la ficha de cada auto y las consultas llegando por WhatsApp.",
+    incluye: ["Web inmersiva", "Vitrina 24/7", "Asistente WhatsApp"],
+    demoUrl: "https://concesionaria-parallax.vercel.app",
+    whatsappRef: "DEMO-AUTOS",
+    imagen: "/catalogo/concesionaria.jpg",
+    publicada: true,
+  },
 ];
 
 export const demosPublicadas: Demo[] = demos.filter(
