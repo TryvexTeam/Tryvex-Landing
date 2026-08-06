@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAvailableSlots } from "@/lib/google-calendar";
+import { HORARIOS } from "@/lib/horarios";
 
-const ALL_SLOTS = ["10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+/* Tenía su propia lista con horarios de mañana que el negocio no atiende.
+   Este es el camino de fallo —sin token de Google, o con Google caído—, así que
+   era justo el momento en que peor se notaba ofrecer una hora inexistente. */
+const ALL_SLOTS = HORARIOS;
 
 export async function GET(req: NextRequest) {
   const date = req.nextUrl.searchParams.get("date");

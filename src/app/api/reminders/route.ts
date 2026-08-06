@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import { Resend } from "resend";
+import { escaparHtml } from "@/lib/html";
 
 const TZ = "America/Santiago";
 const WINDOW_MIN = 45;
@@ -16,11 +17,38 @@ function getAuth() {
   return auth;
 }
 
-export async function GET() {
+/**
+ * Este endpoint envía correos reales a los asistentes del calendario. Solo lo
+ * invoca el cron de Vercel declarado en `vercel.json`, que manda
+ * `Authorization: Bearer $CRON_SECRET`. Sin ese encabezado la ruta no toca ni
+ * Google Calendar ni Resend: antes cualquiera podía llamarla en bucle y disparar
+ * correos a clientes reales.
+ */
+function autorizado(req: NextRequest) {
+  const secreto = process.env.CRON_SECRET;
+  if (!secreto) return false;
+  return req.headers.get("authorization") === `Bearer ${secreto}`;
+}
+
+export async function GET(req: NextRequest) {
+  if (!autorizado(req)) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
   if (!process.env.GOOGLE_REFRESH_TOKEN || !process.env.RESEND_API_KEY) {
     return NextResponse.json({ error: "not configured" }, { status: 503 });
   }
 
+  try {
+    return await enviarRecordatorios();
+  } catch (err) {
+    // Una excepción de Google o de Resend devolvía un 500 con la traza completa.
+    console.error("[/api/reminders] fallo al procesar recordatorios", err);
+    return NextResponse.json({ error: "reminder run failed" }, { status: 500 });
+  }
+}
+
+async function enviarRecordatorios() {
   const auth = getAuth();
   const calendar = google.calendar({ version: "v3", auth });
   const calendarId = process.env.GOOGLE_CALENDAR_ID ?? "primary";
@@ -40,6 +68,7 @@ export async function GET() {
 
   const events = data.items ?? [];
   const reminded: string[] = [];
+  const fallidos: string[] = [];
 
   for (const event of events) {
     if (!event.id) continue;
@@ -71,25 +100,47 @@ export async function GET() {
       "https://meet.google.com";
     const clientName = attendee.displayName ?? attendee.email.split("@")[0];
 
-    await resend.emails.send({
-      from: "Tryvex <hola@tryvex.tech>",
-      to: attendee.email,
-      subject: "Recordatorio: tu llamada con Tryvex en 1 hora",
-      html: buildReminderEmail({ name: clientName, date: dateStr, time: timeStr, meetLink }),
-    });
+    // Un evento que falla no debe abortar la tanda completa.
+    try {
+      const envio = await resend.emails.send({
+        from: "Tryvex <hola@tryvex.tech>",
+        to: attendee.email,
+        subject: "Recordatorio: tu llamada con Tryvex en 1 hora",
+        html: buildReminderEmail({ name: clientName, date: dateStr, time: timeStr, meetLink }),
+      });
 
-    await calendar.events.patch({
-      calendarId,
-      eventId: event.id,
-      requestBody: {
-        extendedProperties: { private: { reminderSent: "1" } },
-      },
-    });
+      /* Resend rechaza devolviendo `{ error }`, no lanzando. Sin esta guarda el
+         evento quedaba marcado como recordado aunque el correo nunca hubiera
+         salido, y la siguiente pasada del cron lo saltaba: el cliente se
+         quedaba sin recordatorio y nadie se enteraba. */
+      if (envio.error) {
+        console.error("[/api/reminders] envio rechazado", event.id, envio.error);
+        fallidos.push(event.id);
+        continue;
+      }
 
-    reminded.push(event.id);
+      await calendar.events.patch({
+        calendarId,
+        eventId: event.id,
+        requestBody: {
+          extendedProperties: { private: { reminderSent: "1" } },
+        },
+      });
+
+      reminded.push(event.id);
+    } catch (err) {
+      console.error("[/api/reminders] evento", event.id, err);
+      fallidos.push(event.id);
+    }
   }
 
-  return NextResponse.json({ reminded, total: reminded.length });
+  // Los fallidos quedan sin marcar a propósito: la próxima pasada del cron los
+  // vuelve a intentar dentro de la ventana de 45–75 min.
+  return NextResponse.json({
+    reminded,
+    total: reminded.length,
+    fallidos,
+  });
 }
 
 function buildReminderEmail({
@@ -128,7 +179,7 @@ function buildReminderEmail({
             <tr><td>
 
               <p style="margin:0 0 6px;color:#e53935;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;">Recordatorio</p>
-              <h1 style="margin:0 0 8px;color:#f4f1ea;font-size:28px;font-weight:700;line-height:1.2;letter-spacing:-0.02em;">Tu llamada es en 1 hora, ${name}.</h1>
+              <h1 style="margin:0 0 8px;color:#f4f1ea;font-size:28px;font-weight:700;line-height:1.2;letter-spacing:-0.02em;">Tu llamada es en 1 hora, ${escaparHtml(name)}.</h1>
               <p style="margin:0 0 32px;color:#7a736b;font-size:13px;letter-spacing:0.04em;">Dale el brillo que le falta a tu negocio</p>
 
               <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">

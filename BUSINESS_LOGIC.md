@@ -65,6 +65,12 @@ Vitrina pública en `/catalogo`: demos navegables por rubro, construidas y publi
 - **Regla dura:** en la página solo aparecen demos con `publicada: true` y URL real. Nada de "próximamente"
 - Publicar una demo = agregar su entrada. Nadie toca componentes (`src/features/catalogo/COMO-AGREGAR-UNA-DEMO.md`)
 
+## Horarios de la llamada de descubrimiento
+
+Bloques de 20 minutos, hora de Santiago: **17:00 · 17:30 · 18:00 · 18:30 · 19:00 · 19:30 · 20:00**. Solo días hábiles; después de las 17:00 el formulario ya ofrece desde el día siguiente.
+
+> Fuente única: `src/lib/horarios.ts`. Antes estaban duplicados en tres archivos y `/api/availability` respondía 10:00–17:00 cuando Google Calendar fallaba, permitiendo reservar horas que no se atienden.
+
 ## Proceso comercial (4 pasos)
 
 | Paso | Etapa | Cuándo | Qué pasa |
