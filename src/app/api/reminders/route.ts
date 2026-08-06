@@ -7,6 +7,20 @@ const TZ = "America/Santiago";
 const WINDOW_MIN = 45;
 const WINDOW_MAX = 75;
 
+/**
+ * Tope de eventos por pasada.
+ *
+ * El bucle manda un correo y parchea el evento del calendario, uno detrás de
+ * otro. Con muchas citas juntas la función se puede pasar del límite de
+ * duración —más estrecho en el plan gratuito de Vercel— y morir a medio camino
+ * devolviendo un 500.
+ *
+ * Cortar no pierde recordatorios: los que quedan fuera no se marcan, y la
+ * pasada siguiente los toma. Con el cron cada 15 minutos y una ventana de 30,
+ * cada cita entra en al menos dos pasadas.
+ */
+const MAX_POR_PASADA = 8;
+
 function getAuth() {
   const auth = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -77,9 +91,16 @@ async function enviarRecordatorios() {
   const reminded: string[] = [];
   const fallidos: string[] = [];
 
+  let quedaronFuera = 0;
+
   for (const event of events) {
     if (!event.id) continue;
     if (event.extendedProperties?.private?.reminderSent === "1") continue;
+
+    if (reminded.length >= MAX_POR_PASADA) {
+      quedaronFuera++;
+      continue;
+    }
 
     const attendee = event.attendees?.find((a) => !a.organizer && a.email);
     if (!attendee?.email) continue;
@@ -142,11 +163,13 @@ async function enviarRecordatorios() {
   }
 
   // Los fallidos quedan sin marcar a propósito: la próxima pasada del cron los
-  // vuelve a intentar dentro de la ventana de 45–75 min.
+  // vuelve a intentar dentro de la ventana de 45–75 min. `quedaronFuera` son
+  // los que se saltaron por el tope, y también los toma la pasada siguiente.
   return NextResponse.json({
     reminded,
     total: reminded.length,
     fallidos,
+    quedaronFuera,
   });
 }
 
