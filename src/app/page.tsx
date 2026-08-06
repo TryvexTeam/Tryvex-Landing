@@ -202,7 +202,7 @@ export default async function Home() {
 
     <div className="cat-grid" data-stagger>
       {demosPreview.map((demo) => (
-        <DemoCard key={demo.id} demo={demo} />
+        <DemoCard key={demo.id} demo={demo} velo />
       ))}
     </div>
 

@@ -163,3 +163,39 @@
   justify-content: center;
   margin-top: 44px;
 }
+
+/* ══ Anticipo del home: la portada se difumina de la mitad hacia abajo ══
+   El gancho es que la demo se intuya pero no se termine de ver, y que para
+   verla entera haya que entrar al catálogo — el botón "Ver catálogo completo"
+   está justo debajo de la grilla. En `/catalogo` no aplica: ahí el visitante ya
+   llegó y no tiene sentido esconderle nada.
+
+   Es una segunda copia de la misma imagen, encima de la nítida. Se probaron
+   antes dos caminos que no sirven, y conviene dejarlo escrito para no repetirlos:
+
+   · `backdrop-filter` + `mask-image` sobre el mismo elemento se anulan entre sí
+     en Chromium. La regla se sirve, pero la imagen sale nítida.
+   · `filter: blur()` sobre la única imagen desenfoca la portada entera, no de
+     la mitad hacia abajo.
+
+   La copia comparte `src` y `sizes` con la original, así que Next genera la
+   misma URL optimizada y el navegador la sirve de caché: no es una descarga
+   extra.
+
+   El `scale` compensa el borde: un desenfoque deja los cantos translúcidos, y
+   sin agrandar un poco la copia se vería una franja clara en el borde inferior. */
+.cat-velo {
+  position: absolute;
+  inset: 0;
+  filter: blur(13px) saturate(0.94);
+  transform: scale(1.08);
+  transform-origin: center bottom;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 24%, #000 60%);
+  mask-image: linear-gradient(180deg, transparent 24%, #000 60%);
+}
+
+/* El velo no se retira al pasar el cursor. Se probó que se abriera un poco al
+   hacer hover, pero eso convertía la tarjeta en un juguete: la gente se queda
+   pasando el mouse en vez de entrar. El anticipo tiene que ser constante para
+   que la única forma de ver la portada entera sea el catálogo. */
