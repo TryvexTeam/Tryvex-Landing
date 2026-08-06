@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist, Instrument_Serif } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sileo";
+import SparkDefs from "../components/SparkDefs";
 import "./globals.css";
 import "../features/landing/landing.css";
 
@@ -10,10 +11,9 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+/* Geist Mono se precargaba en las 8 rutas (23,1 KB por visita) y no la pedía
+   ni una regla: todo el CSS monoespaciado apunta a `--mono`, la pila del
+   sistema. Nadie usa tampoco la utilidad `font-mono` de Tailwind. */
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
@@ -85,13 +85,22 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-paper text-ink">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Primer elemento enfocable del documento. Sin él, llegar al contenido
+            con teclado costaba pasar por la marca, los seis ítems del menú y el
+            CTA, en cada una de las ocho rutas. Solo se ve al recibir foco. */}
+        <a href="#contenido" className="salto-al-contenido">
+          Saltar al contenido
+        </a>
+        {/* Antes de los hijos: los `<use href="#spark">` del NavBar y de los
+            footers necesitan el símbolo ya definido en el documento. */}
+        <SparkDefs />
         {children}
         <Toaster position="bottom-right" theme="dark" />
         <Script

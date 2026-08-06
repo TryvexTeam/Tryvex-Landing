@@ -13,7 +13,20 @@ import { whatsappLink, type Demo } from "../data";
  * acción. La versión anterior apilaba descripción, lista de etiquetas y dos
  * botones, y la pieza competía consigo misma.
  */
-export default function DemoCard({ demo }: { demo: Demo }) {
+export default function DemoCard({
+  demo,
+  nivel = 3,
+}: {
+  demo: Demo;
+  /**
+   * Nivel del encabezado de la tarjeta. En el home va 3 —cuelga del h2 de la
+   * sección "Véalo funcionando"—; en /catalogo va 2, porque ahí las tarjetas
+   * cuelgan directo del h1 y con h3 el índice de encabezados se saltaba un
+   * nivel. El estilo lo da `.cat-ident :is(h2,h3)`, no la etiqueta.
+   */
+  nivel?: 2 | 3;
+}) {
+  const Titulo = `h${nivel}` as "h2" | "h3";
   return (
     <article className="cat-card">
       <a
@@ -48,7 +61,7 @@ export default function DemoCard({ demo }: { demo: Demo }) {
           {/* La categoría iba superpuesta sobre la captura y chocaba con el
               logo del propio sitio de la demo: ninguna de las dos se leía. */}
           <span className="cat-cat">{demo.categoria}</span>
-          <h3>{demo.nicho}</h3>
+          <Titulo>{demo.nicho}</Titulo>
           <p>{demo.descripcion}</p>
         </div>
         <a

@@ -5,7 +5,16 @@ import { scrollToSection } from "../../../lib/scroll-to-section";
 
 export default function LandingClient() {
   useEffect(() => {
-    const reduce = false; // landing animations always run
+    /**
+     * Preferencia real del sistema. Estaba fijada en `false` con el comentario
+     * "landing animations always run", pero toda la maquinaria para respetarla
+     * ya estaba escrita: esta bandera gobierna el bloque completo de GSAP y
+     * Anime (más abajo) y la lista de elementos que el IntersectionObserver
+     * deja pasar. Con la preferencia activa no se construye ninguna escena de
+     * scroll, y el observer se encarga de revelar todo el contenido de una vez
+     * — nada queda invisible.
+     */
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     /* ── 1. Word-split big headings ──────────────────────────────── */
     document.querySelectorAll('[data-split="words"]').forEach((el) => {
@@ -131,9 +140,11 @@ export default function LandingClient() {
     const updateProgress = () => {
       const max =
         document.documentElement.scrollHeight - window.innerHeight;
+      // Razón 0–1 sin unidad: el CSS la consume como `scaleX(var(--sp))`.
+      // Antes salía en porcentaje porque la barra animaba su `width`.
       progress?.style.setProperty(
         "--sp",
-        (Math.min(1, window.scrollY / (max || 1)) * 100).toFixed(2) + "%"
+        Math.min(1, window.scrollY / (max || 1)).toFixed(4)
       );
       pTicking = false;
     };
@@ -382,15 +393,29 @@ export default function LandingClient() {
            final: la estrella aparecía entera y de golpe saltaba hacia atrás
            para volver a entrar. Se fija su estado de partida acá — dentro del
            bloque que solo corre si anime.js cargó, así que si falla la carga
-           siguen visibles en vez de quedar invisibles para siempre. */
-        document.querySelectorAll<HTMLElement>(".final-spark").forEach((el) => {
-          el.style.opacity = "0";
-          el.style.transform = "scale(0.2) rotate(-90deg)";
-        });
-        document.querySelectorAll<HTMLElement>(".final .btn-primary").forEach((el) => {
-          el.style.opacity = "0.7";
-          el.style.transform = "scale(0.95)";
-        });
+           siguen visibles en vez de quedar invisibles para siempre.
+
+           El estado de partida solo se aplica si la escena todavía está por
+           delante. Fijarlo siempre dejaba la estrella invisible cuando la
+           página cargaba ya scrolleada —al volver con el botón atrás, al
+           recargar a media página o al llegar con un ancla—: el timeline es
+           scrub y no recibe evento hasta que te mueves, así que nadie la
+           devolvía a la vista. Ese era el "a veces está, a veces no". */
+        const escenaFinal = document.querySelector<HTMLElement>(".scene-final-wrap");
+        const escenaPorDelante = escenaFinal
+          ? escenaFinal.getBoundingClientRect().top > 0
+          : true;
+
+        if (escenaPorDelante) {
+          document.querySelectorAll<HTMLElement>(".final-spark").forEach((el) => {
+            el.style.opacity = "0";
+            el.style.transform = "scale(0.2) rotate(-90deg)";
+          });
+          document.querySelectorAll<HTMLElement>(".final .btn-primary").forEach((el) => {
+            el.style.opacity = "0.7";
+            el.style.transform = "scale(0.95)";
+          });
+        }
 
         finalTl.add(".final", {
           opacity: [0, 1],
@@ -428,6 +453,11 @@ export default function LandingClient() {
     const onAnchorClick = (e: MouseEvent) => {
       const a = (e.target as HTMLElement | null)?.closest?.('a[href^="#"]');
       if (!a) return;
+      /* El salto al contenido queda fuera: necesita el comportamiento nativo,
+         que además de desplazar mueve el foco al destino. Interceptado acá,
+         hacía scroll pero dejaba el foco en el enlace, y el Tab siguiente
+         devolvía al menú — es decir, el skip-link no saltaba nada. */
+      if (a.classList.contains("salto-al-contenido")) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       const id = (a.getAttribute("href") || "").slice(1);
       if (!id || !document.getElementById(id)) return;

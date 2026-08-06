@@ -7,6 +7,7 @@ import DemoCard from "../features/catalogo/components/DemoCard";
 import BloqueResultados from "../features/landing/components/BloqueResultados";
 import { fetchStats } from "../features/landing/stats";
 import "../features/catalogo/catalogo.css";
+import SiteFooter from "../components/SiteFooter";
 
 /** Preview del catálogo: las primeras demos publicadas. El resto vive en /catalogo. */
 const demosPreview = demosPublicadas.slice(0, 3);
@@ -23,21 +24,14 @@ export default async function Home() {
 <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div><div className="b4"></div></div>
 <div className="grain"></div>
 
-<svg width="0" height="0" style={{position: "absolute"}} aria-hidden="true">
-  <defs>
-    <symbol id="spark" viewBox="0 0 100 100">
-      <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="#0e0e0e"/>
-      <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="#e53935"/>
-    </symbol>
-    <symbol id="spark-light" viewBox="0 0 100 100">
-      <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="#f4f1ea"/>
-      <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="#e53935"/>
-    </symbol>
-  </defs>
-</svg>
 
 {/* NAV */}
 <NavBar />
+
+{/* El home era la única ruta sin <main>: las siete internas ya lo tenían. Sin
+    él, el skip-link no tiene a dónde saltar y los lectores de pantalla no
+    pueden ir directo al contenido. */}
+<main id="contenido" tabIndex={-1}>
 
 {/* HERO */}
 <section className="hero">
@@ -69,7 +63,7 @@ export default async function Home() {
       <p className="lede" data-anim="fade-up">
         Tryvex es un studio de software que diseña, construye y mantiene <a href="/servicios">automatizaciones,
         landing pages y SaaS a medida</a>. Reemplazamos la planilla, el copy-paste y el
-        "lo veo después" con sistemas que corren solos. Conoce <a href="/proceso">cómo trabajamos</a> o <a href="/contacto">agenda una llamada gratuita</a>.
+        &ldquo;lo veo después&rdquo; con sistemas que corren solos. Conoce <a href="/proceso">cómo trabajamos</a> o <a href="/contacto">agenda una llamada gratuita</a>.
       </p>
       <div className="hero-cta" data-anim="fade-up">
         <a href="#final" className="btn-primary">
@@ -90,13 +84,15 @@ export default async function Home() {
         <div className="ic" style={{background: "var(--red)"}}>S</div>
         <div>
           <div style={{fontWeight: "600", fontSize: "13px"}}>Pedido nuevo · Shopify</div>
-          <div style={{fontFamily: "'JetBrains Mono', monospace", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.06em"}}>Hace 3 segundos · webhook</div>
+          <div style={{fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.06em"}}>Hace 3 segundos · webhook</div>
         </div>
       </div>
 
       <div className="hero-visual glass">
         <svg className="hv-spark"><use href="#spark"/></svg>
-        <div className="hv-rule">// flow-tryvex-04.run</div>
+        {/* La barra doble es decoración de la maqueta, no un comentario: va
+            como string para que JSX no la lea como tal. */}
+        <div className="hv-rule">{"// flow-tryvex-04.run"}</div>
         <div className="hv-title">Pedido nuevo en Shopify → factura, agenda y notificación.</div>
         <div className="hv-flow">
           <div className="hv-step"><span className="dot"></span><span className="lbl">Trigger · pedido recibido</span><span className="meta">00:00.0s</span></div>
@@ -114,7 +110,7 @@ export default async function Home() {
         <div className="ic" style={{background: "var(--red)"}}>↑</div>
         <div>
           <div style={{fontWeight: "600", fontSize: "13px"}}>+312h ahorradas este mes</div>
-          <div style={{fontFamily: "'JetBrains Mono', monospace", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.06em"}}>vs. operación manual</div>
+          <div style={{fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.06em"}}>vs. operación manual</div>
         </div>
       </div>
     </div>
@@ -233,25 +229,25 @@ export default async function Home() {
     <div className="process" data-stagger>
       <div className="step glass">
         <div className="step-num">01</div>
-        <h4>Llamada inicial</h4>
+        <h3>Llamada inicial</h3>
         <p>20 minutos. Cuéntanos qué te quita tiempo. Salimos con una hipótesis y un alcance estimado.</p>
         <div className="step-meta">Día 0</div>
       </div>
       <div className="step glass">
         <div className="step-num">02</div>
-        <h4>Mapeo del flujo</h4>
+        <h3>Mapeo del flujo</h3>
         <p>Diagramamos el proceso actual y el ideal. Definimos integraciones, datos y métricas de éxito.</p>
         <div className="step-meta">Día 1–3</div>
       </div>
       <div className="step glass">
         <div className="step-num">03</div>
-        <h4>Build & ship</h4>
+        <h3>Build & ship</h3>
         <p>Iteramos en sprints cortos. Cada viernes ves un avance funcional, no un mockup en Figma.</p>
         <div className="step-meta">Semana 1–4</div>
       </div>
       <div className="step glass">
         <div className="step-num">04</div>
-        <h4>En vivo</h4>
+        <h3>En vivo</h3>
         <p>Lo dejamos corriendo en producción con alertas y soporte. 90 días de mantención sin costo.</p>
         <div className="step-meta">Semana 4+</div>
       </div>
@@ -273,7 +269,7 @@ export default async function Home() {
   <div className="wrap quote-block">
     <div data-anim="fade-right">
       <div className="sec-tag"><span className="sec-num">05</span><span className="sec-label">Lo que dicen</span></div>
-      <p className="quote">Pasamos de revisar pedidos a las 11pm a no abrir la planilla en tres semanas. El equipo de Tryvex entregó algo que de verdad usamos."</p>
+      <p className="quote">Pasamos de revisar pedidos a las 11pm a no abrir la planilla en tres semanas. El equipo de Tryvex entregó algo que de verdad usamos.&rdquo;</p>
       <div className="quote-author">
         <div className="qa-avatar">C</div>
         <div>
@@ -283,7 +279,7 @@ export default async function Home() {
       </div>
     </div>
     <div className="quote-card glass" data-anim="fade-left">
-      <div className="qc-rule">// case study · 2026</div>
+      <div className="qc-rule">{"// case study · 2026"}</div>
       <div className="qc-title">E-commerce: tres flujos, un panel, cero planillas.</div>
       <div className="qc-mini">
         <div className="qc-stat">
@@ -402,96 +398,15 @@ export default async function Home() {
 </section>
 </div>{/* /scene-final-wrap */}
 
+</main>
+
 {/* FOOTER */}
-<footer>
-  <div className="wrap">
-    <div className="foot-card glass" data-anim="fade-up">
-      <div className="foot-top">
-        <div className="foot-brand">
-          <a href="#" className="logo">
-            <svg className="logo-mark" style={{width: "32px", height: "32px"}}><use href="#spark"/></svg>
-            <span className="logo-word">tryvex<span className="dot">.</span></span>
-          </a>
-          <p>Software studio en Santiago. Construimos sistemas que corren solos para negocios que no tienen tiempo que perder.</p>
-        </div>
-        <div>
-          <h5>Servicios</h5>
-          <a href="/servicios">Automatización</a>
-          <a href="/servicios">Landing pages</a>
-          <a href="/servicios">SaaS a medida</a>
-        </div>
-        <div>
-          <h5>Estudio</h5>
-          <a href="/proceso">Proceso</a>
-          <a href="#offer">Planes</a>
-          <a href="#faq">Preguntas</a>
-        </div>
-        <div>
-          <h5>Contacto</h5>
-          <a href="/contacto">Agendar llamada</a>
-          <a href="mailto:tryvexentreprise@gmail.com">tryvexentreprise@gmail.com</a>
-          <a href="#">Santiago · CL</a>
-        </div>
-      </div>
-      <div className="foot-bottom">
-        <div>© MMXXVI · Tryvex</div>
-        <div>Hecho a mano en Santiago</div>
-      </div>
-    </div>
-  </div>
-</footer>
+      <SiteFooter revelar />
       <LandingClient />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: [
-              {
-                "@type": "Question",
-                name: "¿Trabajan con empresas chicas?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Sí. La mayoría de nuestros clientes son negocios entre 2 y 30 personas. Si la planilla ya te queda chica, calzamos.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "¿Cuánto se demora un proyecto?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Una landing entre 5 y 10 días. Una automatización completa entre 2 y 4 semanas. Un MVP de SaaS entre 4 y 8 semanas.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "¿El código es nuestro?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Sí, sin asteriscos. Te entregamos repositorio, accesos y documentación. Si mañana quieres trabajar con otro equipo, lo puedes hacer.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "¿Atienden fuera de Chile?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Sí. Trabajamos remoto con equipos en LatAm y EE.UU. La mayoría de las herramientas son en español o inglés indistintamente.",
-                },
-              },
-              {
-                "@type": "Question",
-                name: "¿Qué pasa si no funciona?",
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: "Tenemos garantía de 30 días. Si no entregamos lo prometido, devolvemos el último mes. Es raro que pase, pero está por escrito.",
-                },
-              },
-            ],
-          }),
-        }}
-      />
+      {/* El JSON-LD de FAQPage vive solo en /preguntas. Estaba repetido acá con
+          el mismo contenido en otra URL: dos candidatas al mismo resultado
+          enriquecido, y Google elige una. La página dedicada es la que debe
+          quedarse con el rich snippet. */}
     </>
   );
 }

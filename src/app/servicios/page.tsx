@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
+import SiteFooter from "../../components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "Servicios — Tryvex",
@@ -22,19 +23,11 @@ export default function ServiciosPage() {
       <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
       <div className="grain"></div>
 
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
-        <defs>
-          <symbol id="spark" viewBox="0 0 100 100">
-            <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="#0e0e0e"/>
-            <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="#e53935"/>
-          </symbol>
-        </defs>
-      </svg>
 
       <NavBar />
       <RevelarAlScroll />
 
-      <main>
+      <main id="contenido" tabIndex={-1}>
         <section className="hero" style={{ paddingBottom: "0" }}>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "80px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">01</span><span className="sec-label">Servicios</span></span>
@@ -66,7 +59,7 @@ export default function ServiciosPage() {
                   <li>Mantención los primeros 90 días sin costo adicional</li>
                 </ul>
                 <div style={{ marginTop: "24px", paddingTop: "24px", borderTop: "1px solid var(--border)" }}>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "11px", color: "var(--muted)", marginBottom: "8px" }}>Tiempo estimado</div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", marginBottom: "8px" }}>Tiempo estimado</div>
                   <strong>2 a 4 semanas</strong>
                 </div>
               </div>
@@ -88,7 +81,7 @@ export default function ServiciosPage() {
                   <li>Performance 90+ en Core Web Vitals (Google)</li>
                 </ul>
                 <div style={{ marginTop: "24px", paddingTop: "24px", borderTop: "1px solid var(--border)" }}>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "11px", color: "var(--muted)", marginBottom: "8px" }}>Tiempo estimado</div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", marginBottom: "8px" }}>Tiempo estimado</div>
                   <strong>5 a 10 días</strong>
                 </div>
               </div>
@@ -110,7 +103,7 @@ export default function ServiciosPage() {
                   <li>Soporte mensual opcional post-entrega</li>
                 </ul>
                 <div style={{ marginTop: "24px", paddingTop: "24px", borderTop: "1px solid var(--border)" }}>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "11px", color: "var(--muted)", marginBottom: "8px" }}>Tiempo estimado</div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", marginBottom: "8px" }}>Tiempo estimado</div>
                   <strong>4 a 8 semanas</strong>
                 </div>
               </div>
@@ -130,43 +123,7 @@ export default function ServiciosPage() {
         </section>
       </main>
 
-      <footer>
-        <div className="wrap">
-          <div className="foot-card glass">
-            <div className="foot-top">
-              <div className="foot-brand">
-                <Link href="/" className="logo">
-                  <svg className="logo-mark" style={{ width: "32px", height: "32px" }}><use href="#spark"/></svg>
-                  <span className="logo-word">tryvex<span className="dot">.</span></span>
-                </Link>
-                <p>Software studio en Santiago. Construimos sistemas que corren solos para negocios que no tienen tiempo que perder.</p>
-              </div>
-              <div>
-                <h5>Servicios</h5>
-                <Link href="/servicios">Automatización</Link>
-                <Link href="/servicios">Landing pages</Link>
-                <Link href="/servicios">SaaS a medida</Link>
-              </div>
-              <div>
-                <h5>Estudio</h5>
-                <Link href="/proceso">Proceso</Link>
-                <Link href="/planes">Planes</Link>
-                <Link href="/preguntas">Preguntas</Link>
-              </div>
-              <div>
-                <h5>Contacto</h5>
-                <Link href="/contacto">Agendar llamada</Link>
-                <a href="mailto:tryvexentreprise@gmail.com">tryvexentreprise@gmail.com</a>
-                <span>Santiago · CL</span>
-              </div>
-            </div>
-            <div className="foot-bottom">
-              <div>© MMXXVI · Tryvex</div>
-              <div>Hecho a mano en Santiago</div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

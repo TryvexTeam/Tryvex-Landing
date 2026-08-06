@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
+import SiteFooter from "../../components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "Planes — Tryvex",
@@ -23,19 +24,12 @@ export default function PlanesPage() {
       <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
       <div className="grain"></div>
 
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
-        <defs>
-          <symbol id="spark" viewBox="0 0 100 100">
-            <path d="M 50 4 C 52 32, 68 48, 96 50 C 68 52, 52 68, 50 96 C 48 68, 32 52, 4 50 C 32 48, 48 32, 50 4 Z" fill="#0e0e0e"/>
-            <path d="M 82 14 C 83 19, 87 23, 92 24 C 87 25, 83 29, 82 34 C 81 29, 77 25, 72 24 C 77 23, 81 19, 82 14 Z" fill="#e53935"/>
-          </symbol>
-        </defs>
-      </svg>
+
 
       <NavBar />
       <RevelarAlScroll />
 
-      <main>
+      <main id="contenido" tabIndex={-1}>
         <section className="hero" style={{ paddingBottom: "0" }}>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "60px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">04</span><span className="sec-label">Planes</span></span>
@@ -83,52 +77,45 @@ export default function PlanesPage() {
               </div>
             </div>
 
+            {/* Contenido propio de esta página: el home muestra las dos tarjetas
+                para convertir, pero el criterio para elegir entre una y otra no
+                estaba escrito en ninguna parte del sitio. */}
+            <div style={{ maxWidth: "760px", margin: "72px auto 0" }} data-anim="fade-up">
+              <h2 style={{ marginBottom: "20px" }}>¿Cuál conviene <em>en tu caso?</em></h2>
+              <p style={{ color: "var(--muted)", lineHeight: "1.7", marginBottom: "18px" }}>
+                La pregunta útil no es cuánto cuesta cada uno, sino cuánto trabajo tienes por
+                delante. Si lo que te quita el sueño es <strong>un</strong> proceso concreto —el que
+                te hace abrir la planilla todos los días— eso es un proyecto único: se define el
+                alcance en la llamada, se cierra el precio antes de partir y termina.
+              </p>
+              <p style={{ color: "var(--muted)", lineHeight: "1.7", marginBottom: "18px" }}>
+                El modelo de socio continuo aparece cuando la lista no se acaba: automatizas el
+                primer proceso y al mes siguiente ya viste otros tres. Ahí contratar por proyecto
+                se vuelve caro en tiempo —cada uno arranca con su propia negociación— y conviene
+                tener el equipo disponible con sprints cada dos semanas.
+              </p>
+              <p style={{ color: "var(--muted)", lineHeight: "1.7", marginBottom: "18px" }}>
+                No hay que decidirlo hoy. La mayoría entra con un proyecto acotado, lo ve
+                funcionando, y recién entonces conversamos si tiene sentido seguir mes a mes. No
+                hay contratos atados en ninguno de los dos: si el sistema queda andando y no
+                necesitas nada más, ese es un buen final.
+              </p>
+              <p style={{ color: "var(--muted)", lineHeight: "1.7" }}>
+                En ambos casos el código es tuyo, con repositorio, accesos y documentación, y
+                todo lo que entregamos incluye 90 días de mantención sin costo.
+              </p>
+            </div>
+
             <p className="sec-sub" style={{ margin: "48px auto 0", textAlign: "center" }}>
-              ¿Dudas antes de decidir? Mira <Link href="/preguntas" style={{ color: "var(--red)" }}>las preguntas frecuentes</Link> o
-              revisa <Link href="/proceso" style={{ color: "var(--red)" }}>cómo trabajamos</Link>.
+              ¿Dudas antes de decidir? Mira <Link href="/preguntas" style={{ color: "var(--red-vivo)" }}>las preguntas frecuentes</Link> o
+              revisa <Link href="/proceso" style={{ color: "var(--red-vivo)" }}>cómo trabajamos</Link>.
             </p>
           </div>
         </section>
       </main>
 
-      <footer>
-        <div className="wrap">
-          <div className="foot-card glass">
-            <div className="foot-top">
-              <div className="foot-brand">
-                <Link href="/" className="logo">
-                  <svg className="logo-mark" style={{ width: "32px", height: "32px" }}><use href="#spark"/></svg>
-                  <span className="logo-word">tryvex<span className="dot">.</span></span>
-                </Link>
-                <p>Software studio en Santiago. Construimos sistemas que corren solos para negocios que no tienen tiempo que perder.</p>
-              </div>
-              <div>
-                <h5>Servicios</h5>
-                <Link href="/servicios">Automatización</Link>
-                <Link href="/servicios">Landing pages</Link>
-                <Link href="/servicios">SaaS a medida</Link>
-              </div>
-              <div>
-                <h5>Estudio</h5>
-                <Link href="/catalogo">Catálogo</Link>
-                <Link href="/proceso">Proceso</Link>
-                <Link href="/planes">Planes</Link>
-                <Link href="/preguntas">Preguntas</Link>
-              </div>
-              <div>
-                <h5>Contacto</h5>
-                <Link href="/contacto">Agendar llamada</Link>
-                <a href="mailto:tryvexentreprise@gmail.com">tryvexentreprise@gmail.com</a>
-                <span>Santiago · CL</span>
-              </div>
-            </div>
-            <div className="foot-bottom">
-              <div>© MMXXVI · Tryvex</div>
-              <div>Hecho a mano en Santiago</div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
+
     </>
   );
 }

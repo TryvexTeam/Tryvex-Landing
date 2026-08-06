@@ -13,9 +13,20 @@
     /* Rojo de marca profundizado y saturado, para tipografía fina.
        El #e53935 del logo es un trazo sólido; en serif itálica de trazo
        delgado el mismo hex se lee lavado y rosado. Este tono le devuelve la
-       intensidad del logo a tamaños chicos. */
-    --red-vivo: #dd1713;
+       intensidad del logo a tamaños chicos.
+
+       Bajó de #dd1713 a #da1613 —tres puntos de rojo, indistinguible a la
+       vista— porque el anterior daba 4,43:1 sobre el crema y AA para texto
+       normal pide 4,5. Ahora marca 4,54:1. Toda etiqueta chica en rojo sobre
+       fondo claro usa esta variable, no `--red` (3,75:1, insuficiente). */
+    --red-vivo: #da1613;
     --cream: #ece8dc;
+
+    /* Monoespaciada del sistema. Todo el CSS pedía 'JetBrains Mono', que no se
+       carga en ninguna parte: el navegador ya caía a su monospace genérica, que
+       en Windows es Courier New. Esta pila entrega la mono real de cada sistema
+       —SF Mono, Consolas, DejaVu— sin descargar un solo byte. */
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
     /* Glass tokens â€” macOS Tahoe-style translucency */
     --glass-bg: rgba(255,255,255,0.42);
@@ -35,7 +46,42 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--paper); color: var(--ink); font-family: 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   body { font-size: 16px; line-height: 1.5; overflow-x: hidden; }
+  /* ⚠️ No poner `overflow-x` acá. Se probó `clip` para atajar el desborde
+     horizontal del móvil y rompió dos cosas a la vez: el `position: sticky` del
+     nav dejaba de pegarse —se iba con el scroll— y ScrollTrigger perdía el
+     contenedor de scroll, con lo que las escenas de GSAP no se disparaban.
+     `hidden` hace exactamente lo mismo: en el elemento raíz, los dos rompen el
+     sticky. El desborde se corrige en el elemento que desborda, no recortando
+     la página entera. */
   html { scroll-behavior: smooth; }
+
+  /* ======= SKIP LINK =======
+     Fuera de pantalla hasta recibir foco, no `display:none` — un elemento
+     ocultado así no es enfocable y el enlace no serviría de nada. */
+  .salto-al-contenido {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -120%);
+    z-index: 200;
+    padding: 12px 24px;
+    border-radius: 0 0 14px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.18s ease;
+  }
+  .salto-al-contenido:focus {
+    transform: translate(-50%, 0);
+    outline: 2px solid var(--red);
+    outline-offset: -4px;
+  }
+  /* El destino lleva `tabIndex={-1}` para que el foco aterrice ahí de verdad.
+     Sin eso el navegador hacía scroll pero dejaba el foco en el <body>, y el
+     Tab siguiente devolvía al menú: el enlace no saltaba nada. El anillo se
+     suprime porque encuadrar la página entera no comunica nada. */
+  main:focus { outline: none; }
 
   /* ======= SCROLL-DRIVEN REVEAL ANIMATIONS (GSAP-flavor) ======= */
   [data-anim] {
@@ -47,17 +93,22 @@
       transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
       filter 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  /* will-change con filter solo en los dos tipos que realmente usan blur */
-  [data-anim="scale-in"],
-  [data-anim="rise-blur"] { will-change: transform, opacity, filter; }
+  /* will-change con filter solo en el tipo que realmente usa blur */
+  [data-anim="scale-in"] { will-change: transform, opacity, filter; }
+
+  /* `will-change` es una promesa de cambio inminente, no una optimización
+     permanente: el navegador reserva una capa de composición por elemento y
+     nunca la suelta. En el home son 32 nodos manteniendo capa viva mucho
+     después de haberse revelado. Al entrar reciben `.in` y ahí se libera. */
+  [data-anim].in { will-change: auto; }
 
   [data-anim="fade-up"]    { transform: translateY(22px); }
   [data-anim="fade-down"]  { transform: translateY(-18px); }
   [data-anim="fade-left"]  { transform: translateX(-32px); }
   [data-anim="fade-right"] { transform: translateX(32px); }
   [data-anim="scale-in"]   { transform: scale(0.94); filter: blur(3px); }
-  [data-anim="rise-blur"]  { transform: translateY(36px); filter: blur(6px); }
-  [data-anim="rotate-in"]  { transform: translateY(24px) rotate(-2deg); }
+  /* `rise-blur` y `rotate-in` quedaron definidos pero ningún elemento los
+     declara. Si vuelven a hacer falta, el patrón está acá arriba. */
 
   [data-anim].in {
     opacity: 1;
@@ -132,18 +183,57 @@
     position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 100; pointer-events: none;
     background: transparent;
   }
+  /* La barra ocupa el ancho completo y se comprime con `scaleX`. Antes animaba
+     `width`, que es una propiedad de layout: cada fotograma de scroll obligaba
+     al navegador a recalcular la disposición. `scaleX` corre en el compositor.
+     `--sp` viaja como razón 0–1 desde LandingClient, no como porcentaje. */
   .scroll-progress::after {
-    content: ''; display: block; height: 100%;
-    width: var(--sp, 0%);
+    content: ''; display: block; height: 100%; width: 100%;
+    transform: scaleX(var(--sp, 0));
+    transform-origin: left center;
+    will-change: transform;
     background: linear-gradient(90deg, var(--red), #ff8a78);
     box-shadow: 0 0 12px rgba(229,57,53,0.5);
-    transition: width 0.05s linear;
+    transition: transform 0.05s linear;
   }
 
   /* float chips — GSAP owns the transform */
   .fc-1, .fc-2 { will-change: transform; }
 
-  /* prefers-reduced-motion: removed to ensure animations always play */
+  /* ======= PREFERENCIA DE MOVIMIENTO REDUCIDO =======
+     Estaba desactivado con la nota "removed to ensure animations always play".
+     Con la preferencia puesta seguían corriendo cuatro animaciones infinitas
+     —el punto "en vivo" y los tres blobs de la aurora— que no paran nunca.
+
+     Regla de oro acá: esto apaga movimiento, jamás oculta contenido. Por eso
+     los reveals se fuerzan visibles en vez de limitarse a quitarles la
+     transición: si dependieran del observer y este no corriera, la página
+     quedaría en blanco para justo quien pidió menos animación. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    html { scroll-behavior: auto; }
+
+    [data-anim],
+    [data-stagger] > *,
+    .split-word > span,
+    .metrics-block,
+    .metric,
+    .final {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+    }
+
+    /* El colapso de los contenedores de escena va al final del archivo: sus
+       definiciones aparecen más abajo y, a igual especificidad, gana la última
+       —el media query no suma especificidad, solo condiciona. */
+  }
+
   a { color: inherit; text-decoration: none; }
   img, svg { display: block; }
   ::selection { background: var(--ink); color: var(--paper); }
@@ -181,7 +271,10 @@
     width: 660px; height: 660px; top: 3800px; left: -160px;
     background: radial-gradient(circle, #ffcdd2 0%, transparent 70%); opacity: 0.5;
   }
+  /* `.b4` quedó fuera de la regla de arriba y sin posición: caía en flujo con
+     sus 580px de ancho y era el desborde estático del home. */
   .ambient .b4 {
+    position: absolute; border-radius: 50%; filter: blur(90px);
     width: 580px; height: 580px; top: 1800px; right: -120px;
     background: radial-gradient(ellipse, #b3c5e8 0%, transparent 70%); opacity: 0.22;
   }
@@ -230,6 +323,13 @@
        entero y se veía como un tiriteo. Ahora la separación la da el CSS y es
        la misma en todas partes. */
     margin: 40px 0 0; padding: 0 20px;
+    /* Alto fijo, el de la píldora sin encoger. Al cruzar los 80px de scroll la
+       píldora pasa de 60 a 52, y como `.nav-shell` es sticky —sigue ocupando su
+       lugar en el flujo— ese cambio acortaba el documento 8px y empujaba hacia
+       arriba todo lo que viene debajo. Rondando el umbral, la página entera
+       tiritaba. Con el alto reservado, la píldora adelgaza dentro de su caja y
+       el flujo no se entera. */
+    height: 60px;
   }
   .nav-pill {
     height: 60px;
@@ -370,17 +470,8 @@
   @media (prefers-reduced-motion: reduce) {
     .logo-figura { transition: none; }
   }
-  .nav-links { display: flex; gap: 4px; padding: 4px; border-radius: 999px;
-    background: rgba(14,14,14,0.04); border: 1px solid var(--line-soft); }
-  .nav-links a {
-    font-size: 13px; padding: 8px 14px; border-radius: 999px; color: var(--ink);
-    opacity: 0.75; transition: all .2s ease;
-  }
-  .nav-links a:hover { opacity: 1; background: rgba(255,255,255,0.6); }
-  /* GooeyNav wrapper — strips the default pill background so GooeyNav renders clean */
-  .nav-links--gooey {
-    background: none; border: none; padding: 0;
-  }
+  /* `.nav-links` y `.nav-links--gooey` eliminados: el menú lo pinta GooeyNav
+     con sus propias clases desde que se unificó la navegación. */
   .nav-cta { display: flex; align-items: center; gap: 10px; }
   .pill {
     font-size: 13px; padding: 9px 14px; border-radius: 999px;
@@ -407,7 +498,7 @@
   }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 10px;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-family: var(--mono); font-size: 11px;
     letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink);
     padding: 7px 12px 7px 10px; border-radius: 999px;
     background: var(--glass-bg);
@@ -449,7 +540,7 @@
   }
   .hero-meta {
     margin-top: 60px; display: flex; gap: 32px;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-family: var(--mono); font-size: 11px;
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
   }
   .hero-meta strong { color: var(--ink); font-weight: 600; }
@@ -464,7 +555,7 @@
   .hv-spark { position: absolute; top: 24px; right: 24px; width: 56px; height: 56px;
     filter: drop-shadow(0 6px 12px rgba(14,14,14,0.18)); }
   .hv-rule {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
     text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
   }
   .hv-title {
@@ -485,10 +576,10 @@
   .hv-step.active { background: rgba(255,255,255,0.95); }
   .hv-step.active .dot { background: var(--red); box-shadow: 0 0 0 4px rgba(229,57,53,0.22); }
   .hv-step .lbl { flex: 1; }
-  .hv-step .meta { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; }
+  .hv-step .meta { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em; }
   .hv-foot {
     display: flex; justify-content: space-between; margin-top: 16px;
-    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
     letter-spacing: 0.12em; text-transform: uppercase;
   }
   .hv-foot .ok { color: #2f9e44; display: inline-flex; align-items: center; gap: 6px; }
@@ -510,22 +601,9 @@
   .fc-1 { top: -16px; left: -28px; }
   .fc-2 { bottom: -22px; right: 20px; }
 
-  /* ======= LOGO STRIP ======= */
-  .strip {
-    margin-top: 24px;
-    padding: 22px 32px;
-    border-radius: 24px;
-    display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
-  }
-  .strip-label {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--muted);
-  }
-  .strip-logos { display: flex; gap: 36px; align-items: center; opacity: 0.78; flex-wrap: wrap; }
-  .strip-logo { font-family: 'Geist'; font-weight: 600; font-size: 17px; letter-spacing: -0.02em; color: var(--ink-2); }
-  .strip-logo.serif { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; font-size: 21px; }
-  .strip-logo.mono  { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 14px; letter-spacing: 0; text-transform: uppercase; }
-  .strip-logo.bold  { font-weight: 800; letter-spacing: -0.04em; font-size: 19px; }
+  /* La franja de logos (`.strip*`) se quitó del markup cuando se decidió no
+     publicar nombres de clientes por confidencialidad — ver el comentario en
+     page.tsx. Sus siete reglas quedaban sin elemento al que aplicar. */
 
   /* ======= SECTIONS ======= */
   section.block { padding: 100px 0 40px; position: relative; }
@@ -537,7 +615,7 @@
      contenido, que es justo lo que delata una plantilla. */
   .sec-tag, .eyebrow {
     display: inline-flex; align-items: baseline; gap: 11px;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-family: var(--mono); font-size: 11px;
     letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase;
     /* se anula la píldora heredada */
     background: none; border: none; box-shadow: none; backdrop-filter: none;
@@ -617,8 +695,8 @@
   .svc { padding: 32px 28px 28px; min-height: 360px; display: flex; flex-direction: column; gap: 14px; }
   .svc-head { display: flex; align-items: center; justify-content: space-between; }
   .svc-num {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
-    color: var(--red); text-transform: uppercase;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+    color: var(--red-vivo); text-transform: uppercase;
   }
   .svc-icon {
     width: 36px; height: 36px; border-radius: 10px;
@@ -633,7 +711,7 @@
     list-style: none; font-size: 13px; color: var(--ink); display: flex; align-items: center; gap: 10px;
   }
   .svc-list li::before {
-    content: '+'; color: var(--red); font-weight: 600; font-family: 'JetBrains Mono', monospace;
+    content: '+'; color: var(--red); font-weight: 600; font-family: var(--mono);
   }
   .svc.glass.dark .svc-icon { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.10); }
   .svc.glass.dark .svc-icon svg { stroke: var(--paper); }
@@ -642,7 +720,7 @@
   .svc.glass.dark .svc-list li { color: var(--paper); }
   .svc.glass.dark a { color: rgba(244,241,234,0.75); text-decoration: underline; }
   .svc-industries {
-    font-size: 11.5px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; font-family: var(--mono);
     color: var(--muted); letter-spacing: 0.04em;
     margin-top: 10px; padding-top: 10px;
     border-top: 1px dashed var(--line);
@@ -656,11 +734,14 @@
     font-family: 'Instrument Serif', serif; font-style: italic; font-size: 52px;
     line-height: 1; margin-bottom: 18px; color: var(--ink);
   }
-  .step h4 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
+  /* Decía `.step h4` y el markup usa h2/h3: la regla no aplicaba en ninguna
+     parte y los títulos de los pasos tomaban el tamaño por defecto del
+     encabezado. Apuntada por rango, deja de depender del nivel. */
+  .step :is(h2, h3, h4) { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
   .step p { font-size: 13px; color: var(--muted); line-height: 1.55; }
   .step-meta {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em;
-    color: var(--red); text-transform: uppercase; margin-top: auto; padding-top: 16px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em;
+    color: var(--red-vivo); text-transform: uppercase; margin-top: auto; padding-top: 16px;
   }
 
   /* ======= METRICS â€” dark glass slab ======= */
@@ -680,7 +761,11 @@
     font-size: clamp(28px, 3.4vw, 46px); line-height: 1.15; letter-spacing: -0.02em;
     text-wrap: balance;
   }
-  .quote::before { content: '"'; color: var(--red); }
+  /* Comilla de apertura curva. Va como escape unicode y no como carácter
+     literal: este archivo ya arrastra mojibake en algún comentario, y `\201C`
+     es inmune a que la codificación se vuelva a torcer. La de cierre vive en el
+     markup como `&rdquo;`. */
+  .quote::before { content: '\201C'; color: var(--red); }
   .quote-author { margin-top: 28px; display: flex; align-items: center; gap: 14px; }
   .qa-avatar {
     width: 44px; height: 44px; border-radius: 50%;
@@ -690,10 +775,10 @@
     box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset;
   }
   .qa-name { font-size: 14px; font-weight: 600; }
-  .qa-role { font-size: 12px; color: var(--muted); margin-top: 2px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+  .qa-role { font-size: 12px; color: var(--muted); margin-top: 2px; font-family: var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
 
   .quote-card { padding: 28px; aspect-ratio: 1.1/1; position: relative; overflow: hidden; }
-  .qc-rule { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
+  .qc-rule { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
   .qc-title { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 26px; line-height: 1.1; margin-top: 12px; max-width: 340px; }
   .qc-mini { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 22px; }
   .qc-stat {
@@ -725,7 +810,7 @@
   .plan.feat::before { background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 25%); }
   .plan.feat .plan-tag { color: var(--red); }
   .plan-tag {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
     text-transform: uppercase; color: var(--muted); display: inline-flex; align-items: center; gap: 8px;
   }
   .plan-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
@@ -734,7 +819,7 @@
   .plan p.desc { font-size: 14.5px; line-height: 1.55; color: var(--muted); }
   .plan.feat p.desc { color: rgba(244,241,234,0.7); }
   .plan-price { font-size: 48px; font-weight: 600; letter-spacing: -0.04em; line-height: 1; margin-top: 4px; }
-  .plan-price small { font-size: 12px; font-family: 'JetBrains Mono', monospace; color: var(--muted); margin-left: 8px; letter-spacing: 0.08em; }
+  .plan-price small { font-size: 12px; font-family: var(--mono); color: var(--muted); margin-left: 8px; letter-spacing: 0.08em; }
   .plan.feat .plan-price small { color: rgba(244,241,234,0.6); }
   .plan ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
   .plan ul li { font-size: 14px; padding-left: 22px; position: relative; }
@@ -760,7 +845,7 @@
   }
   .faq summary::-webkit-details-marker { display: none; }
   .faq summary::after {
-    content: '+'; font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--red);
+    content: '+'; font-family: var(--mono); font-size: 18px; color: var(--red);
     transition: transform .2s ease;
   }
   .faq details[open] summary::after { transform: rotate(45deg); }
@@ -789,7 +874,7 @@
   .final-trust {
     font-size: 12px; color: rgba(244,241,234,0.45);
     margin: 14px auto 0; max-width: 320px;
-    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.03em;
+    font-family: var(--mono); letter-spacing: 0.03em;
     position: relative; z-index: 2;
   }
 
@@ -801,9 +886,14 @@
   }
   .foot-card { padding: 32px 36px; }
   .foot-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; }
-  .foot-top h5 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; }
-  .foot-top a { display: block; padding: 6px 0; font-size: 14px; color: var(--ink); opacity: 0.78; transition: color .2s; }
-  .foot-top a:hover { opacity: 1; color: var(--red); }
+  .foot-top h2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; font-weight: 400; }
+  /* El `span` de "Santiago · CL" comparte el estilo de los enlaces. Es el único
+     ítem de la columna que no es enlace, y sin esto se leía más oscuro y más
+     presente que los que sí lo son: parecía el elemento importante de la
+     columna cuando es el único que no lleva a ninguna parte. */
+  .foot-top a,
+  .foot-top > div > span { display: block; padding: 6px 0; font-size: 14px; color: var(--ink); opacity: 0.78; transition: color .2s; }
+  .foot-top a:hover { opacity: 1; color: var(--red-vivo); }
   /* `.foot-top a { display:block }` (arriba) le gana en especificidad a
      `.logo { display:flex }` y dejaba la marca apilada sobre la palabra.
      Se restituye la disposición horizontal del nav. */
@@ -812,7 +902,7 @@
   .foot-brand p { color: var(--muted); margin-top: 16px; font-size: 14px; max-width: 320px; line-height: 1.55; }
   .foot-bottom {
     margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--line-soft);
-    display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace;
+    display: flex; justify-content: space-between; font-family: var(--mono);
     font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
   }
 
@@ -824,8 +914,11 @@
     justify-content: center;
     align-items: center;
     gap: 5px;
-    width: 38px;
-    height: 38px;
+    /* 44px es el mínimo táctil de WCAG 2.5.8. El control estaba en 38 y es el
+       único acceso al menú en teléfono: el objetivo más importante de la
+       pantalla era también uno de los más chicos. */
+    width: 44px;
+    height: 44px;
     padding: 0;
     background: rgba(14,14,14,0.06);
     border: 1px solid rgba(14,14,14,0.1);
@@ -914,7 +1007,7 @@
   }
 
   .nav-mobile__close {
-    width: 36px; height: 36px;
+    width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
     background: rgba(14,14,14,0.06);
     border: 1px solid var(--line);
@@ -940,7 +1033,8 @@
     font-weight: 500;
     letter-spacing: -0.02em;
     color: var(--ink);
-    padding: 9px 18px;
+    /* 12px arriba y abajo llevan la píldora de 41 a 44px de alto. */
+    padding: 12px 18px;
     border-radius: 999px;
     background: rgba(14,14,14,0.06);
     border: 1px solid rgba(14,14,14,0.08);
@@ -1012,70 +1106,9 @@
   will-change: transform, opacity;
 }
 
-/* ── Contact form ─────────────────────────────────────────────── */
-.contact-form {
-  width: 100%;
-  max-width: 520px;
-  margin-top: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.cf-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-.cf-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.cf-field label {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.cf-field input,
-.cf-field textarea {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 8px;
-  padding: 12px 14px;
-  color: var(--cream);
-  font-size: 14px;
-  font-family: inherit;
-  outline: none;
-  transition: border-color 0.18s;
-  resize: none;
-}
-.cf-field input::placeholder,
-.cf-field textarea::placeholder {
-  color: var(--muted-2);
-}
-.cf-field input:focus,
-.cf-field textarea:focus {
-  border-color: rgba(229,57,53,0.5);
-}
-.cf-field input:disabled,
-.cf-field textarea:disabled {
-  opacity: 0.5;
-}
-.cf-error {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 0;
-}
-.contact-success {
-  margin-top: 32px;
-  text-align: center;
-  color: var(--cream);
-}
-@media (max-width: 600px) {
-  .cf-row { grid-template-columns: 1fr; }
-}
+/* El bloque de `.contact-form`, `.cf-*` y `.contact-success` —16 reglas— se
+   fue con `ContactForm.tsx`, el componente huérfano que nadie importaba. El
+   formulario que sí está en uso es `.sch-*`, más abajo. */
 
 /* ── Scheduler mobile overrides ──────────────────────────────── */
 @media (max-width: 768px) {
@@ -1152,7 +1185,6 @@
 }
 
 /* ── Schedule form ─────────────────────────────────────────────── */
-.fv--form { text-align: left; }
 .sch-form {
   width: 100%;
   max-width: 560px;
@@ -1236,7 +1268,7 @@
   color: var(--cream);
   cursor: pointer;
   transition: border-color 0.18s, background 0.18s;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono);
   letter-spacing: 0.04em;
 }
 .sch-time:hover { border-color: rgba(229,57,53,0.45); }
@@ -1252,7 +1284,10 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-.sch-inputs input:first-child {
+/* El nombre ocupa la fila completa. Se apunta por `name` y no por `:first-child`:
+   los campos llevan una <label> oculta delante, así que el input ya no es el
+   primer hijo de la grilla. */
+.sch-inputs input[name="name"] {
   grid-column: 1 / -1;
 }
 .sch-inputs input {
@@ -1268,6 +1303,16 @@
   transition: border-color 0.18s, background 0.18s;
 }
 .sch-inputs input::placeholder { color: rgba(244,241,234,0.35); }
+
+/* El foco solo teñía el borde de rojo translúcido: 1,35:1 entre el estado
+   normal y el enfocado, cuando WCAG 2.4.11 pide 3:1. Sobre el panel oscuro la
+   diferencia era casi invisible. El anillo crema sí se ve, y va con `offset`
+   para no comerse el radio de 38px del campo. */
+.sch-inputs input:focus-visible,
+.sch-msg:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 2px;
+}
 .sch-inputs input:focus {
   border-color: rgba(229,57,53,0.55);
   background: rgba(255,255,255,0.1);
@@ -1299,14 +1344,10 @@
 }
 .sch-msg:disabled { opacity: 0.45; }
 
-.sch-error {
-  font-size: 13px;
-  color: rgba(244,241,234,0.55);
-  margin: 0;
-}
+/* `.sch-error` quedó sin uso: los errores del formulario los muestra el toast
+   de sileo, no un párrafo dentro del panel. */
 
 /* Success */
-.fv--success { text-align: center; }
 .sch-ok-tag {
   font-size: 12px;
   font-weight: 700;
@@ -1334,3 +1375,19 @@
 .sa-p5 { width: 20px; height: 20px; top: 36%; right: 17%; opacity: 0.28; transform: rotate(5deg); }
 /* Tiny dark — upper area */
 .sa-p6 { width: 16px; height: 16px; top: 10%; right: 33%; opacity: 0.22; transform: rotate(-20deg); }
+
+/* ======= MOVIMIENTO REDUCIDO — colapso de las escenas de scroll =======
+   Va al final a propósito: `.scene-metrics-wrap` y `.scene-final-wrap` se
+   definen más arriba con la misma especificidad, y un @media no añade
+   especificidad —solo condiciona—, así que ubicado antes esta regla perdía
+   sin dar ninguna señal.
+
+   Los contenedores reservan 150vh y 300vh para que GSAP tenga recorrido que
+   consumir con el scrub. Con la preferencia activa no se construye ninguna
+   escena, así que ese espacio queda como 4.000px de scroll vacío. */
+@media (prefers-reduced-motion: reduce) {
+  .scene-metrics-wrap { min-height: 0; }
+  .scene-final-wrap { height: auto; }
+  .scene-metrics-wrap > section,
+  .scene-final-wrap > section { position: static; min-height: 0; }
+}
