@@ -71,6 +71,22 @@
   letter-spacing: 0.04em;
   transition: color 0.2s ease;
   border-radius: 0;
+  position: relative;
+}
+
+/* El objetivo táctil medía 26px, muy por debajo del mínimo de 44 de WCAG
+   2.5.8. El filtro es texto sin fondo: subirle el `padding` habría separado los
+   ítems y engordado la fila. Este pseudo-elemento extiende solo el área
+   sensible, centrada sobre el texto, sin mover un píxel de la maqueta. */
+.team-filter-btn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 44px;
+  min-width: 44px;
 }
 
 .team-filter-btn:hover {

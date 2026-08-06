@@ -1,35 +1,24 @@
-/* Tryvex Design Tokens — fuente de verdad del sistema visual */
+/* Tokens que consume `globals.css`.
+ *
+ * Esta hoja llegó a definir 20 tokens; 12 no los leía nadie y tres
+ * (`--glass-bg`, `--glass-bg-dark`, `--glass-border`) estaban además
+ * redefinidos en `landing.css` con otros valores. El de acá era el viejo
+ * `rgba(14,14,14,0.55)` que landing.css documenta como el gris plano y sucio
+ * que se corrigió a 0.94. Que ganara el bueno dependía únicamente del orden de
+ * los dos `import` en `layout.tsx` — intercambiarlos degradaba el vidrio oscuro
+ * de toda la página sin un solo error.
+ *
+ * Regla: la paleta y el vidrio viven en el `:root` de `landing.css`. Acá queda
+ * solo lo que `globals.css` necesita y no está allá.
+ */
 
 :root {
-  /* Colores base */
+  /* Los consume el bloque `@theme inline` de globals.css */
   --color-ink-base:    #0e0e0e;
   --color-paper-base:  #f4f1ea;
   --color-vex-base:    oklch(65% 0.18 28);
   --color-signal-base: oklch(65% 0.12 250);
 
-  /* Glassmorphism */
-  --glass-bg:      rgba(255, 255, 255, 0.42);
-  --glass-bg-dark: rgba(14, 14, 14, 0.55);
-  --glass-blur:    blur(28px) saturate(180%);
-  --glass-border:  rgba(255, 255, 255, 0.18);
-
-  /* Tipografía fluida */
-  --text-hero:    clamp(3rem, 1rem + 7vw, 8rem);
-  --text-section: clamp(2rem, 1rem + 3vw, 3.5rem);
-  --text-body:    clamp(1rem, 0.92rem + 0.4vw, 1.125rem);
-
-  /* Espaciado de sección */
-  --space-section: clamp(4rem, 3rem + 5vw, 10rem);
-
-  /* Animaciones */
-  --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
-  --duration-fast:   150ms;
-  --duration-normal: 400ms;
-  --duration-slow:   700ms;
-
-  /* Radii */
-  --radius-sm:   8px;
-  --radius-md:   14px;
-  --radius-lg:   24px;
-  --radius-pill: 9999px;
+  /* Lo consumen .glass-light y .glass-dark en globals.css */
+  --glass-blur: blur(28px) saturate(180%);
 }

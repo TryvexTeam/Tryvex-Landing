@@ -1,6 +1,11 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+/* Sin `runtime = "edge"`. Ese export desactiva la generación estática de la
+   ruta ("Using edge runtime on a page currently disables static generation"),
+   así que esta imagen se regeneraba en cada request —una invocación por cada
+   vez que alguien comparte el enlace o pasa un crawler— mientras las siete
+   internas, que solo reexportan este archivo, sí se prerenderizaban en el
+   build. Ahora las ocho se generan una vez y se sirven como archivo. */
 export const alt = "Tryvex — Automatización e Innovación Digital";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

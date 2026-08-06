@@ -3,7 +3,9 @@
 import { useState, useMemo } from "react";
 import { sileo } from "sileo";
 
-const FALLBACK_SLOTS = ["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"];
+import { HORARIOS } from "../../../lib/horarios";
+
+const FALLBACK_SLOTS: string[] = [...HORARIOS];
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MONTHS_ES = [
   "Ene", "Feb", "Mar", "Abr", "May", "Jun",
@@ -124,6 +126,9 @@ export default function FinalCTA() {
 
   return (
     <div className="final glass dark">
+      {/* Sin `data-anim`: la anima el timeline de la escena final en
+          LandingClient, con scrub. Gira al entrar y al salir — eso es
+          deliberado, es una animación de scroll. */}
       <svg className="final-spark">
         <use href="#spark-light" />
       </svg>
@@ -201,8 +206,13 @@ export default function FinalCTA() {
               )}
             </div>
 
+            {/* Las etiquetas van ocultas a la vista pero presentes para el lector
+                de pantalla: el diseño se apoya en el placeholder, que desaparece
+                al escribir y deja el campo sin nombre accesible. */}
             <div className="sch-inputs">
+              <label htmlFor="sch-name" className="sr-only">Nombre</label>
               <input
+                id="sch-name"
                 name="name"
                 type="text"
                 placeholder="Nombre"
@@ -212,7 +222,9 @@ export default function FinalCTA() {
                 disabled={loading}
                 autoComplete="name"
               />
+              <label htmlFor="sch-phone" className="sr-only">Teléfono</label>
               <input
+                id="sch-phone"
                 name="phone"
                 type="tel"
                 placeholder="Teléfono (+56 9 ···· ····)"
@@ -222,7 +234,9 @@ export default function FinalCTA() {
                 disabled={loading}
                 autoComplete="tel"
               />
+              <label htmlFor="sch-email" className="sr-only">Correo electrónico</label>
               <input
+                id="sch-email"
                 name="email"
                 type="email"
                 placeholder="Correo electrónico"
@@ -235,7 +249,11 @@ export default function FinalCTA() {
               />
             </div>
 
+            <label htmlFor="sch-message" className="sr-only">
+              ¿En qué podemos ayudarte? (opcional)
+            </label>
             <textarea
+              id="sch-message"
               name="message"
               className="sch-msg"
               placeholder="¿En qué podemos ayudarte? (opcional)"

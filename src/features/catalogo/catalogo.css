@@ -56,7 +56,7 @@
   padding: 24px;
   text-align: center;
   color: rgba(244, 241, 234, 0.9);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -99,14 +99,17 @@
 .cat-ident { min-width: 0; }
 .cat-cat {
   display: block;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--mono);
   font-size: 10.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted-2, #98948c);
   margin-bottom: 5px;
 }
-.cat-ident h3 {
+/* Se apunta por rango y no por etiqueta: la tarjeta ajusta su nivel de
+   encabezado según dónde se monte —h2 en /catalogo, colgando del h1 de la
+   página; h3 en el home, dentro de la sección que ya tiene su h2—. */
+.cat-ident :is(h2, h3) {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
@@ -124,7 +127,9 @@
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  padding: 9px 16px;
+  /* 12px verticales llevan el botón de 38 a 44px, el mínimo táctil de WCAG. */
+  padding: 12px 16px;
+  min-height: 44px;
   border-radius: 999px;
   font-size: 13px;
   font-weight: 500;
@@ -147,7 +152,7 @@
   margin: 56px auto 0;
   padding: 40px 32px;
   text-align: center;
-  border-radius: var(--radius-lg, 24px);
+  border-radius: 24px;
 }
 .cat-empty h2 { font-size: 1.4rem; margin-bottom: 10px; }
 .cat-empty p { opacity: 0.75; margin-bottom: 22px; }

@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+/* Igual que la imagen de Open Graph: `runtime = "edge"` impedía prerenderizar
+   el favicon y lo convertía en una función que corría en cada carga de página. */
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
