@@ -1,43 +1,79 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { z } from "zod";
 import { createCalendarEvent } from "@/lib/google-calendar";
+import { escaparHtml } from "@/lib/html";
 
 const NOTIFY_EMAIL = "tryvexentreprise@gmail.com";
 const FROM_SENDER = "Tryvex <hola@tryvex.tech>";
 const FROM_INTERNAL = "Tryvex Forms <noreply@tryvex.tech>";
 const FALLBACK_MEET = process.env.GOOGLE_MEET_LINK ?? "https://meet.google.com/tryvex-agenda";
 
-interface SchedulePayload {
-  name: string;
-  phone: string;
-  email: string;
-  date?: string;
-  dateISO?: string;
-  time?: string;
-  message?: string;
+/**
+ * El correo de confirmación sale con el dominio verificado como remitente y va
+ * a la dirección que escribe el visitante: sin esquema, la ruta era un relay
+ * abierto — cualquiera podía mandar correo desde `hola@tryvex.tech` a quien
+ * quisiera y quemar la reputación SPF/DKIM del dominio.
+ */
+const esquemaAgenda = z.object({
+  name: z.string().trim().min(2).max(80),
+  phone: z.string().trim().min(6).max(30),
+  email: z.string().trim().email().max(120),
+  date: z.string().trim().max(60).optional(),
+  dateISO: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  time: z.string().trim().regex(/^\d{2}:\d{2}$/).optional(),
+  message: z.string().trim().max(2000).optional(),
+});
+
+/**
+ * Freno por IP en memoria. No es un rate-limit distribuido — cada instancia
+ * serverless lleva su propio contador — pero corta el caso que importa: el
+ * mismo origen disparando el formulario en bucle contra una instancia caliente.
+ */
+const VENTANA_MS = 60 * 60 * 1000;
+const MAX_POR_VENTANA = 5;
+const golpesPorIp = new Map<string, number[]>();
+
+function superaElLimite(ip: string) {
+  const ahora = Date.now();
+  const recientes = (golpesPorIp.get(ip) ?? []).filter((t) => ahora - t < VENTANA_MS);
+  if (recientes.length >= MAX_POR_VENTANA) {
+    golpesPorIp.set(ip, recientes);
+    return true;
+  }
+  recientes.push(ahora);
+  golpesPorIp.set(ip, recientes);
+  if (golpesPorIp.size > 5000) golpesPorIp.clear(); // techo de memoria
+  return false;
 }
 
 export async function POST(req: NextRequest) {
+  let crudo: unknown;
+  try {
+    crudo = await req.json();
+  } catch {
+    return NextResponse.json({ error: "invalid body" }, { status: 400 });
+  }
+
+  const parseo = esquemaAgenda.safeParse(crudo);
+  if (!parseo.success) {
+    return NextResponse.json({ error: "invalid payload" }, { status: 422 });
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "email service not configured" }, { status: 503 });
   }
 
-  let body: SchedulePayload;
-  try {
-    body = (await req.json()) as SchedulePayload;
-  } catch {
-    return NextResponse.json({ error: "invalid body" }, { status: 400 });
+  // El freno se cobra recién acá, sobre las solicitudes que sí van a mandar
+  // correo. Contarlo antes de validar castigaba al visitante que se equivoca
+  // escribiendo: cinco erratas y quedaba bloqueado una hora.
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "desconocida";
+  if (superaElLimite(ip)) {
+    return NextResponse.json({ error: "too many requests" }, { status: 429 });
   }
 
-  const { name, phone, email, date, dateISO, time, message } = body;
-
-  if (!name?.trim() || !email?.trim() || !phone?.trim()) {
-    return NextResponse.json(
-      { error: "name, phone and email required" },
-      { status: 422 }
-    );
-  }
+  const { name, phone, email, date, dateISO, time, message } = parseo.data;
 
   // Create Google Calendar event + Meet link (falls back if Calendar not configured)
   let meetLink = FALLBACK_MEET;
@@ -52,7 +88,9 @@ export async function POST(req: NextRequest) {
   const resend = new Resend(apiKey);
 
   try {
-    await Promise.all([
+    // `allSettled` y no `all`: si una promesa se rompe por red, la otra sigue
+    // teniendo un resultado que mirar. Con `all` se perdía.
+    const [envioCliente, envioInterno] = await Promise.allSettled([
       resend.emails.send({
         from: FROM_SENDER,
         to: email,
@@ -66,6 +104,11 @@ export async function POST(req: NextRequest) {
         html: buildInternalEmail({ name, phone, email, date, time, message, meetLink }),
       }),
     ]);
+
+    const falloCliente = motivoDeFallo(envioCliente);
+    const falloInterno = motivoDeFallo(envioInterno);
+    if (falloCliente) console.error("[/api/contact] correo al cliente", falloCliente);
+    if (falloInterno) console.error("[/api/contact] aviso al equipo", falloInterno);
 
     // Registrar la cita en el dashboard interno del equipo (trybot/leads-dashboard).
     // Fire-and-forget: si el dashboard no responde, la reserva del cliente NO se ve
@@ -89,15 +132,38 @@ export async function POST(req: NextRequest) {
       }).catch((err) => console.error("[/api/contact] citas ingest error", err));
     }
 
-    return NextResponse.json({ ok: true });
+    /* El criterio es dónde queda el lead, no cuántos correos salieron.
+       - Si falla el aviso al equipo, nadie se entera de la solicitud: se
+         responde con error para que el visitante lo reintente o escriba al
+         correo que muestra el toast.
+       - Si solo falla la copia del cliente, la solicitud ya está en la bandeja
+         del equipo y en el calendario: obligar a reintentar duplicaría la cita
+         para nada. Queda registrado en el log y el equipo hace el contacto. */
+    if (falloInterno) {
+      return NextResponse.json({ error: "email failed" }, { status: 502 });
+    }
+
+    return NextResponse.json({ ok: true, confirmacionEnviada: !falloCliente });
   } catch (err) {
     console.error("[/api/contact] resend error", err);
     return NextResponse.json({ error: "email failed" }, { status: 500 });
   }
 }
 
+/**
+ * El SDK de Resend no lanza excepción cuando el envío se rechaza: devuelve
+ * `{ data, error }`. El código solo tenía un try/catch, así que una clave
+ * inválida, un dominio sin verificar o una cuota agotada terminaban en un 200
+ * con "llamada confirmada" y ningún correo enviado.
+ */
+function motivoDeFallo(resultado: PromiseSettledResult<{ error: unknown }>) {
+  if (resultado.status === "rejected") return resultado.reason;
+  return resultado.value?.error ?? null;
+}
+
 /* ─── Meet block reutilizable ─────────────────────────────────────────────── */
-function meetBlock(meetLink: string, label: string) {
+function meetBlock(link: string, label: string) {
+  const meetLink = escaparHtml(link);
   return `
   <table cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 28px;">
     <tr>
@@ -121,9 +187,9 @@ function meetBlock(meetLink: string, label: string) {
 }
 
 function buildClientEmail({
-  name,
-  date,
-  time,
+  name: nombreCrudo,
+  date: fechaCruda,
+  time: horaCruda,
   meetLink,
 }: {
   name: string;
@@ -131,6 +197,10 @@ function buildClientEmail({
   time?: string;
   meetLink: string;
 }) {
+  const name = escaparHtml(nombreCrudo);
+  const date = fechaCruda ? escaparHtml(fechaCruda) : undefined;
+  const time = horaCruda ? escaparHtml(horaCruda) : undefined;
+
   const slotBlock = date && time ? `
     <table cellpadding="0" cellspacing="0" style="width:100%;margin:0 0 28px;">
       <tr>
@@ -224,12 +294,12 @@ function buildClientEmail({
 }
 
 function buildInternalEmail({
-  name,
-  phone,
-  email,
-  date,
-  time,
-  message,
+  name: nombreCrudo,
+  phone: telefonoCrudo,
+  email: emailCrudo,
+  date: fechaCruda,
+  time: horaCruda,
+  message: mensajeCrudo,
   meetLink,
 }: {
   name: string;
@@ -240,6 +310,13 @@ function buildInternalEmail({
   message?: string;
   meetLink: string;
 }) {
+  const name    = escaparHtml(nombreCrudo);
+  const phone   = escaparHtml(telefonoCrudo);
+  const email   = escaparHtml(emailCrudo);
+  const date    = fechaCruda ? escaparHtml(fechaCruda) : undefined;
+  const time    = horaCruda ? escaparHtml(horaCruda) : undefined;
+  const message = mensajeCrudo ? escaparHtml(mensajeCrudo) : undefined;
+
   return `<!DOCTYPE html>
 <html lang="es">
 <head>

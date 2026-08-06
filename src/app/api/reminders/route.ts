@@ -1,10 +1,25 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import { Resend } from "resend";
+import { escaparHtml } from "@/lib/html";
 
 const TZ = "America/Santiago";
 const WINDOW_MIN = 45;
 const WINDOW_MAX = 75;
+
+/**
+ * Tope de eventos por pasada.
+ *
+ * El bucle manda un correo y parchea el evento del calendario, uno detrás de
+ * otro. Con muchas citas juntas la función se puede pasar del límite de
+ * duración —más estrecho en el plan gratuito de Vercel— y morir a medio camino
+ * devolviendo un 500.
+ *
+ * Cortar no pierde recordatorios: los que quedan fuera no se marcan, y la
+ * pasada siguiente los toma. Con el cron cada 15 minutos y una ventana de 30,
+ * cada cita entra en al menos dos pasadas.
+ */
+const MAX_POR_PASADA = 8;
 
 function getAuth() {
   const auth = new google.auth.OAuth2(
@@ -16,11 +31,45 @@ function getAuth() {
   return auth;
 }
 
-export async function GET() {
+/**
+ * Este endpoint envía correos reales a los asistentes del calendario. Solo debe
+ * invocarlo el cron de Vercel, que manda `Authorization: Bearer $CRON_SECRET`.
+ * Sin ese encabezado la ruta no toca ni Google Calendar ni Resend: antes
+ * cualquiera que conociera la URL podía llamarla en bucle y disparar correos a
+ * clientes reales.
+ *
+ * ⚠️ El cron todavía NO está declarado en `vercel.json`, así que hoy nadie
+ * llama a esta ruta —igual que antes de este cambio, donde el archivo estaba
+ * vacío—. Declararlo requiere dos cosas que dependen de la cuenta de Vercel:
+ * crear la variable `CRON_SECRET`, y confirmar que el plan admite un cron cada
+ * 15 minutos (Hobby solo permite uno diario y el deploy falla si se declara
+ * más). Mientras tanto la ruta queda cerrada, que es el estado seguro.
+ */
+function autorizado(req: NextRequest) {
+  const secreto = process.env.CRON_SECRET;
+  if (!secreto) return false;
+  return req.headers.get("authorization") === `Bearer ${secreto}`;
+}
+
+export async function GET(req: NextRequest) {
+  if (!autorizado(req)) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
   if (!process.env.GOOGLE_REFRESH_TOKEN || !process.env.RESEND_API_KEY) {
     return NextResponse.json({ error: "not configured" }, { status: 503 });
   }
 
+  try {
+    return await enviarRecordatorios();
+  } catch (err) {
+    // Una excepción de Google o de Resend devolvía un 500 con la traza completa.
+    console.error("[/api/reminders] fallo al procesar recordatorios", err);
+    return NextResponse.json({ error: "reminder run failed" }, { status: 500 });
+  }
+}
+
+async function enviarRecordatorios() {
   const auth = getAuth();
   const calendar = google.calendar({ version: "v3", auth });
   const calendarId = process.env.GOOGLE_CALENDAR_ID ?? "primary";
@@ -40,10 +89,18 @@ export async function GET() {
 
   const events = data.items ?? [];
   const reminded: string[] = [];
+  const fallidos: string[] = [];
+
+  let quedaronFuera = 0;
 
   for (const event of events) {
     if (!event.id) continue;
     if (event.extendedProperties?.private?.reminderSent === "1") continue;
+
+    if (reminded.length >= MAX_POR_PASADA) {
+      quedaronFuera++;
+      continue;
+    }
 
     const attendee = event.attendees?.find((a) => !a.organizer && a.email);
     if (!attendee?.email) continue;
@@ -71,25 +128,49 @@ export async function GET() {
       "https://meet.google.com";
     const clientName = attendee.displayName ?? attendee.email.split("@")[0];
 
-    await resend.emails.send({
-      from: "Tryvex <hola@tryvex.tech>",
-      to: attendee.email,
-      subject: "Recordatorio: tu llamada con Tryvex en 1 hora",
-      html: buildReminderEmail({ name: clientName, date: dateStr, time: timeStr, meetLink }),
-    });
+    // Un evento que falla no debe abortar la tanda completa.
+    try {
+      const envio = await resend.emails.send({
+        from: "Tryvex <hola@tryvex.tech>",
+        to: attendee.email,
+        subject: "Recordatorio: tu llamada con Tryvex en 1 hora",
+        html: buildReminderEmail({ name: clientName, date: dateStr, time: timeStr, meetLink }),
+      });
 
-    await calendar.events.patch({
-      calendarId,
-      eventId: event.id,
-      requestBody: {
-        extendedProperties: { private: { reminderSent: "1" } },
-      },
-    });
+      /* Resend rechaza devolviendo `{ error }`, no lanzando. Sin esta guarda el
+         evento quedaba marcado como recordado aunque el correo nunca hubiera
+         salido, y la siguiente pasada del cron lo saltaba: el cliente se
+         quedaba sin recordatorio y nadie se enteraba. */
+      if (envio.error) {
+        console.error("[/api/reminders] envio rechazado", event.id, envio.error);
+        fallidos.push(event.id);
+        continue;
+      }
 
-    reminded.push(event.id);
+      await calendar.events.patch({
+        calendarId,
+        eventId: event.id,
+        requestBody: {
+          extendedProperties: { private: { reminderSent: "1" } },
+        },
+      });
+
+      reminded.push(event.id);
+    } catch (err) {
+      console.error("[/api/reminders] evento", event.id, err);
+      fallidos.push(event.id);
+    }
   }
 
-  return NextResponse.json({ reminded, total: reminded.length });
+  // Los fallidos quedan sin marcar a propósito: la próxima pasada del cron los
+  // vuelve a intentar dentro de la ventana de 45–75 min. `quedaronFuera` son
+  // los que se saltaron por el tope, y también los toma la pasada siguiente.
+  return NextResponse.json({
+    reminded,
+    total: reminded.length,
+    fallidos,
+    quedaronFuera,
+  });
 }
 
 function buildReminderEmail({
@@ -128,7 +209,7 @@ function buildReminderEmail({
             <tr><td>
 
               <p style="margin:0 0 6px;color:#e53935;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;">Recordatorio</p>
-              <h1 style="margin:0 0 8px;color:#f4f1ea;font-size:28px;font-weight:700;line-height:1.2;letter-spacing:-0.02em;">Tu llamada es en 1 hora, ${name}.</h1>
+              <h1 style="margin:0 0 8px;color:#f4f1ea;font-size:28px;font-weight:700;line-height:1.2;letter-spacing:-0.02em;">Tu llamada es en 1 hora, ${escaparHtml(name)}.</h1>
               <p style="margin:0 0 32px;color:#7a736b;font-size:13px;letter-spacing:0.04em;">Dale el brillo que le falta a tu negocio</p>
 
               <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;width:100%;">

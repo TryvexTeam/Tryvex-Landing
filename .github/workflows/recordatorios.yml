@@ -1,0 +1,74 @@
+# Dispara los recordatorios de llamada.
+#
+# Por qué no es un cron de Vercel: la cuenta está en el plan gratuito, donde los
+# cron jobs solo pueden correr **una vez al día**. Este recordatorio busca
+# reuniones que empiezan en 45–75 minutos, así que necesita pasar cada 15–30
+# para no dejar a nadie fuera de esa ventana. Declarar `*/15` en `vercel.json`
+# además hace fallar el deploy en Hobby.
+#
+# GitHub Actions corre crons gratis y se configura desde este mismo repositorio,
+# sin tocar la cuenta de Vercel.
+#
+# ── Qué hay que configurar una vez ────────────────────────────────────────────
+#   1. En Vercel → Settings → Environment Variables: crear `CRON_SECRET` con un
+#      valor largo y aleatorio. Sin ella el endpoint responde 401 siempre.
+#   2. En este repo → Settings → Secrets and variables → Actions: crear un
+#      secret llamado `CRON_SECRET` con **exactamente el mismo valor**.
+#
+# ── Advertencias ─────────────────────────────────────────────────────────────
+#   · GitHub no garantiza la puntualidad: bajo carga, un cron puede atrasarse
+#     varios minutos. La ventana de 45–75 min da 30 de holgura, así que aguanta.
+#   · GitHub desactiva los workflows programados de repos sin actividad por 60
+#     días. Si los recordatorios dejan de salir, revisar eso primero.
+#   · El endpoint es idempotente: marca cada evento como recordado, así que una
+#     ejecución repetida no manda el correo dos veces.
+
+name: Recordatorios de llamadas
+
+on:
+  schedule:
+    # Cada 15 minutos. La ventana del endpoint es de 45 a 75 min antes de la
+    # reunión, o sea 30 minutos de ancho: con esta frecuencia cada cita cae
+    # dentro de al menos una pasada.
+    - cron: "*/15 * * * *"
+  # Permite dispararlo a mano desde la pestaña Actions, útil para probar.
+  workflow_dispatch:
+
+# Si una ejecución se atrasa y se solapa con la siguiente, se cancela la vieja:
+# no tiene sentido que dos pasadas compitan por los mismos eventos.
+concurrency:
+  group: recordatorios
+  cancel-in-progress: true
+
+jobs:
+  disparar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Llamar a /api/reminders
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${CRON_SECRET}" ]; then
+            echo "Falta el secret CRON_SECRET en este repositorio."
+            echo "Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+          codigo=$(curl --silent --show-error --max-time 60 \
+            --output respuesta.json --write-out "%{http_code}" \
+            --header "Authorization: Bearer ${CRON_SECRET}" \
+            https://www.tryvex.tech/api/reminders)
+
+          echo "HTTP ${codigo}"
+          cat respuesta.json
+          echo
+
+          case "${codigo}" in
+            200) echo "Listo." ;;
+            401) echo "401: el CRON_SECRET del repo no coincide con el de Vercel." ; exit 1 ;;
+            503) echo "503: faltan GOOGLE_REFRESH_TOKEN o RESEND_API_KEY en Vercel." ; exit 1 ;;
+            *)   echo "Respuesta inesperada." ; exit 1 ;;
+          esac

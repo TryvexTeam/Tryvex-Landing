@@ -1,7 +1,8 @@
 import { google } from "googleapis";
+import { HORARIOS, DURACION_SLOT_MIN } from "./horarios";
 
-const ALL_SLOTS = ["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"];
-const SLOT_DURATION_MIN = 20;
+const ALL_SLOTS = HORARIOS;
+const SLOT_DURATION_MIN = DURACION_SLOT_MIN;
 const TZ = "America/Santiago";
 
 function getAuth() {
@@ -27,8 +28,9 @@ export async function getAvailableSlots(dateISO: string): Promise<string[]> {
   const auth = getAuth();
   const calendar = google.calendar({ version: "v3", auth });
 
-  // Full UTC day window — Santiago business hours (10:00–17:00 Santiago = 13:00–21:00 UTC max)
-  // always fall within this range regardless of DST.
+  // Ventana de día UTC completo: los horarios de atención de Santiago caen
+  // dentro de este rango con cualquier huso de verano o invierno.
+  // (Este comentario decía 10:00–17:00, horario que ya no se usa; ver `horarios.ts`.)
   const timeMin = new Date(dateISO + "T00:00:00Z");
   const timeMax = new Date(dateISO + "T23:59:59Z");
 
