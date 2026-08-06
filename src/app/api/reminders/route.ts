@@ -18,11 +18,18 @@ function getAuth() {
 }
 
 /**
- * Este endpoint envía correos reales a los asistentes del calendario. Solo lo
- * invoca el cron de Vercel declarado en `vercel.json`, que manda
- * `Authorization: Bearer $CRON_SECRET`. Sin ese encabezado la ruta no toca ni
- * Google Calendar ni Resend: antes cualquiera podía llamarla en bucle y disparar
- * correos a clientes reales.
+ * Este endpoint envía correos reales a los asistentes del calendario. Solo debe
+ * invocarlo el cron de Vercel, que manda `Authorization: Bearer $CRON_SECRET`.
+ * Sin ese encabezado la ruta no toca ni Google Calendar ni Resend: antes
+ * cualquiera que conociera la URL podía llamarla en bucle y disparar correos a
+ * clientes reales.
+ *
+ * ⚠️ El cron todavía NO está declarado en `vercel.json`, así que hoy nadie
+ * llama a esta ruta —igual que antes de este cambio, donde el archivo estaba
+ * vacío—. Declararlo requiere dos cosas que dependen de la cuenta de Vercel:
+ * crear la variable `CRON_SECRET`, y confirmar que el plan admite un cron cada
+ * 15 minutos (Hobby solo permite uno diario y el deploy falla si se declara
+ * más). Mientras tanto la ruta queda cerrada, que es el estado seguro.
  */
 function autorizado(req: NextRequest) {
   const secreto = process.env.CRON_SECRET;
