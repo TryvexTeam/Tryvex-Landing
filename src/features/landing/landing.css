@@ -1321,12 +1321,30 @@
 .sch-inputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  /* El hueco vertical lo aporta el `padding-bottom` reservado de cada celda;
+     acá solo hace falta la separación horizontal. */
+  column-gap: 10px;
+  row-gap: 0;
 }
-/* El nombre ocupa la fila completa. Se apunta por `name` y no por `:first-child`:
-   los campos llevan una <label> oculta delante, así que el input ya no es el
-   primer hijo de la grilla. */
-.sch-inputs input[name="name"] {
+/* Cada campo es una celda con su etiqueta, su input y su aviso. Antes el aviso
+   era hermano directo de los inputs y, al ocupar la fila completa, partía las
+   dos columnas: teléfono y correo se iban uno debajo del otro en cuanto
+   aparecía un error. Dentro de su celda, el aviso ya no mueve a los vecinos. */
+.sch-campo {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  /* Espacio reservado para el aviso, esté o no. El aviso va posicionado dentro
+     de esta franja, así que aparecer y desaparecer no mueve nada.
+
+     Importa más de lo que parece: sin esto, tres errores empujaban el botón de
+     confirmar 63px hacia abajo y en móvil lo sacaban de la pantalla. Y como la
+     tarjeta vive dentro de una escena de scroll con altura fija, crecer también
+     descuadraba la animación. */
+  position: relative;
+}
+.sch-campo--ancho {
   grid-column: 1 / -1;
 }
 .sch-inputs input {
@@ -1374,17 +1392,46 @@
   outline: none;
   transition: border-color 0.18s, background 0.18s;
   resize: none;
-  width: 100%;
 }
-.sch-msg::placeholder { color: rgba(244,241,234,0.35); }
-.sch-msg:focus {
-  border-color: rgba(229,57,53,0.55);
-  background: rgba(255,255,255,0.1);
-}
-.sch-msg:disabled { opacity: 0.45; }
 
-/* `.sch-error` quedó sin uso: los errores del formulario los muestra el toast
-   de sileo, no un párrafo dentro del panel. */
+/* Aviso por campo del formulario de agenda.
+   El toast de sileo sigue existiendo para los fallos de red, pero no sirve para
+   decir QUÉ campo está mal: por eso el aviso va pegado a su campo. */
+.sch-aviso {
+  /* Absoluto dentro de la franja reservada del campo: no empuja a nadie.
+     El panel centra su texto; el aviso no lo hereda y se pega al borde
+     izquierdo de su campo, que es donde el ojo lo busca. Los mensajes son
+     cortos a propósito, para que entren en una línea incluso en la columna
+     angosta del teléfono. */
+  /* Se renderiza SIEMPRE, vacío cuando no hay nada que decir, y con alto fijo.
+     Así aparecer o desaparecer no cambia una sola medida: el botón de confirmar
+     no se mueve —antes bajaba 46px en escritorio y se salía de pantalla en
+     móvil— y la tarjeta, que vive dentro de una escena de scroll, conserva su
+     altura y no descuadra la animación.
+
+     Los mensajes son cortos a propósito para entrar en esta única línea, incluso
+     en la columna angosta del teléfono. */
+  display: block;
+  /* `width` explícito: dentro de la celda flex el párrafo se encogía al ancho
+     de su texto y quedaba centrado bajo el campo del nombre, que ocupa la fila
+     entera. Estirado, el `text-align: left` lo pega al borde del campo. */
+  width: 100%;
+  height: 18px;
+  overflow: hidden;
+  margin: 4px 0 0 18px;
+  text-align: left;
+  font-size: 12px;
+  line-height: 18px;
+  color: #ff9d94;
+}
+
+/* El borde rojo acompana al texto: solo con color no basta para quien no
+   distingue rojo del resto (WCAG 1.4.1, "el color no es el unico medio"). */
+.sch-inputs input[aria-invalid="true"],
+.sch-msg[aria-invalid="true"] {
+  border-color: #ff9d94;
+  background: rgba(255, 157, 148, 0.07);
+}
 
 /* Success */
 .sch-ok-tag {
