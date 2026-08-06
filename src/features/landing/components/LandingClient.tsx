@@ -181,26 +181,47 @@ export default function LandingClient() {
               scrub: 0.8,
             };
 
+            /**
+             * Bajo los 980px el hero pasa a una sola columna: el bloque visual
+             * deja de estar al lado del texto y queda debajo. Con el mismo
+             * recorrido de escritorio, el chip de "Pedido nuevo · Shopify" sube
+             * 230px y termina tapando el 100% de "14 · proyectos activos"
+             * —medido a scrollY 460 en un iPhone 12—.
+             *
+             * La animación se queda: lo que cambia es cuánto viajan. En una
+             * columna el recorrido baja a un tercio, y el CSS les reserva una
+             * banda propia arriba y abajo de la tarjeta. Se siguen moviendo con
+             * el scroll, pero dentro de su espacio, sin cruzar texto.
+             */
+            const dosColumnas = window.innerWidth > 980;
+            const chip = (escritorio: number, movil: number) =>
+              dosColumnas ? escritorio : movil;
+
+            /* La tarjeta también viaja, y ese era el resto del problema: subía
+               140px mientras el chip subía 46, así que lo alcanzaba por abajo y
+               volvía a pisarle el texto. En una columna las dos velocidades se
+               acercan, y la diferencia entre ambas —que es lo que se percibe
+               como profundidad— se mantiene. */
             gsap.to(".hero-visual", {
-              y: -140,
-              rotation: -4,
-              scale: 0.94,
+              y: chip(-140, -58),
+              rotation: chip(-4, -2),
+              scale: chip(0.94, 0.985),
               ease: "none",
               scrollTrigger: heroST,
             });
             gsap.to(".fc-1", {
-              y: -230,
-              x: 60,
-              rotation: -20,
-              scale: 0.8,
+              y: chip(-230, -46),
+              x: chip(60, 10),
+              rotation: chip(-20, -6),
+              scale: chip(0.8, 0.94),
               ease: "none",
               scrollTrigger: { ...heroST, scrub: 1.4 },
             });
             gsap.to(".fc-2", {
-              y: 190,
-              x: -50,
-              rotation: 16,
-              scale: 0.82,
+              y: chip(190, 38),
+              x: chip(-50, -10),
+              rotation: chip(16, 5),
+              scale: chip(0.82, 0.94),
               ease: "none",
               scrollTrigger: { ...heroST, scrub: 1.4 },
             });

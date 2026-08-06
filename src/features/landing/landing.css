@@ -1088,6 +1088,23 @@
     .nav-hamburger { display: flex; }
     .nav-cta .pill { display: none; }
     .final, .metrics-block, .foot-card { padding: 28px 20px; }
+
+    /* ── Los chips flotantes del hero, en una columna ──
+       Sus posiciones (`top:-16px; left:-28px`) están pensadas para el diseño de
+       dos columnas, donde la tarjeta tiene aire libre a los costados. Al pasar
+       a una columna la tarjeta ocupa el ancho completo y esos mismos offsets
+       dejan de caer sobre fondo vacío: el chip de "Pedido nuevo · Shopify"
+       aterrizaba justo encima del título de la tarjeta —"Pedido nuevo en
+       Shopify → factura, agenda y notificación"— y los dos textos se pisaban.
+
+       Acá se les abre una banda propia arriba y abajo de la tarjeta, con
+       `padding` en el contenedor y no `margin` en la tarjeta: el margen se
+       colapsaría fuera del contenedor y los chips, que se posicionan contra
+       él, no ganarían nada. Siguen flotando y animándose; solo dejan de
+       hacerlo sobre texto. */
+    .hero-grid > [data-anim="scale-in"] { padding: 66px 0; }
+    .fc-1 { top: 0; left: 4px; }
+    .fc-2 { bottom: 0; right: 4px; }
   }
   @media (max-width: 600px) {
     .services, .process, .metrics { grid-template-columns: 1fr; }
@@ -1427,13 +1444,18 @@
    de scroll, apagando todas las escenas de GSAP. En un elemento normal `clip`
    no crea contenedor de scroll y no arrastra ninguno de esos efectos.
 
-   Solo en movil: en escritorio el desplazamiento cabe de sobra dentro del
-   ancho, y recortar ahi cortaria la animacion contra el borde del contenedor. */
-@media (max-width: 768px) {
-  section.hero,
-  section.block,
-  .scene-metrics-wrap,
-  .scene-final-wrap {
-    overflow-x: clip;
-  }
+   Va en todos los anchos, no solo en movil. Se penso al reves al principio
+   —"en escritorio cabe de sobra"— y la medicion dijo que no: en el home, de
+   834px hacia arriba el documento seguia midiendo 1554 contra 1440 de ventana.
+   No se notaba porque el `overflow-x: hidden` del body lo tapa, pero el
+   desborde estaba igual.
+
+   Recortar en escritorio no cambia nada visual: estas secciones ocupan el ancho
+   completo, asi que su borde ES el borde de la ventana, y lo que sobresale ya
+   quedaba oculto de todos modos. */
+section.hero,
+section.block,
+.scene-metrics-wrap,
+.scene-final-wrap {
+  overflow-x: clip;
 }
