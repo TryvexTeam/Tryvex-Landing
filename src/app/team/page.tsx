@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import TeamClient from "../../features/team/components/TeamClient";
+import { fetchTeam } from "../../features/team/data/fetch-team";
 import "../../features/team/equipo.css";
 import SiteFooter from "../../components/SiteFooter";
 
@@ -18,7 +19,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  const members = await fetchTeam();
+
   return (
     <>
       <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
@@ -51,7 +54,7 @@ export default function TeamPage() {
 
         <div className="wrap">
           <hr className="team-section-divider" />
-          <TeamClient />
+          <TeamClient members={members} />
         </div>
       </main>
 

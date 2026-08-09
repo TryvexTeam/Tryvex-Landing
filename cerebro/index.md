@@ -50,8 +50,9 @@ GOOGLE_CLIENT_SECRET
 GOOGLE_REFRESH_TOKEN
 GOOGLE_CALENDAR_ID
 GOOGLE_MEET_LINK
-SUPABASE_URL              # métricas /api/stats
-SUPABASE_SERVICE_KEY
+SUPABASE_URL              # métricas /api/stats, equipo /team
+SUPABASE_SERVICE_KEY      # solo /api/stats — service role
+SUPABASE_ANON_KEY         # solo /team — lee v_equipo_publico (vista pública, RLS)
 CITAS_INGEST_TOKEN        # auth de ingesta de citas
 NEXT_PUBLIC_SITE_URL      # base para fetch interno de /api/stats
 ```

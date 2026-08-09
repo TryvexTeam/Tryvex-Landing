@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { members, MEMBERS_WITH_PHOTO, type Member, type MemberCategory } from "../data/members";
+import type { Member, MemberCategory } from "../data/members";
 import TeamCard from "./TeamCard";
 import TeamDrawer from "./TeamDrawer";
 
@@ -13,7 +13,11 @@ const FILTER_LABELS: Record<FilterValue, string> = {
   engineering: "Engineering",
 };
 
-export default function TeamClient() {
+interface TeamClientProps {
+  members: Member[];
+}
+
+export default function TeamClient({ members }: TeamClientProps) {
   const [selected, setSelected] = useState<Member | null>(null);
   const [filter, setFilter] = useState<FilterValue>("all");
   const handleClose = useCallback(() => setSelected(null), []);
@@ -63,7 +67,7 @@ export default function TeamClient() {
       io.disconnect();
       pendientes.forEach(clearTimeout);
     };
-  }, [filter]);
+  }, [filter, members]);
 
   return (
     <>
@@ -87,7 +91,7 @@ export default function TeamClient() {
             <TeamCard
               key={member.id}
               member={member}
-              hasPhoto={MEMBERS_WITH_PHOTO.has(member.id)}
+              hasPhoto={Boolean(member.photo)}
               onSelect={setSelected}
             />
           ))}
