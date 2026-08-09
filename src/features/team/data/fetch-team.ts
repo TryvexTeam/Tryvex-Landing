@@ -16,6 +16,20 @@ type FilaEquipoPublico = {
   category: "core" | "engineering";
 };
 
+/**
+ * El CRM ya valida protocolo antes de guardar, pero esta landing es un repo
+ * aparte: no asumimos que todo dato que le llegue pasó por ese schema. Descarta
+ * cualquier valor que no sea http(s) antes de que termine en un <a href>.
+ */
+function soloHttp(url: string | null | undefined): string | undefined {
+  if (!url) return undefined;
+  try {
+    return ["http:", "https:"].includes(new URL(url).protocol) ? url : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function aMember(fila: FilaEquipoPublico): Member {
   return {
     id: fila.id,
@@ -24,8 +38,8 @@ function aMember(fila: FilaEquipoPublico): Member {
     bioShort: fila.bio_corta ?? "",
     bio: fila.bio ?? "",
     photo: fila.photo ?? "",
-    linkedin: fila.linkedin ?? undefined,
-    portfolio: fila.portfolio ?? undefined,
+    linkedin: soloHttp(fila.linkedin),
+    portfolio: soloHttp(fila.portfolio),
     category: fila.category,
   };
 }
