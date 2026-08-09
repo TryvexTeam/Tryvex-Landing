@@ -1,6 +1,6 @@
 # Tryvex Landing — Reglas del proyecto
 
-> Sincronizado con el código: 2026-08-05.
+> Sincronizado con el código: 2026-08-09.
 
 ## Stack real
 

@@ -1,6 +1,6 @@
 # Tryvex Landing — Cerebro Index
 > Catálogo de nodos. Leer primero al iniciar sesión en este proyecto.
-> Última sincronización con el código: 2026-08-05.
+> Última sincronización con el código: 2026-08-09.
 
 ## Nodos activos
 
@@ -30,7 +30,7 @@
 | `/preguntas` | `src/app/preguntas/page.tsx` | FAQ + JSON-LD `FAQPage` |
 | `/proceso` | `src/app/proceso/page.tsx` | Los 4 pasos del proceso |
 | `/contacto` | `src/app/contacto/page.tsx` | Formulario + precios base + FAQ |
-| `/team` | `src/app/team/page.tsx` | Equipo (`features/team`) |
+| `/team` | `src/app/team/page.tsx` | Equipo (`features/team`) — `fetchTeam()` lee `v_equipo_publico` en Supabase (TryvexPlataform), cae al array estático de `members.ts` si faltan env vars o falla el fetch |
 
 ## API Routes
 
@@ -57,7 +57,9 @@ CITAS_INGEST_TOKEN        # auth de ingesta de citas
 NEXT_PUBLIC_SITE_URL      # base para fetch interno de /api/stats
 ```
 
-> No hay `.env.local` en el repo. Sin estas variables el sitio **igual levanta en local**: `/api/stats` cae a valores de fallback (14 negocios, 847 leads) y las rutas de contacto/agenda fallan al invocarse.
+> No hay `.env.local` en el repo. Sin estas variables el sitio **igual levanta en local**: `/api/stats` cae a valores de fallback (14 negocios, 847 leads), `/team` cae al array estático de `members.ts`, y las rutas de contacto/agenda fallan al invocarse.
+>
+> ⚠️ **`SUPABASE_ANON_KEY` pendiente en Vercel** (PR #12, rama `feature/equipo-desde-crm`, sin mergear). Falta que Ignacio la setee en producción antes de mergear.
 
 ## Decisiones clave
 

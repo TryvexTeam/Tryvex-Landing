@@ -1,7 +1,7 @@
 # Tryvex Landing — Instrucciones de Proyecto
 
 > Contexto de negocio → `BUSINESS_LOGIC.md`. Catálogo de nodos → `cerebro/index.md`.
-> Sincronizado con el código: 2026-08-05.
+> Sincronizado con el código: 2026-08-09.
 
 ## ⚠️ Este proyecto está en producción
 
@@ -191,7 +191,7 @@ Las clases `services`, `process`, `offer` y `quote-card` se excluyen del Interse
 - **La marca del nav es la vuelta al inicio**: fuera del home dice `inicio.` en vez de `tryvex.` y su estrella se pliega en un chevron al pasar por encima. Es un morph real de la propiedad `d`, y solo funciona porque **ambos trazados comparten estructura** — cuatro segmentos cúbicos con los mismos anclajes. Si se edita uno hay que mantener esa correspondencia o el icono deja de interpolar y salta. No agregar un control aparte: el logo ya enlazaba al inicio
 - **Páginas internas**: montan `<RevelarAlScroll />` para el revelado al entrar en pantalla. `LandingClient` es solo del home (trae además las escenas de GSAP/Anime)
 - **Anclas internas**: usar siempre `scrollToSection()` de `src/lib/scroll-to-section.ts`, nunca un `window.scrollTo` a mano. Si la sección destino vive dentro de un `[data-scene]`, su contenido se revela con el scroll: aterrizar en el borde superior deja el fotograma 0 (contenido invisible). El helper detecta ese caso, salta al final de la escena y sin transición. Ya está conectado al CTA del nav, al menú y a los enlaces `href="#..."` de la landing
-- **Equipo (`/team`)**: los datos ya no son solo el array estático. `TeamPage` llama `fetchTeam()` (`features/team/data/fetch-team.ts`), que lee `v_equipo_publico` en Supabase (foto, bio, rol — editados por cada integrante desde `/settings` en TryvexPlataform) y cae al array de `data/members.ts` si faltan `SUPABASE_URL`/`SUPABASE_ANON_KEY` o el fetch falla. `photo` ahora puede ser una URL completa del bucket `avatares` (`next.config.ts` la permite vía `remotePatterns`) en vez de una ruta local — `hasPhoto` se deriva de `Boolean(member.photo)`, ya no de un Set fijo. El marco es 3/4 con `object-fit: cover`, así que una foto horizontal se recorta a los lados
+- **Equipo (`/team`)**: los datos ya no son solo el array estático. `TeamPage` llama `fetchTeam()` (`features/team/data/fetch-team.ts`), que lee `v_equipo_publico` en Supabase (foto, bio, rol — editados por cada integrante desde `/settings` en TryvexPlataform) y cae al array de `data/members.ts` si faltan `SUPABASE_URL`/`SUPABASE_ANON_KEY` o el fetch falla. `photo` ahora puede ser una URL completa del bucket `avatares` (`next.config.ts` la permite vía `remotePatterns`) en vez de una ruta local — `hasPhoto` se deriva de `Boolean(member.photo)`, ya no de un Set fijo. El marco es 3/4 con `object-fit: cover`, así que una foto horizontal se recorta a los lados. `fetch-team.ts` filtra `linkedin`/`portfolio` con `soloHttp()` antes de que lleguen a un `<a href>`: descarta cualquier protocolo que no sea http(s), en defensa de que este repo no puede asumir que el CRM ya validó esos valores (aunque sí lo hace)
 - **PRPs**: documentar features complejas en `.claude/PRPs/` antes de implementar
 
 ## Comandos
