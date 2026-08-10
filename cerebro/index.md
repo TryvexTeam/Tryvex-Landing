@@ -55,11 +55,12 @@ SUPABASE_SERVICE_KEY      # solo /api/stats — service role
 SUPABASE_ANON_KEY         # solo /team — lee v_equipo_publico (vista pública, RLS)
 CITAS_INGEST_TOKEN        # auth de ingesta de citas
 NEXT_PUBLIC_SITE_URL      # base para fetch interno de /api/stats
+REVALIDATE_SECRET         # auth de /api/revalidate — webhook de TryvexPlataform al guardar un perfil
 ```
 
-> No hay `.env.local` en el repo. Sin estas variables el sitio **igual levanta en local**: `/api/stats` cae a valores de fallback (14 negocios, 847 leads), `/team` cae al array estático de `members.ts`, y las rutas de contacto/agenda fallan al invocarse.
+> No hay `.env.local` en el repo. Sin estas variables el sitio **igual levanta en local**: `/api/stats` cae a valores de fallback (14 negocios, 847 leads), `/team` cae al array estático de `members.ts`, las rutas de contacto/agenda fallan al invocarse, y `/api/revalidate` queda cerrado (401 siempre — falla seguro, no abierto).
 >
-> ⚠️ **`SUPABASE_ANON_KEY` pendiente en Vercel** (PR #12, rama `feature/equipo-desde-crm`, sin mergear). Falta que Ignacio la setee en producción antes de mergear.
+> ⚠️ **`REVALIDATE_SECRET` pendiente en Vercel** (rama `feature/equipo-crm-revalidate`). Falta setearla en producción y configurar el webhook del lado de TryvexPlataform (header `x-revalidate-secret` + `x-revalidate-timestamp` epoch ms, body `{"tag":"equipo"}`) antes de mergear.
 
 ## Decisiones clave
 
