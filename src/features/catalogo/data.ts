@@ -66,6 +66,18 @@ export const demos: Demo[] = [
     imagen: "/catalogo/concesionaria.jpg",
     publicada: true,
   },
+  {
+    id: "inmobiliaria",
+    nicho: "Inmobiliaria de lujo",
+    categoria: "Bienes raíces",
+    descripcion:
+      "Cada propiedad con su ficha, fotos y superficie al detalle, agendando visitas solas por WhatsApp.",
+    incluye: ["Web inmersiva", "Fichas de propiedad", "Asistente WhatsApp"],
+    demoUrl: "https://inmobiliaria-landing-demo.vercel.app",
+    whatsappRef: "DEMO-INMO",
+    imagen: "/catalogo/inmobiliaria.jpg",
+    publicada: true,
+  },
 ];
 
 export const demosPublicadas: Demo[] = demos.filter(
