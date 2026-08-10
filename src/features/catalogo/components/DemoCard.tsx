@@ -61,7 +61,7 @@ export default function DemoCard({
               width={1360}
               height={578}
               className="cat-shot"
-              sizes="(max-width: 640px) 92vw, (max-width: 1100px) 46vw, 560px"
+              sizes="(max-width: 640px) 92vw, 380px"
             />
             {velo && (
               /* Misma imagen encima, desenfocada y desvanecida hacia arriba.
@@ -74,7 +74,7 @@ export default function DemoCard({
                 width={1360}
                 height={578}
                 className="cat-shot cat-velo"
-                sizes="(max-width: 640px) 92vw, (max-width: 1100px) 46vw, 560px"
+                sizes="(max-width: 640px) 92vw, 380px"
               />
             )}
           </>

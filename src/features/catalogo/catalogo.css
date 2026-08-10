@@ -4,10 +4,11 @@
    Antes eran tres columnas fijas: con una sola demo la tarjeta quedaba flotando
    arriba a la izquierda y dos tercios de la página en blanco. Con `auto-fit` y
    un ancho máximo por pieza, una demo ocupa una tarjeta grande y centrada, dos
-   se reparten, y de tres en adelante se arma la grilla. Sin tocar data.ts. */
+   se reparten, y con tres el tope de 380px las deja a las tres en la misma
+   fila dentro del `.wrap` de 1280px. Sin tocar data.ts. */
 .cat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 560px));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
   justify-content: center;
   gap: 28px;
   margin-top: 56px;
