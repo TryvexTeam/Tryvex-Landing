@@ -59,9 +59,18 @@ export async function POST(req: Request) {
   }
 
   try {
-    // "max": sigue sirviendo la versión vieja mientras regenera en background,
-    // en vez de bloquear el request que dispara la invalidación.
-    revalidateTag(parsed.data.tag, "max");
+    // Sin perfil de caché: la próxima visita regenera y ya ve lo nuevo.
+    //
+    // Antes iba con "max", que sirve la versión vieja una vez más y regenera por
+    // detrás. En una página que se revalida sola cada 15 min eso está bien, pero
+    // acá la invalidación llega porque alguien ACABA de guardar su ficha: recarga,
+    // ve lo de antes, y concluye que no funcionó. Pasó varias veces el 10-ago —
+    // el sistema andaba y la pantalla mentía, que es la peor combinación.
+    //
+    // El costo es que la primera visita después de guardar espera a que la página
+    // se genere. Son cinco fichas leídas de una vista: décimas de segundo, y sólo
+    // para quien caiga justo en ese instante.
+    revalidateTag(parsed.data.tag);
     console.log(`[revalidate] tag="${parsed.data.tag}" ok`);
     return NextResponse.json({ revalidated: true, tag: parsed.data.tag });
   } catch (err) {
