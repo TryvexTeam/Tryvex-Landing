@@ -78,6 +78,18 @@ export const demos: Demo[] = [
     imagen: "/catalogo/inmobiliaria.jpg",
     publicada: true,
   },
+  {
+    id: "estetica",
+    nicho: "Centro de estética y spa",
+    categoria: "Belleza y bienestar",
+    descripcion:
+      "Servicios y horas disponibles siempre a la vista, con las reservas cerrándose por WhatsApp.",
+    incluye: ["Web inmersiva", "Galería de servicios", "Asistente WhatsApp"],
+    demoUrl: "https://demo-centro-estetica-tryvex.vercel.app",
+    whatsappRef: "DEMO-ESTETICA",
+    imagen: "/catalogo/estetica.jpg",
+    publicada: true,
+  },
 ];
 
 export const demosPublicadas: Demo[] = demos.filter(
