@@ -51,6 +51,10 @@ function aMember(fila: FilaEquipoPublico): Member {
  *
  * Si faltan las env vars o Supabase no responde, cae al array estático — mismo
  * patrón que /api/stats, para que la página nunca se caiga por esto.
+ *
+ * `tags: ["equipo"]` deja esta consulta cacheada hasta 1h o hasta que
+ * TryvexPlataform llame a /api/revalidate al guardar un perfil, lo que pase
+ * primero — ver ese route handler para el flujo de invalidación on-demand.
  */
 export async function fetchTeam(): Promise<Member[]> {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return MIEMBROS_FALLBACK;
@@ -63,7 +67,7 @@ export async function fetchTeam(): Promise<Member[]> {
           apikey: SUPABASE_ANON_KEY,
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         },
-        next: { revalidate: 3600 },
+        next: { revalidate: 3600, tags: ["equipo"] },
       }
     );
     if (!res.ok) return MIEMBROS_FALLBACK;
