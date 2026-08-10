@@ -59,18 +59,18 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Sin perfil de caché: la próxima visita regenera y ya ve lo nuevo.
+    // Next 16 volvió obligatorio el segundo argumento de revalidateTag. "max"
+    // (stale-while-revalidate) NO sirve acá: sirve la versión vieja una vez más
+    // y regenera por detrás, pero la invalidación llega porque alguien ACABA de
+    // guardar su ficha — recarga, ve lo de antes, y concluye que no funcionó.
+    // Pasó varias veces el 10-ago: el sistema andaba y la pantalla mentía, que
+    // es la peor combinación. `{ expire: 0 }` es el reemplazo documentado para
+    // ese caso: expira ya, sin esperar a que alguien visite la página primero.
     //
-    // Antes iba con "max", que sirve la versión vieja una vez más y regenera por
-    // detrás. En una página que se revalida sola cada 15 min eso está bien, pero
-    // acá la invalidación llega porque alguien ACABA de guardar su ficha: recarga,
-    // ve lo de antes, y concluye que no funcionó. Pasó varias veces el 10-ago —
-    // el sistema andaba y la pantalla mentía, que es la peor combinación.
-    //
-    // El costo es que la primera visita después de guardar espera a que la página
-    // se genere. Son cinco fichas leídas de una vista: décimas de segundo, y sólo
-    // para quien caiga justo en ese instante.
-    revalidateTag(parsed.data.tag);
+    // El costo es que la primera visita después de guardar espera a que la
+    // página se genere. Son cinco fichas leídas de una vista: décimas de
+    // segundo, y sólo para quien caiga justo en ese instante.
+    revalidateTag(parsed.data.tag, { expire: 0 });
     console.log(`[revalidate] tag="${parsed.data.tag}" ok`);
     return NextResponse.json({ revalidated: true, tag: parsed.data.tag });
   } catch (err) {
