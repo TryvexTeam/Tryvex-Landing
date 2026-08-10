@@ -31,7 +31,7 @@ function secretoValido(recibido: string): boolean {
 /**
  * Invalidación on-demand para /team: TryvexPlataform llama esta ruta cuando
  * alguien guarda su perfil en /settings, en vez de esperar el `revalidate:
- * 3600` de fetch-team.ts. Ver ese archivo para el otro lado del flujo.
+ * 900` de fetch-team.ts. Ver ese archivo para el otro lado del flujo.
  *
  * Seguridad (ver checklist de la skill backend-security-coder):
  * - Secreto en header, nunca en query param (query queda en logs de CDN).
