@@ -6,6 +6,7 @@ export type Member = {
   role: string;
   bioShort: string;
   bio: string;
+  /** URL completa (Supabase Storage) o ruta local. Vacío = sin foto. */
   photo: string;
   photoWide?: string;
   linkedin?: string;
@@ -14,9 +15,9 @@ export type Member = {
 };
 
 /**
- * Las fotos viven en `public/team/<id>.jpg` — el archivo se llama igual que el
- * `id` del miembro, para que no haya que adivinar la correspondencia.
- * Un miembro solo muestra foto si su id está en MEMBERS_WITH_PHOTO (TeamClient).
+ * Fallback si `fetchTeam()` no puede llegar al CRM (ver
+ * `features/team/data/fetch-team.ts`). Las fotos de este array viven en
+ * `public/team/<id>.jpg` — el archivo se llama igual que el `id` del miembro.
  */
 export const members: Member[] = [
   {
@@ -76,18 +77,3 @@ export const members: Member[] = [
     portfolio: "",
   },
 ];
-
-/**
- * Miembros con foto en `public/team/<id>.jpg`.
- *
- * Vive acá, junto a los datos, porque antes cada componente mantenía su propia
- * copia y se desincronizaron: la del drawer no incluía a Cristian, así que su
- * retrato salía en la grilla pero no al abrir el perfil.
- */
-export const MEMBERS_WITH_PHOTO = new Set<string>([
-  "ignacio-navarrete",
-  "vicente-garcia",
-  "cristian-de-la-fuente",
-  "joseph-mailens",
-  "fabian-melivilu",
-]);

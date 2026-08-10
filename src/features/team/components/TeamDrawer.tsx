@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import { MEMBERS_WITH_PHOTO, type Member } from "../data/members";
+import type { Member } from "../data/members";
 
 /** Marca en el <body> mientras el perfil está abierto. */
 const BODY_DRAWER_ABIERTO = "team-drawer-abierto";
@@ -165,7 +165,7 @@ export default function TeamDrawer({ member, onClose }: TeamDrawerProps) {
     </svg>
   );
 
-  const hasPhoto = member ? MEMBERS_WITH_PHOTO.has(member.id) : false;
+  const hasPhoto = Boolean(member?.photo);
 
   return (
     <div
