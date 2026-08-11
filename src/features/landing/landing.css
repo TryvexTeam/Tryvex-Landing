@@ -749,6 +749,38 @@
   }
   .svc.glass.dark .svc-industries { color: rgba(244,241,234,0.38); border-top-color: rgba(255,255,255,0.10); }
 
+  /* ======= NAV DE ANCLAS (/servicios) ======= */
+  .servicios-jump {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px;
+  }
+  .servicios-jump a {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.04em;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    color: var(--ink); text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .servicios-jump a:hover { background: var(--red-soft); border-color: var(--red); }
+
+  /* ======= PRECIO ARRIBA DE LA TARJETA (/servicios) =======
+     Antes vivía al final de la tarjeta, después de 4 bullets — lo primero
+     que se busca quedaba enterrado. Ahora va justo bajo el título. */
+  .svc-price-row {
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px;
+    padding-bottom: 14px; margin-bottom: 4px; border-bottom: 1px dashed var(--line);
+  }
+  .svc-price-row strong { font-size: 1.2rem; }
+  .svc-plazo {
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+  }
+  .svc-mant-chip {
+    margin-left: auto; font-size: 11px; color: var(--muted);
+    background: rgba(14,14,14,0.05); border: 1px solid var(--line);
+    padding: 3px 9px; border-radius: 999px; cursor: help;
+  }
+  .svc.glass.dark .svc-price-row { border-bottom-color: rgba(255,255,255,0.12); }
+  .svc.glass.dark .svc-mant-chip { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.14); color: rgba(244,241,234,0.7); }
+
   /* ======= PROCESS â€” horizontal rail with glass cards ======= */
   .process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
   .step { padding: 28px 24px 26px; min-height: 220px; display: flex; flex-direction: column; }
@@ -911,6 +943,32 @@
   .plan-annual-save {
     font-size: 12px; font-family: var(--mono); color: var(--red-vivo); margin-top: -8px;
   }
+
+  /* ======= COMPARADOR (/servicios) =======
+     La columna Tryvex se destaca con un fondo tintado y esquinas propias,
+     como si fuera una tarjeta flotando dentro de la tabla — nada de borde
+     duro alrededor, que es lo que la hacía leerse a <table border>. */
+  .compare-wrap { padding: 8px 8px 16px; overflow-x: auto; }
+  .compare-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 640px; }
+  .compare-table th, .compare-table td {
+    padding: 16px 20px; text-align: left; font-size: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .compare-table thead th {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); font-weight: 500;
+  }
+  .compare-table tbody tr:last-child td { border-bottom: none; }
+  .compare-criterio { color: var(--muted); font-size: 13.5px; }
+  .compare-tryvex {
+    background: var(--red-soft); font-weight: 600; color: var(--ink);
+    border-bottom-color: rgba(229,57,53,0.14);
+  }
+  th.compare-tryvex {
+    color: var(--red-vivo); border-radius: 14px 14px 0 0;
+    padding-top: 18px;
+  }
+  .compare-table tbody tr:last-child .compare-tryvex { border-radius: 0 0 14px 14px; padding-bottom: 18px; }
 
   /* ======= FAQ ======= */
   .faq-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: flex-start; }

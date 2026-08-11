@@ -8,6 +8,7 @@ import BloqueResultados from "../features/landing/components/BloqueResultados";
 import { fetchStats } from "../features/landing/stats";
 import "../features/catalogo/catalogo.css";
 import SiteFooter from "../components/SiteFooter";
+import { CONTACTO_HREF } from "../lib/mail";
 
 /** Preview del catálogo: las primeras demos publicadas. El resto vive en /catalogo. */
 const demosPreview = demosPublicadas.slice(0, 3);
@@ -362,7 +363,7 @@ export default async function Home() {
     <div data-anim="fade-right">
       <div className="sec-tag"><span className="sec-num">07</span><span className="sec-label">Preguntas</span></div>
       <h2 data-split="words">Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h2>
-      <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{color: "var(--red)"}}>contacto@tryvex.tech</a> y te contestamos el mismo día.</p>
+      <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer" style={{color: "var(--red)"}}>contacto@tryvex.tech</a> y te contestamos el mismo día.</p>
     </div>
     <div className="faq glass" data-anim="fade-left">
       <details open={true}>

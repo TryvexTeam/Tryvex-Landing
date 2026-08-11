@@ -4,6 +4,7 @@ import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import SiteFooter from "../../components/SiteFooter";
+import ServiciosMotion from "./ServiciosMotion";
 
 export const metadata: Metadata = {
   title: "Servicios — Tryvex",
@@ -41,12 +42,13 @@ type Servicio = {
   icon: keyof typeof ICONS;
   /** Override del texto de mantención. Si no se define, usa el genérico $49.000/mes. */
   mantencion?: string;
+  /** Versión corta para el chip junto al precio. Si no se define, usa "$49.000/mes". */
+  mantencionCorta?: string;
 };
 
-const MANTENCION_GENERICA = "+ desde $49.000/mes de mantención (primeros 90 días sin costo)";
-
-const FAMILIAS: { titulo: string; nota: string; servicios: Servicio[] }[] = [
+const FAMILIAS: { slug: string; titulo: string; nota: string; servicios: Servicio[] }[] = [
   {
+    slug: "presencia-digital",
     titulo: "Presencia digital",
     nota: "Sitios y landings que convierten, no que decoran.",
     servicios: [
@@ -61,6 +63,7 @@ const FAMILIAS: { titulo: string; nota: string; servicios: Servicio[] }[] = [
         precio: "desde $150.000",
         icon: "monitor",
         mantencion: "+ desde $20.000/mes de mantención (primeros 90 días sin costo)",
+        mantencionCorta: "$20.000/mes",
       },
       {
         num: "02",
@@ -77,6 +80,7 @@ const FAMILIAS: { titulo: string; nota: string; servicios: Servicio[] }[] = [
     ],
   },
   {
+    slug: "automatizacion",
     titulo: "Automatización de procesos",
     nota: "El trabajo repetitivo, resuelto. Desde un pedido hasta una factura firmada.",
     servicios: [
@@ -127,6 +131,7 @@ const FAMILIAS: { titulo: string; nota: string; servicios: Servicio[] }[] = [
     ],
   },
   {
+    slug: "productos",
     titulo: "Productos a medida",
     nota: "Cuando una hoja de cálculo dejó de alcanzar.",
     servicios: [
@@ -141,6 +146,7 @@ const FAMILIAS: { titulo: string; nota: string; servicios: Servicio[] }[] = [
         precio: "desde $2.800.000",
         icon: "cube",
         mantencion: "Si es un SaaS que monetizas: 5% mensual de lo que factura (piso $150.000), en vez de mantención fija — mientras alojamos tu infraestructura.",
+        mantencionCorta: "5% si es SaaS",
       },
       {
         num: "08",
@@ -167,6 +173,7 @@ const FAMILIAS: { titulo: string; nota: string; servicios: Servicio[] }[] = [
     ],
   },
   {
+    slug: "ia",
     titulo: "Inteligencia aplicada",
     nota: "Agentes y asistentes conectados a tus sistemas reales, no una demo.",
     servicios: [
@@ -183,6 +190,14 @@ const FAMILIAS: { titulo: string; nota: string; servicios: Servicio[] }[] = [
       },
     ],
   },
+];
+
+const COMPARADOR: { criterio: string; tryvex: string; agencia: string; nocode: string }[] = [
+  { criterio: "Quién escribe el código", tryvex: "Ingenieros propios", agencia: "Ingenieros propios", nocode: "Nadie — plantillas y conectores" },
+  { criterio: "Precio y plazo", tryvex: "Cerrados antes de partir", agencia: "Cerrados, con letra chica", nocode: "Bajo, pero sube con cada add-on" },
+  { criterio: "Dueño del código", tryvex: "El cliente, siempre", agencia: "El cliente", nocode: "La plataforma — no te lo llevas" },
+  { criterio: "Agentes de IA conectados a tus sistemas", tryvex: "Sí, hecho a medida", agencia: "Depende del equipo", nocode: "Solo lo que el plugin permita" },
+  { criterio: "Mantención después de la entrega", tryvex: "90 días sin costo, luego plan claro", agencia: "Variable", nocode: "Incluida, pero no puedes migrar" },
 ];
 
 const EXPLORACION = [
@@ -208,6 +223,7 @@ export default function ServiciosPage() {
 
       <NavBar />
       <RevelarAlScroll />
+      <ServiciosMotion />
 
       <main id="contenido" tabIndex={-1}>
         <section className="hero" style={{ paddingBottom: "0" }}>
@@ -221,11 +237,17 @@ export default function ServiciosPage() {
               Precios base. Se ajustan según componentes que pidas (más páginas, integraciones, e-commerce, etc.),
               siempre cotizado antes de partir. Se paga 50% al iniciar y 50% contra entrega.
             </p>
+
+            <nav className="servicios-jump" aria-label="Saltar a una familia de servicios" data-anim="fade-up">
+              {FAMILIAS.map((f) => (
+                <a key={f.slug} href={`#${f.slug}`}>{f.titulo}</a>
+              ))}
+            </nav>
           </div>
         </section>
 
-        {FAMILIAS.map((familia, fi) => (
-          <section className="block" key={familia.titulo} style={{ paddingTop: fi === 0 ? "0" : undefined }}>
+        {FAMILIAS.filter((f) => f.titulo !== "Inteligencia aplicada").map((familia, fi) => (
+          <section className="block" id={familia.slug} key={familia.titulo} style={{ paddingTop: fi === 0 ? "0" : undefined, scrollMarginTop: "100px" }}>
             <div className="wrap">
               <div style={{ marginBottom: "28px" }} data-anim="fade-up">
                 <h2 style={{ fontSize: "1.6rem" }}>{familia.titulo}</h2>
@@ -240,27 +262,110 @@ export default function ServiciosPage() {
                       <div className="svc-icon">{ICONS[s.icon]}</div>
                     </div>
                     <h2 style={{ fontSize: "1.4rem" }}>{s.h2}</h2>
+
+                    <div className="svc-price-row">
+                      <strong>{s.precio}</strong>
+                      <span className="svc-plazo">{s.plazo}</span>
+                      <span className="svc-mant-chip" title={s.mantencion ?? "+ desde $49.000/mes de mantención (primeros 90 días sin costo)"}>{s.mantencionCorta ?? "$49.000/mes"} mantención</span>
+                    </div>
+
                     <p>{s.desc}</p>
                     <ul className="svc-list">
                       {s.bullets.map((b) => (
                         <li key={b}>{b}</li>
                       ))}
                     </ul>
-                    <div style={{ marginTop: "24px", paddingTop: "24px", borderTop: "1px solid var(--border)" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: "8px" }}>
-                        <strong style={{ fontSize: "1.15rem" }}>{s.precio}</strong>
-                        <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{s.plazo}</span>
-                      </div>
-                      <div style={{ fontSize: "12.5px", color: "var(--muted)", marginTop: "8px" }}>
-                        {s.mantencion ?? MANTENCION_GENERICA}
-                      </div>
-                    </div>
                   </div>
                 ))}
               </div>
             </div>
           </section>
         ))}
+
+        {/* Spotlight — Inteligencia aplicada es el diferenciador real (ver
+            docs/negocio/arquitectura-de-servicios.md §3): pesa distinto de
+            las demás familias, así que se muestra distinto: mock de flujo en
+            vez de tarjeta de catálogo, mismo lenguaje visual que el hero. */}
+        <section className="block">
+          <div className="wrap">
+            <div style={{ marginBottom: "28px" }} data-anim="fade-up">
+              <span className="eyebrow"><span className="sec-num">04</span><span className="sec-label">Inteligencia aplicada</span></span>
+              <h2 style={{ fontSize: "1.6rem", marginTop: "12px" }}>Agentes que hacen trabajo real, no una demo.</h2>
+              <p style={{ color: "var(--muted)", marginTop: "6px", maxWidth: "560px" }}>Conectados a tus sistemas reales, no una demo. Es lo que más pesa cuando nos comparan con consultoras grandes.</p>
+            </div>
+
+            <div className="hero-grid" data-anim="scale-in">
+              <div>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 600, marginBottom: "12px" }}>Clasifica, redacta y consulta tus sistemas.</h3>
+                <p style={{ color: "var(--muted)", marginBottom: "20px" }}>Un agente que hace trabajo dentro de tu operación real: lee tickets, redacta respuestas, consulta tu base de datos.</p>
+                <ul className="svc-list" style={{ marginBottom: "24px" }}>
+                  <li>Conectado a tus sistemas actuales</li>
+                  <li>Clasificación y redacción automática</li>
+                  <li>Trazabilidad de cada acción</li>
+                  <li>Fase de validación antes del alcance final</li>
+                </ul>
+                <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "24px" }}>
+                  <strong style={{ fontSize: "1.3rem" }}>desde $1.600.000</strong>
+                  <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>4 semanas</span>
+                </div>
+                <Link href="/contacto" className="btn-primary">
+                  Agendar llamada
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                </Link>
+              </div>
+
+              <div className="hero-visual glass">
+                <svg className="hv-spark"><use href="#spark" /></svg>
+                <div className="hv-rule">{"// agente-tryvex-10.run"}</div>
+                <div className="hv-title">Consulta entra → agente clasifica, responde y deriva.</div>
+                <div className="hv-flow">
+                  <div className="hv-step"><span className="dot"></span><span className="lbl">Trigger · mensaje recibido</span><span className="meta">00:00.0s</span></div>
+                  <div className="hv-step"><span className="dot"></span><span className="lbl">Clasificar con modelo propio</span><span className="meta">00:01.2s</span></div>
+                  <div className="hv-step active"><span className="dot"></span><span className="lbl">Responder o derivar a humano</span><span className="meta">00:02.8s</span></div>
+                  <div className="hv-step"><span className="dot"></span><span className="lbl">Registrar en CRM</span><span className="meta">— pendiente</span></div>
+                </div>
+                <div className="hv-foot">
+                  <div>agente ID · 0x4af2</div>
+                  <div className="ok">Sistema activo</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Comparador — sin nombrar competidores, solo la estructura de la
+            decisión: por qué "hecho a medida" gana contra plantilla o
+            no-code cuando el negocio ya pasó cierto tamaño. */}
+        <section className="block">
+          <div className="wrap">
+            <div style={{ marginBottom: "28px" }} data-anim="fade-up">
+              <h2 style={{ fontSize: "1.6rem" }}>¿En qué se nota la diferencia?</h2>
+              <p style={{ color: "var(--muted)", marginTop: "6px", maxWidth: "620px" }}>No competimos en quién cobra menos. Competimos en qué te queda cuando el proyecto termina.</p>
+            </div>
+            <div className="compare-wrap glass" data-anim="fade-up">
+              <table className="compare-table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th className="compare-tryvex">Tryvex</th>
+                    <th>Agencia tradicional</th>
+                    <th>Plataforma no-code</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {COMPARADOR.map((row) => (
+                    <tr key={row.criterio}>
+                      <td className="compare-criterio">{row.criterio}</td>
+                      <td className="compare-tryvex">{row.tryvex}</td>
+                      <td>{row.agencia}</td>
+                      <td>{row.nocode}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
 
         <section className="block">
           <div className="wrap">

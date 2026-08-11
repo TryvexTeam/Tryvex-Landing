@@ -5,6 +5,7 @@ import { sileo } from "sileo";
 
 import { HORARIOS } from "../../../lib/horarios";
 import { errorDelCampo, type CampoAgenda } from "../../../lib/validacion-agenda";
+import { CONTACTO_HREF } from "../../../lib/mail";
 
 const FALLBACK_SLOTS: string[] = [...HORARIOS];
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -461,7 +462,7 @@ export default function FinalCTA() {
           <p>
             Te enviamos un correo con la invitación a Google Meet. Si necesitas
             reagendar, escríbenos a{" "}
-            <a href="mailto:tryvexentreprise@gmail.com" style={{ color: "var(--red)" }}>
+            <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)" }}>
               contacto@tryvex.tech
             </a>
           </p>

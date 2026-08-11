@@ -3,6 +3,7 @@ import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import SiteFooter from "../../components/SiteFooter";
 import CookieSettingsLink from "../../components/legal/CookieSettingsLink";
+import { CONTACTO_HREF } from "../../lib/mail";
 
 export const metadata: Metadata = {
   title: "Política de privacidad — Tryvex",
@@ -62,7 +63,7 @@ export default function PrivacidadPage() {
             <p>
               Para cualquier tema relacionado con tus datos personales, incluido
               el ejercicio de los derechos descritos más abajo, el contacto es{" "}
-              <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a>.
+              <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a>.
               Respondemos dentro de los plazos que fija la ley y, en la práctica,
               dentro de los primeros días hábiles.
             </p>
@@ -178,7 +179,7 @@ export default function PrivacidadPage() {
             </ul>
             <p>
               Se ejercen escribiendo a{" "}
-              <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a>. No
+              <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a>. No
               cobramos por ello. Si consideras que no respondimos bien, puedes
               reclamar ante la autoridad de protección de datos competente.
             </p>
@@ -211,7 +212,7 @@ export default function PrivacidadPage() {
             <div className="legal-foot">
               <p>
                 ¿Algo no queda claro? Escríbenos a{" "}
-                <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a> y
+                <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a> y
                 lo explicamos en palabras simples.
               </p>
               <p>
