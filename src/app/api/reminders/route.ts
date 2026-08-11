@@ -234,7 +234,7 @@ function buildReminderEmail({
 
               <p style="margin:0;color:#4a4540;font-size:13px;line-height:1.55;">
                 ¿Necesitas reagendar? Escríbenos a
-                <a href="mailto:tryvexentreprise@gmail.com" style="color:#e53935;text-decoration:none;">tryvexentreprise@gmail.com</a>
+                <a href="mailto:tryvexentreprise@gmail.com" style="color:#e53935;text-decoration:none;">contacto@tryvex.tech</a>
               </p>
 
             </td></tr>

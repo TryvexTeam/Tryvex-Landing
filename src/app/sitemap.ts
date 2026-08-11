@@ -54,5 +54,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
+    // Prioridad baja porque no compiten por tráfico, pero indexadas a propósito:
+    // que las páginas legales sean rastreables es señal de confianza para Google
+    // y es lo primero que revisa un cliente corporativo antes de contratar.
+    {
+      url: "https://www.tryvex.tech/privacidad",
+      lastModified: new Date("2026-08-10"),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: "https://www.tryvex.tech/terminos",
+      lastModified: new Date("2026-08-10"),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 }

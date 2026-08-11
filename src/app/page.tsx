@@ -61,8 +61,8 @@ export default async function Home() {
       <span className="eyebrow" data-anim="fade-down"><span className="live"></span> Atendiendo a {businesses} negocios · Santiago, CL</span>
       <h1 data-split="words">Automatizamos lo aburrido. Tú vendes <em>lo importante.</em></h1>
       <p className="lede" data-anim="fade-up">
-        Tryvex es un studio de software que diseña, construye y mantiene <a href="/servicios">automatizaciones,
-        landing pages y SaaS a medida</a>. Reemplazamos la planilla, el copy-paste y el
+        Tryvex es un estudio de IA y agencia de software — <em>human-first, AI-powered</em>. Diseñamos, construimos y mantenemos <a href="/servicios">automatizaciones,
+        landing pages, SaaS a medida e IA aplicada</a>. Reemplazamos la planilla, el copy-paste y el
         &ldquo;lo veo después&rdquo; con sistemas que corren solos. Conoce <a href="/proceso">cómo trabajamos</a> o <a href="/contacto">agenda una llamada gratuita</a>.
       </p>
       <div className="hero-cta" data-anim="fade-up">
@@ -81,10 +81,10 @@ export default async function Home() {
 
     <div style={{position: "relative"}} data-anim="scale-in">
       <div className="float-chip glass strong fc-1" data-parallax style={{"--p-amt": "-20px"} as React.CSSProperties}>
-        <div className="ic" style={{background: "var(--red)"}}>S</div>
+        <div className="ic" style={{background: "var(--red)", fontSize: "11px"}}>IA</div>
         <div>
-          <div style={{fontWeight: "600", fontSize: "13px"}}>Pedido nuevo · Shopify</div>
-          <div style={{fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.06em"}}>Hace 3 segundos · webhook</div>
+          <div style={{fontWeight: "600", fontSize: "13px"}}>Consulta nueva · WhatsApp</div>
+          <div style={{fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.06em"}}>Hace 3 segundos · agente propio</div>
         </div>
       </div>
 
@@ -92,16 +92,16 @@ export default async function Home() {
         <svg className="hv-spark"><use href="#spark"/></svg>
         {/* La barra doble es decoración de la maqueta, no un comentario: va
             como string para que JSX no la lea como tal. */}
-        <div className="hv-rule">{"// flow-tryvex-04.run"}</div>
-        <div className="hv-title">Pedido nuevo en Shopify → factura, agenda y notificación.</div>
+        <div className="hv-rule">{"// agente-tryvex-04.run"}</div>
+        <div className="hv-title">Consulta entra por WhatsApp → agente clasifica, responde y deriva.</div>
         <div className="hv-flow">
-          <div className="hv-step"><span className="dot"></span><span className="lbl">Trigger · pedido recibido</span><span className="meta">00:00.0s</span></div>
-          <div className="hv-step"><span className="dot"></span><span className="lbl">Crear factura · SII Chile</span><span className="meta">00:01.2s</span></div>
-          <div className="hv-step active"><span className="dot"></span><span className="lbl">Agendar despacho · Calendar</span><span className="meta">00:02.8s</span></div>
-          <div className="hv-step"><span className="dot"></span><span className="lbl">Notificar cliente · WhatsApp</span><span className="meta">— pendiente</span></div>
+          <div className="hv-step"><span className="dot"></span><span className="lbl">Trigger · mensaje recibido</span><span className="meta">00:00.0s</span></div>
+          <div className="hv-step"><span className="dot"></span><span className="lbl">Clasificar con modelo propio</span><span className="meta">00:01.2s</span></div>
+          <div className="hv-step active"><span className="dot"></span><span className="lbl">Responder o derivar a humano</span><span className="meta">00:02.8s</span></div>
+          <div className="hv-step"><span className="dot"></span><span className="lbl">Registrar en CRM</span><span className="meta">— pendiente</span></div>
         </div>
         <div className="hv-foot">
-          <div>flow ID · 0x4af2</div>
+          <div>agente ID · 0x4af2</div>
           <div className="ok">Sistema activo</div>
         </div>
       </div>
@@ -149,7 +149,7 @@ export default async function Home() {
         <p>Desde un pedido en Shopify hasta una factura SII firmada. Conectamos tus herramientas con flujos hechos a medida que reemplazan trabajo manual.</p>
         <ul className="svc-list">
           <li>Integraciones SII / WhatsApp / Calendar</li>
-          <li>Workflows con <a href="https://n8n.io" target="_blank" rel="noopener noreferrer">n8n</a>, <a href="https://zapier.com" target="_blank" rel="noopener noreferrer">Zapier</a> o código propio</li>
+          <li>Ingeniería propia primero; <a href="https://n8n.io" target="_blank" rel="noopener noreferrer">n8n</a> o <a href="https://zapier.com" target="_blank" rel="noopener noreferrer">Zapier</a> cuando conviene</li>
           <li>Logs, alertas y panel de control</li>
         </ul>
         <p className="svc-industries">Usado por restaurantes, automotoras y farmacias</p>
@@ -362,7 +362,7 @@ export default async function Home() {
     <div data-anim="fade-right">
       <div className="sec-tag"><span className="sec-num">07</span><span className="sec-label">Preguntas</span></div>
       <h2 data-split="words">Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h2>
-      <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{color: "var(--red)"}}>tryvexentreprise@gmail.com</a> y te contestamos el mismo día.</p>
+      <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{color: "var(--red)"}}>contacto@tryvex.tech</a> y te contestamos el mismo día.</p>
     </div>
     <div className="faq glass" data-anim="fade-left">
       <details open={true}>
