@@ -90,6 +90,18 @@ export const demos: Demo[] = [
     imagen: "/catalogo/estetica.jpg",
     publicada: true,
   },
+  {
+    id: "veterinaria",
+    nicho: "Clínica veterinaria",
+    categoria: "Salud y mascotas",
+    descripcion:
+      "Consultas, vacunas y emergencias 24h con la agenda cerrándose sola por WhatsApp.",
+    incluye: ["Web inmersiva", "Ficha de servicios", "Asistente WhatsApp"],
+    demoUrl: "https://tryvex-vetcare.vercel.app",
+    whatsappRef: "DEMO-VET",
+    imagen: "/catalogo/veterinaria.jpg",
+    publicada: true,
+  },
 ];
 
 export const demosPublicadas: Demo[] = demos.filter(
