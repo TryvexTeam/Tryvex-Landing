@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CookieSettingsLink from "./legal/CookieSettingsLink";
 
 /**
  * Footer único del sitio.
@@ -22,7 +23,7 @@ export default function SiteFooter({ revelar = false }: { revelar?: boolean }) {
                 <svg className="logo-mark" style={{ width: "32px", height: "32px" }}><use href="#spark"/></svg>
                 <span className="logo-word">tryvex<span className="dot">.</span></span>
               </Link>
-              <p>Software studio en Santiago. Construimos sistemas que corren solos para negocios que no tienen tiempo que perder.</p>
+              <p>Estudio de IA y agencia de software en Santiago. Construimos sistemas que corren solos para negocios que no tienen tiempo que perder.</p>
             </div>
             <div>
               {/* h2 y no h5: el footer es un landmark `contentinfo` y estos son
@@ -44,12 +45,21 @@ export default function SiteFooter({ revelar = false }: { revelar?: boolean }) {
             <div>
               <h2>Contacto</h2>
               <Link href="/contacto">Agendar llamada</Link>
-              <a href="mailto:tryvexentreprise@gmail.com">tryvexentreprise@gmail.com</a>
+              <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a>
               <span>Santiago · CL</span>
             </div>
           </div>
           <div className="foot-bottom">
             <div>© MMXXVI · Tryvex</div>
+            {/* Acceso permanente a lo legal y a revocar el consentimiento. La
+                ley pide que retirarlo sea tan fácil como haberlo dado, y eso
+                significa un punto de entrada visible en todas las rutas, no
+                solo en la primera visita. */}
+            <nav className="foot-legal" aria-label="Legal">
+              <Link href="/privacidad">Privacidad</Link>
+              <Link href="/terminos">Términos</Link>
+              <CookieSettingsLink />
+            </nav>
             <div>Hecho a mano en Santiago</div>
           </div>
         </div>

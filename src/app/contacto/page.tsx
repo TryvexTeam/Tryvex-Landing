@@ -63,7 +63,7 @@ export default function ContactoPage() {
               </details>
               <details>
                 <summary>¿Puedo escribirles por email?</summary>
-                <p>Sí. Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{ color: "var(--red)" }}>tryvexentreprise@gmail.com</a> y te respondemos el mismo día hábil.</p>
+                <p>Sí. Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{ color: "var(--red)" }}>contacto@tryvex.tech</a> y te respondemos el mismo día hábil.</p>
               </details>
             </div>
           </div>

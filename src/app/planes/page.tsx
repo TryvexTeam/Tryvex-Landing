@@ -3,6 +3,8 @@ import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import SiteFooter from "../../components/SiteFooter";
+import MantencionPlans from "./MantencionPlans";
+import OfertaCards from "./OfertaCards";
 
 export const metadata: Metadata = {
   title: "Planes — Tryvex",
@@ -42,44 +44,27 @@ export default function PlanesPage() {
 
         <section className="block" style={{ paddingTop: "0" }}>
           <div className="wrap">
-            <div className="offer" data-stagger>
-              <div className="plan glass">
-                <div className="plan-tag"><span className="dot"></span> Sprint</div>
-                <h2>Proyecto único</h2>
-                <p className="desc">Una landing, un flujo, un MVP. Alcance fijo, plazo fijo, precio cerrado.</p>
-                <div className="plan-price">desde $150K+<small>CLP</small></div>
-                <ul>
-                  <li>Reunión de descubrimiento</li>
-                  <li>Diseño y desarrollo</li>
-                  <li>Despliegue en producción</li>
-                  <li>30 días de soporte incluido</li>
-                </ul>
-                <Link href="/contacto" className="btn-primary">
-                  Empezar un proyecto
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </Link>
+            <OfertaCards />
+
+            <div style={{ maxWidth: "1080px", margin: "88px auto 0" }} data-anim="fade-up">
+              <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 40px" }}>
+                <span className="eyebrow"><span className="sec-num">05</span><span className="sec-label">Mantención</span></span>
+                <h2 style={{ marginTop: "14px", marginBottom: "12px" }}>Después de los 90 días, <em>elige tu ritmo</em>.</h2>
+                <p style={{ color: "var(--muted)", lineHeight: "1.6" }}>
+                  Su sitio no puede vivir en un plan gratuito: la infraestructura real cuesta, y su
+                  mensualidad cubre que siga en pie. El plan nunca sube solo — si un mes necesita más,
+                  se agrega un bloque puntual de $75.000 por 2 horas.
+                </p>
               </div>
-              <div className="plan glass feat">
-                <div className="plan-tag"><span className="dot"></span> Personalizado</div>
-                <h2>Tryvex <em>partner</em></h2>
-                <p className="desc">Para negocios que necesitan un equipo propio. Alcance, ritmo y precio se definen juntos en una llamada.</p>
-                <div className="plan-price" style={{ fontSize: "1.4rem", letterSpacing: "-0.02em" }}>Precio a medida</div>
-                <ul>
-                  <li>Equipo dedicado (diseño + dev)</li>
-                  <li>Sprints quincenales adaptados a tu ritmo</li>
-                  <li>Catálogo de servicios completo a tu disposición</li>
-                  <li>Reportes mensuales con métricas reales</li>
-                </ul>
-                <Link href="/contacto" className="btn-primary">
-                  Agendar una llamada
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </Link>
-              </div>
+
+              <MantencionPlans />
+
+              <p style={{ color: "var(--muted)", fontSize: "13.5px", textAlign: "center", marginTop: "32px", maxWidth: "620px", marginLeft: "auto", marginRight: "auto" }}>
+                ¿Es un SaaS que monetizas? En vez de mensualidad fija, se ofrece 5% de lo que factura
+                el sistema (piso $150.000/mes) mientras Tryvex aloja tu infraestructura.
+              </p>
             </div>
 
-            {/* Contenido propio de esta página: el home muestra las dos tarjetas
-                para convertir, pero el criterio para elegir entre una y otra no
-                estaba escrito en ninguna parte del sitio. */}
             <div style={{ maxWidth: "760px", margin: "72px auto 0" }} data-anim="fade-up">
               <h2 style={{ marginBottom: "20px" }}>¿Cuál conviene <em>en tu caso?</em></h2>
               <p style={{ color: "var(--muted)", lineHeight: "1.7", marginBottom: "18px" }}>

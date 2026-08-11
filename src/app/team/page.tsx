@@ -22,8 +22,29 @@ export const metadata: Metadata = {
 export default async function TeamPage() {
   const members = await fetchTeam();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": members
+      .filter((m) => m.bio || m.bioShort)
+      .map((m) => ({
+        "@type": "Person",
+        "@id": `https://www.tryvex.tech/team#${m.id}`,
+        name: m.name,
+        jobTitle: m.role || undefined,
+        description: m.bioShort || m.bio || undefined,
+        image: m.photo || undefined,
+        url: "https://www.tryvex.tech/team",
+        worksFor: { "@id": "https://www.tryvex.tech/#organization" },
+        sameAs: [m.linkedin, m.portfolio].filter(Boolean),
+      })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
       <div className="grain"></div>
 

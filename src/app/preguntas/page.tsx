@@ -36,7 +36,7 @@ export default function PreguntasPage() {
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h1>
             <p className="lede" data-anim="fade-up" style={{ maxWidth: "600px" }}>
               ¿Quedó algo sin responder? Escríbenos a{" "}
-              <a href="mailto:tryvexentreprise@gmail.com" style={{ color: "var(--red)" }}>tryvexentreprise@gmail.com</a>{" "}
+              <a href="mailto:tryvexentreprise@gmail.com" style={{ color: "var(--red)" }}>contacto@tryvex.tech</a>{" "}
               y te contestamos el mismo día.
             </p>
           </div>
@@ -75,7 +75,7 @@ export default function PreguntasPage() {
                 </details>
                 <details>
                   <summary>¿Hay que cambiar las herramientas que ya usamos?</summary>
-                  <p>Casi nunca. Automatizamos sobre lo que ya existe: integramos SII, WhatsApp y Calendar con n8n, Zapier o código propio, según lo que convenga. Cambiar de herramienta es la última opción, no la primera.</p>
+                  <p>Casi nunca. Automatizamos sobre lo que ya existe: integramos SII, WhatsApp y Calendar con ingeniería propia, y n8n o Zapier cuando conviene. Cambiar de herramienta es la última opción, no la primera.</p>
                 </details>
                 <details>
                   <summary>¿Cómo sabemos que está funcionando?</summary>
@@ -134,7 +134,7 @@ export default function PreguntasPage() {
               {
                 "@type": "Question",
                 name: "¿Hay que cambiar las herramientas que ya usamos?",
-                acceptedAnswer: { "@type": "Answer", text: "Casi nunca. Automatizamos sobre lo que ya existe: integramos SII, WhatsApp y Calendar con n8n, Zapier o código propio, según lo que convenga. Cambiar de herramienta es la última opción, no la primera." },
+                acceptedAnswer: { "@type": "Answer", text: "Casi nunca. Automatizamos sobre lo que ya existe: integramos SII, WhatsApp y Calendar con ingeniería propia, y n8n o Zapier cuando conviene. Cambiar de herramienta es la última opción, no la primera." },
               },
               {
                 "@type": "Question",

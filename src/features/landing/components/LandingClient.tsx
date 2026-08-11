@@ -184,7 +184,7 @@ export default function LandingClient() {
             /**
              * Bajo los 980px el hero pasa a una sola columna: el bloque visual
              * deja de estar al lado del texto y queda debajo. Con el mismo
-             * recorrido de escritorio, el chip de "Pedido nuevo · Shopify" sube
+             * recorrido de escritorio, el chip de "Consulta nueva · WhatsApp" sube
              * 230px y termina tapando el 100% de "14 · proyectos activos"
              * —medido a scrollY 460 en un iPhone 12—.
              *

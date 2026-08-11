@@ -268,7 +268,7 @@ function buildClientEmail({
 
               <p style="margin:0;color:rgba(255,255,255,0.35);font-size:13px;line-height:1.65;">
                 ¿Necesitas reagendar? Escríbenos a
-                <a href="mailto:tryvexentreprise@gmail.com" style="color:#e53935;text-decoration:none;">tryvexentreprise@gmail.com</a>
+                <a href="mailto:tryvexentreprise@gmail.com" style="color:#e53935;text-decoration:none;">contacto@tryvex.tech</a>
                 y te respondemos el mismo día.
               </p>
 
