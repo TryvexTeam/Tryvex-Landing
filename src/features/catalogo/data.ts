@@ -102,6 +102,18 @@ export const demos: Demo[] = [
     imagen: "/catalogo/veterinaria.jpg",
     publicada: true,
   },
+  {
+    id: "belleza",
+    nicho: "Salón de belleza",
+    categoria: "Belleza y bienestar",
+    descripcion:
+      "Un recorrido con scroll por cada espacio del salón — corte, color, spa capilar, nails y pedicura — con precios reales y reserva directa por WhatsApp.",
+    incluye: ["Web inmersiva", "Recorrido con scroll", "Asistente WhatsApp"],
+    demoUrl: "https://tryvex-demo-belleza.vercel.app",
+    whatsappRef: "DEMO-BELLEZA",
+    imagen: "/catalogo/belleza.jpg",
+    publicada: true,
+  },
 ];
 
 export const demosPublicadas: Demo[] = demos.filter(
