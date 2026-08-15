@@ -49,3 +49,11 @@ src/app/landing-script.js
 
 .vercel
 .env*.local
+
+# artefactos de herramientas de agente — se regeneran solos y no son del sitio.
+# `.playwright-mcp/` acumula capturas y volcados de cada sesión de navegador:
+# llegó a 23 MB sin que nadie lo notara, porque no estaba ignorado y aun así
+# nadie lo commiteaba a propósito.
+.playwright-mcp/
+.verify/
+skills-lock.json
