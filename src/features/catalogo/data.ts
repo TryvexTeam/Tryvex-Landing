@@ -219,6 +219,20 @@ export const demos: Demo[] = [
     publicada: true,
   },
   {
+    id: "agencia-ia-cinematica",
+    nicho: "Agencia o startup de IA",
+    categoria: "Tecnología e IA",
+    tipo: ["IA"],
+    descripcion:
+      "Recorrido cinematográfico con scroll y paralaje al estilo travel story, con slider de servicios y datos de la agencia — una portada memorable para agencias y startups de IA.",
+    incluye: ["Scroll cinematográfico", "Parallax con el mouse", "Slider de servicios"],
+    demoUrl: "https://tryvex-cinematic-scroll.vercel.app",
+    ctaLabel: "Ver proyecto",
+    imagen: "/catalogo/agencia-ia-cinematica.webp",
+    ratio: "1600 / 676",
+    publicada: true,
+  },
+  {
     id: "belleza",
     nicho: "Salón de belleza",
     categoria: "Belleza y bienestar",
