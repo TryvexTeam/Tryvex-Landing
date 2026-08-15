@@ -40,7 +40,7 @@ const jsonLd = {
       alternateName: "Tryvex Studio",
       url: "https://www.tryvex.tech",
       description:
-        "Estudio de IA y agencia de software en Santiago de Chile. Automatizaciones, landing pages, productos SaaS e IA aplicada para empresas que quieren escalar.",
+        "Estudio de IA y agencia de software con base en Santiago de Chile, trabajando en remoto para clientes en Latinoamérica, Europa y Estados Unidos. Automatizaciones, landing pages, productos SaaS e IA aplicada para empresas que quieren escalar.",
       slogan: "Hacemos el software. Tú vendes lo importante.",
       address: {
         "@type": "PostalAddress",
@@ -50,7 +50,26 @@ const jsonLd = {
       },
       email: "contacto@tryvex.tech",
       telephone: "+56950358818",
-      areaServed: { "@type": "Country", name: "Chile" },
+      /* Chile primero y por su nombre de país; el resto como regiones. El
+         equipo trabaja remoto y atiende fuera del país, así que declarar solo
+         Chile subdeclaraba el alcance real.
+
+         Ojo con no confundir esto con el área de servicio del Perfil de
+         Negocio de Google: aquella es una herramienta de búsqueda **local**,
+         tiene tope de zonas y debe caber cerca de donde se verifica el
+         negocio — ahí va Chile y nada más. Esto es otra cosa: describe a quién
+         atiende la empresa, y no tiene ese límite.
+
+         Declarar mercados tampoco los gana: para competir en EE.UU. o España
+         hace falta contenido en su idioma y páginas por mercado. Esto dice la
+         verdad de a quién se le vende, no promete posicionamiento. */
+      areaServed: [
+        { "@type": "Country", name: "Chile" },
+        { "@type": "Place", name: "Sudamérica" },
+        { "@type": "Place", name: "Centroamérica" },
+        { "@type": "Place", name: "Europa" },
+        { "@type": "Country", name: "Estados Unidos" },
+      ],
       knowsAbout: [
         "Inteligencia artificial aplicada",
         "Agentes de IA",
