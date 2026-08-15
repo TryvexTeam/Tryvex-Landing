@@ -38,6 +38,7 @@ Abrir `src/features/catalogo/data.ts` y sumar un objeto al arreglo `demos`:
   id: "veterinaria",
   nicho: "Clínica veterinaria",
   categoria: "Salud y mascotas",
+  tipo: ["Automatización"],
   descripcion:
     "Agenda consultas y vacunas, y recuerda la desparasitación de cada mascota.",
   incluye: ["Web", "Asistente WhatsApp", "Panel"],
@@ -55,6 +56,7 @@ Abrir `src/features/catalogo/data.ts` y sumar un objeto al arreglo `demos`:
 | `id` | Minúsculas, sin espacios ni tildes. Único. Se usa para la captura y la analítica |
 | `nicho` | Como lo diría el dueño del negocio: "Clínica veterinaria", no "vet-saas" |
 | `categoria` | Etiqueta corta que aparece sobre la imagen |
+| `tipo` | **Obligatorio.** Uno o más de `Automatización`, `SaaS`, `IA`, `Fintech` — son los valores de `TIPOS_PROYECTO`, y con ellos filtra la grilla. Omitirlo **rompe el build**, no falla en silencio: dos demos agregadas en ramas paralelas tumbaron el deploy por esto |
 | `descripcion` | **Una** línea sobre qué automatiza. Lenguaje del dueño, cero jerga técnica |
 | `incluye` | 2 o 3 etiquetas de lo que se entrega |
 | `demoUrl` | La URL pública verificada del paso 1 |
