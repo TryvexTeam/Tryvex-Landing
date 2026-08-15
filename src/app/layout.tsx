@@ -27,12 +27,21 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
+      /* `ProfessionalService` en vez de `Organization` a secas: es un subtipo
+         de `LocalBusiness`, así que declara a la vez qué hace la empresa y que
+         atiende desde un lugar. `Organization` describe a cualquiera. */
+      "@type": "ProfessionalService",
       "@id": "https://www.tryvex.tech/#organization",
       name: "Tryvex",
+      /* El nombre choca con marcas mucho más grandes —Trivex, el polímero de
+         lentes; Trovex; Trivox, otra agencia chilena—. `alternateName` y
+         `sameAs` son lo que le permite a un buscador separar la entidad: sin
+         perfiles enlazados, el nombre solo compite por parecido fonético. */
+      alternateName: "Tryvex Studio",
       url: "https://www.tryvex.tech",
       description:
-        "Estudio de IA y agencia de software en Santiago. Automatizaciones, landing pages, productos SaaS e IA aplicada para empresas que quieren escalar.",
+        "Estudio de IA y agencia de software en Santiago de Chile. Automatizaciones, landing pages, productos SaaS e IA aplicada para empresas que quieren escalar.",
+      slogan: "Hacemos el software. Tú vendes lo importante.",
       address: {
         "@type": "PostalAddress",
         addressLocality: "Santiago",
@@ -40,9 +49,29 @@ const jsonLd = {
         addressCountry: "CL",
       },
       email: "contacto@tryvex.tech",
-      areaServed: "CL",
+      telephone: "+56950358818",
+      areaServed: { "@type": "Country", name: "Chile" },
+      knowsAbout: [
+        "Inteligencia artificial aplicada",
+        "Agentes de IA",
+        "Automatización de procesos",
+        "Desarrollo de software a medida",
+        "Facturación electrónica SII",
+        "Integración de sistemas",
+      ],
+      /* ⚠️ `sameAs` va vacío A PROPÓSITO, y es lo que más falta acá.
+         Es el campo que le dice a un buscador "estos perfiles y esta web son
+         la misma entidad", y sin él el nombre compite a ciegas contra marcas
+         más grandes: Trivex (polímero de lentes), Trivox (otra agencia
+         chilena), Trovex.ai — y sobre todo **otra empresa llamada Tryvex** en
+         Brisbane, `tryvex.au`, que ya ocupa `linkedin.com/company/tryvex`.
+
+         Por eso cada URL que se agregue tiene que comprobarse una por una:
+         apuntar al perfil equivocado no deja la entidad sin unir, la une con
+         la empresa incorrecta. Al crear los perfiles propios —LinkedIn con la
+         URL disponible, Instagram, Google Business Profile— se listan acá. */
       foundingDate: "2024",
-      dateModified: "2026-05-12",
+      dateModified: "2026-08-15",
     },
     {
       "@type": "WebSite",
@@ -75,9 +104,12 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.tryvex.tech"),
-  title: "Tryvex — Estudio de IA y Agencia de Software",
+  /* "en Chile" es deliberado: la búsqueda que trae clientes nuevos es
+     "agencia de IA en Chile", y el título no traía el país por ninguna parte
+     —solo "Santiago", y solo en la descripción—. */
+  title: "Tryvex — Estudio de IA y Agencia de Software en Chile",
   description:
-    "Estudio de IA y agencia de software en Santiago. Automatizaciones, landing pages, productos SaaS e IA aplicada para empresas que quieren escalar.",
+    "Estudio de IA y agencia de software en Santiago de Chile. Automatizaciones, agentes de IA, landing pages y productos SaaS a medida, con precio y plazo cerrados.",
   verification: {
     google: "ac6f38d815a767b0",
   },

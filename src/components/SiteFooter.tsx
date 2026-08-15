@@ -34,6 +34,12 @@ export default function SiteFooter({ revelar = false }: { revelar?: boolean }) {
               <Link href="/servicios">Automatización</Link>
               <Link href="/servicios">Landing pages</Link>
               <Link href="/servicios">SaaS a medida</Link>
+              {/* Las dos páginas de captación viven acá y no en el menú: el nav
+                  ya tiene seis ítems y son puertas de entrada desde buscador,
+                  no parte del recorrido de quien ya está en el sitio. El enlace
+                  interno igual les da el peso que necesitan. */}
+              <Link href="/agencia-de-ia-en-chile">Agencia de IA en Chile</Link>
+              <Link href="/agencia-de-software-en-chile">Agencia de software en Chile</Link>
             </div>
             <div>
               <h2>Estudio</h2>
