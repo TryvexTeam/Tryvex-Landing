@@ -195,6 +195,7 @@ export const demos: Demo[] = [
     id: "veterinaria",
     nicho: "Clínica veterinaria",
     categoria: "Salud y mascotas",
+    tipo: ["Automatización"],
     descripcion:
       "Consultas, vacunas y emergencias 24h con la agenda cerrándose sola por WhatsApp.",
     incluye: ["Web inmersiva", "Ficha de servicios", "Asistente WhatsApp"],
@@ -207,6 +208,7 @@ export const demos: Demo[] = [
     id: "belleza",
     nicho: "Salón de belleza",
     categoria: "Belleza y bienestar",
+    tipo: ["Automatización"],
     descripcion:
       "Un recorrido con scroll por cada espacio del salón — corte, color, spa capilar, nails y pedicura — con precios reales y reserva directa por WhatsApp.",
     incluye: ["Web inmersiva", "Recorrido con scroll", "Asistente WhatsApp"],
