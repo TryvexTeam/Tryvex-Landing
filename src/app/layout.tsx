@@ -48,7 +48,7 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": "https://www.tryvex.tech/#website",
       url: "https://www.tryvex.tech",
-      name: "Tryvex — Automatización e Innovación Digital",
+      name: "Tryvex — Estudio de IA y Agencia de Software",
       publisher: { "@id": "https://www.tryvex.tech/#organization" },
       dateModified: "2026-05-12",
     },

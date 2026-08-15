@@ -1,42 +1,187 @@
 /* ── Catálogo de demostraciones ─────────────────────────────────────────── */
 
-/* Grilla que se acomoda a cuántas demos haya publicadas.
-   Antes eran tres columnas fijas: con una sola demo la tarjeta quedaba flotando
-   arriba a la izquierda y dos tercios de la página en blanco. Con `auto-fit` y
-   un ancho máximo por pieza, una demo ocupa una tarjeta grande y centrada, dos
-   se reparten, y con tres el tope de 380px las deja a las tres en la misma
-   fila dentro del `.wrap` de 1280px. Sin tocar data.ts. */
-.cat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
-  justify-content: center;
-  gap: 28px;
-  margin-top: 56px;
-}
+/* En /catalogo, el hero compite con la vitrina por el primer scroll — en
+   mobile el título de 3 líneas + la bajada dejaban la primera tarjeta a
+   897px del tope (medido), casi una pantalla completa sin ver un solo
+   proyecto. Con solo 5 opciones de filtro no hace falta tanto texto de
+   contexto: se achica el hero para que la vitrina aparezca antes. */
 @media (max-width: 640px) {
-  .cat-grid { grid-template-columns: 1fr; gap: 20px; }
+  .cat-hero .wrap { padding-top: 20px !important; padding-bottom: 20px !important; }
+  .cat-hero h1 { font-size: 28px !important; margin-top: 10px !important; line-height: 1.2 !important; }
+  .cat-hero .lede { font-size: 14px !important; margin-top: 8px !important; }
 }
 
+/* ── Anticipo del home (`/`) — 3 tarjetas fijas, sin masonry ──────────────
+   Distinto de `.cat-masonry-grid` (esa es solo para /catalogo, con JS
+   midiendo alto real). Acá el home usa `page.tsx` directo, sin
+   CatalogoGrid ni MasonryItem — 3 columnas parejas y listo, ancho
+   contenido a 1/3 del wrap. Sin esta regla las tarjetas no tienen ningún
+   layout y se estiran a todo el ancho de la página. */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+@media (max-width: 900px) {
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .cat-grid { grid-template-columns: 1fr; gap: 18px; }
+}
+
+/* Chips de filtro por tipo de proyecto — un activo a la vez.
+   "Todos" es el estado por defecto y limpia cualquier chip activo.
+   Fila única con scroll horizontal, no wrap: para un solo eje de filtro
+   (tipo de proyecto) el patrón de catálogos reales (Airbnb, Etsy) es una
+   barra angosta que se desliza, no una que crece en alto y empuja el
+   contenido — envolver a 2 filas solo se justifica con filtros de varias
+   dimensiones a la vez, que acá no hay. En desktop las 5 caben en una fila
+   igual, así que el scroll nunca se activa ahí. */
+.cat-filtros {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 10px;
+  margin-top: 40px;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.cat-filtros::-webkit-scrollbar { display: none; }
+@media (max-width: 640px) {
+  .cat-filtros { margin-top: 24px; }
+}
+.cat-chip {
+  flex-shrink: 0;
+  /* 44px es el mínimo táctil recomendado (Apple HIG / Material) — con
+     9px de padding vertical el chip quedaba en 38px, por debajo. */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(14, 14, 14, 0.14);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted, #6b6863);
+  cursor: pointer;
+  transition: border-color 0.24s ease, color 0.24s ease, background 0.24s ease;
+}
+.cat-chip:hover {
+  border-color: rgba(14, 14, 14, 0.32);
+  color: var(--ink, #0e0e0e);
+}
+.cat-chip.is-active {
+  background: var(--ink, #0e0e0e);
+  border-color: var(--ink, #0e0e0e);
+  color: var(--paper, #f4f1ea);
+}
+.cat-chip:focus-visible {
+  outline: 2px solid var(--red, #e53935);
+  outline-offset: 2px;
+}
+
+.cat-sin-resultados {
+  margin: 56px 0 0;
+  text-align: center;
+  color: var(--muted, #6b6863);
+  font-size: 14px;
+}
+
+/* ── Masonry real: CSS Grid + alto medido (ver MasonryItem.tsx) ──────────
+   Cada tarjeta pesa lo mismo de ancho — lo que varía es su alto, porque
+   cada una respeta el aspect-ratio real de su propia imagen (ver
+   DemoCard). Ese es el "desorden" bueno de una vitrina: nunca anchos
+   distintos, eso lee como error de layout, no como variedad editorial.
+   `grid-auto-rows: 4px` es la unidad fina que MasonryItem usa para pedir
+   "tantas filas como mi alto real" — con `dense`, el navegador rellena
+   huecos con lo que venga después, incluso debajo de la tarjeta expandida
+   (ancho doble) una vez que el resto la alcanza en altura. Con CSS
+   `columns:` (lo que se usó antes) esto no se puede: esa técnica reparte
+   en columnas de ancho parejo pero no soporta una pieza de ancho doble
+   compartiendo el mismo flujo que el resto. */
+.cat-masonry-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  /* `minmax(4px, auto)`, no `4px` a secas: un valor fijo aplasta la
+     tarjeta a 4px ANTES de que el JS de MasonryItem alcance a medirla, y
+     esa medición ya-aplastada es la que queda (span 1 para siempre,
+     tarjeta clippeada). `auto` dentro del minmax deja que la fila crezca
+     al contenido en esa primera pasada sin `grid-row-end` explícito, así
+     la medición inicial es la real; recién ahí JS fija el span preciso. */
+  grid-auto-rows: minmax(4px, auto);
+  grid-auto-flow: dense;
+  /* Sin esto, un item de grid se ESTIRA por defecto para llenar el alto de
+     su fila — antes de que el span explícito de cada tarjeta exista, las
+     tres primeras comparten una sola fila implícita, y esa fila crece al
+     contenido MÁS ALTO de las tres (Inmobiliaria). Las otras dos quedan
+     infladas a ese mismo alto durante un instante, y el JS de
+     MasonryItem mide justo ese alto ya-inflado, no el real — quedaba fijo
+     para siempre y dejaba un hueco vacío debajo de las tarjetas cortas.
+     `align-items: start` apaga el estiramiento: cada tarjeta reporta
+     siempre su propio alto de contenido, nunca el de la fila. */
+  align-items: start;
+  gap: 14px;
+  margin-top: 40px;
+}
+@media (min-width: 640px) {
+  .cat-masonry-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .cat-masonry-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1200px) {
+  .cat-masonry-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.cat-masonry-item { min-width: 0; }
+.cat-masonry-item--feature { grid-column: span 1; }
+@media (min-width: 640px) {
+  .cat-masonry-item--feature { grid-column: span 2; }
+}
+
+/* Sin caja compartida: la imagen es su propia pieza flotante (esquinas
+   redondeadas completas, estilo Apple) y el texto va suelto sobre el fondo
+   de la página, separado por un margen mínimo — no los dos metidos en un
+   mismo panel con su propio fondo. Así se ve la referencia real. */
 .cat-card {
   display: flex;
   flex-direction: column;
-  border-radius: 20px;
-  overflow: hidden;
-  background: var(--cream, #ece8dc);
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  gap: 6px;
 }
-.cat-card:hover { transform: translateY(-4px); }
 
-/* ── Portada: la captura es la pieza y el enlace ── */
+/* ── Portada: la captura es la pieza y el disparador (link o expandir) ── */
 .cat-thumb {
   position: relative;
   display: block;
-  /* Proporción de una captura de portada a ancho completo. Recortar los lados
-     para forzar un formato más alto parte el contenido del sitio a media
-     palabra y deja de leerse como una web. */
-  aspect-ratio: 1360 / 578;
+  width: 100%;
+  /* Sin ratio fijo acá: cada tarjeta lo trae inline desde `demo.ratio`
+     (DemoCard) — mezclar capturas de sitio panorámicas con mockups 16:9 en
+     un único ratio forzado recortaba mal a uno de los dos grupos. */
   overflow: hidden;
+  border-radius: 18px;
   background: var(--ink, #0e0e0e);
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cat-thumb:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(14, 14, 14, 0.14);
+}
+.cat-thumb:focus-visible {
+  outline: 2px solid var(--red, #e53935);
+  outline-offset: -2px;
 }
 .cat-shot {
   width: 100%;
@@ -45,7 +190,7 @@
   display: block;
   transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.cat-card:hover .cat-shot { transform: scale(1.03); }
+.cat-thumb:hover .cat-shot { transform: scale(1.03); }
 
 /* Portada de marca mientras una demo no tenga captura */
 .cat-thumb-fallback {
@@ -86,18 +231,22 @@
   pointer-events: none;
 }
 .cat-ver svg { width: 13px; height: 13px; }
-.cat-card:hover .cat-ver,
+.cat-thumb:hover .cat-ver,
 .cat-thumb:focus-visible .cat-ver { opacity: 1; transform: translateY(0); }
 
-/* ── Pie: identificación mínima + una sola acción ── */
+/* ── Pie: identificación mínima + una sola acción ──
+   Siempre apilado, nunca en fila: una tarjeta de catálogo vive en columnas de
+   ancho variable (grilla normal, riel angosto de la vista expandida, mobile),
+   y un layout en fila con texto + botón se rompe apenas el ancho baja de
+   ~250px — el botón queda flotando encima de la descripción. Apilado no
+   tiene ese punto de quiebre, a cualquier ancho. */
 .cat-foot {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 16px 18px 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 }
-.cat-ident { min-width: 0; }
+.cat-ident { min-width: 0; width: 100%; }
 .cat-cat {
   display: block;
   font-family: var(--mono);
@@ -142,10 +291,108 @@
 .cat-cta:hover { transform: translateY(-1px); opacity: 0.9; }
 .cat-cta:focus-visible { outline: 2px solid var(--red, #e53935); outline-offset: 2px; }
 
-@media (max-width: 460px) {
-  .cat-foot { flex-direction: column; align-items: stretch; gap: 12px; }
-  .cat-cta { justify-content: center; }
+/* ── Tarjeta expandida: imagen + ficha lado a lado, no apiladas — se lee
+   como "detalle de producto", no como una tarjeta de grilla estirada.
+   Vive dentro de un `.cat-masonry-item--feature` (ancho doble) y participa
+   en la misma grilla que el resto — ver `.cat-masonry-grid` arriba.
+   Mismo criterio que `.cat-card`: sin caja compartida — la imagen es su
+   propia pieza redondeada, la ficha va suelta al lado, sin fondo propio. */
+.cat-expanded-card {
+  display: flex;
+  gap: 10px;
 }
+@media (max-width: 700px) {
+  .cat-expanded-card { flex-direction: column; gap: 6px; }
+}
+
+/* Contenedor común de imagen + botón volver — ver nota en DemoCard.tsx
+   sobre por qué no pueden ser el mismo elemento (`<button>` no puede ir
+   dentro de un `<a>`). Este wrapper es el que trae `position: relative`,
+   así el botón queda anclado a la imagen y no a un ancestro más arriba. */
+.cat-expanded-media {
+  position: relative;
+  flex: 1 1 62%;
+  min-width: 0;
+}
+.cat-expanded-thumb {
+  display: block;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+/* Botón de volver — círculo flotando sobre la imagen, solo ícono. Texto en
+   `aria-label` para el lector de pantalla; visualmente basta la flecha. */
+.cat-volver {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(14, 14, 14, 0.58);
+  backdrop-filter: blur(6px);
+  color: #f4f1ea;
+  cursor: pointer;
+  transition: background 0.24s ease, transform 0.24s ease;
+}
+.cat-volver svg { width: 18px; height: 18px; }
+.cat-volver:hover { background: rgba(14, 14, 14, 0.78); transform: translateX(-1px); }
+.cat-volver:focus-visible { outline: 2px solid var(--red, #e53935); outline-offset: 2px; }
+
+/* En mobile, arriba-izquierda es la esquina más lejos del pulgar sosteniendo
+   el teléfono con una mano — abajo-izquierda, sobre la misma imagen, es
+   igual de descubrible pero se alcanza sin cambiar el agarre. */
+@media (max-width: 700px) {
+  .cat-volver { top: auto; bottom: 16px; }
+}
+
+.cat-expanded-info {
+  flex: 1 1 38%;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.cat-expanded-info h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink, #0e0e0e);
+}
+.cat-expanded-info p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted, #6b6863);
+}
+.cat-expanded-info .cat-cta { margin-top: auto; }
+
+.cat-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cat-tags li {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--muted, #6b6863);
+  background: rgba(14, 14, 14, 0.05);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.cat-thumb-fallback--sm { font-size: 9px; letter-spacing: 0.12em; padding: 8px; }
 
 /* Estado vacío — mientras el catálogo se llena */
 .cat-empty {

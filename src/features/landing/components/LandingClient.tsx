@@ -37,6 +37,23 @@ export default function LandingClient() {
               out.push(wrap);
             });
           } else if (child.nodeType === 1) {
+            /* `data-no-split`: la palabra queda intacta, sin envolver en
+               `.split-word`. Hace falta cuando dos piezas necesitan quedar
+               pegadas SIEMPRE — ver el punto rojo de "software." en el H1
+               del home. Cada palabra normal se envuelve en un
+               `.split-word` (`display: inline-block`) para el reveal
+               escalonado, y un `inline-block` trae su propio punto de
+               quiebre de línea aunque no haya espacio en el código fuente
+               — el navegador lo trata como una caja atómica que puede
+               saltar de línea por su cuenta. Con dos `.split-word`
+               contiguos (uno para el texto, otro para el punto) el punto
+               terminaba huérfano en la línea siguiente. Clon profundo, sin
+               recursión: se pierde el reveal palabra-por-palabra solo en
+               esa pieza, a cambio de que nunca se separe. */
+            if ((child as Element).hasAttribute("data-no-split")) {
+              out.push(child.cloneNode(true));
+              return;
+            }
             const clone = (child as Element).cloneNode(false);
             const inner = walk(child);
             if (inner.length) inner.forEach((n) => clone.appendChild(n));
@@ -229,11 +246,6 @@ export default function LandingClient() {
               y: -55,
               ease: "none",
               scrollTrigger: { ...heroST, scrub: 0.7 },
-            });
-            gsap.to(".hero-col .eyebrow", {
-              y: -35,
-              ease: "none",
-              scrollTrigger: { ...heroST, scrub: 0.5 },
             });
             gsap.to(".hero-col .lede, .hero-col .hero-cta", {
               y: -22,

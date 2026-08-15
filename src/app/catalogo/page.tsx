@@ -3,7 +3,7 @@ import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import { demosPublicadas } from "../../features/catalogo/data";
-import DemoCard from "../../features/catalogo/components/DemoCard";
+import CatalogoGrid from "../../features/catalogo/components/CatalogoGrid";
 import "../../features/catalogo/catalogo.css";
 import SiteFooter from "../../components/SiteFooter";
 
@@ -34,7 +34,7 @@ export default function CatalogoPage() {
       <RevelarAlScroll />
 
       <main id="contenido" tabIndex={-1}>
-        <section className="hero" style={{ paddingBottom: "0" }}>
+        <section className="hero cat-hero" style={{ paddingBottom: "0" }}>
           <div className="wrap" style={{ maxWidth: "800px", paddingTop: "34px", paddingBottom: "60px" }}>
             <span className="eyebrow" data-anim="fade-down"><span className="sec-num">02</span><span className="sec-label">Catálogo</span></span>
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Vea el trabajo <em>funcionando</em>, no promesas.</h1>
@@ -49,11 +49,7 @@ export default function CatalogoPage() {
         <section className="block">
           <div className="wrap">
             {demosPublicadas.length > 0 ? (
-              <div className="cat-grid" data-stagger>
-                {demosPublicadas.map((demo) => (
-                  <DemoCard key={demo.id} demo={demo} nivel={2} />
-                ))}
-              </div>
+              <CatalogoGrid demos={demosPublicadas} />
             ) : (
               <div className="cat-empty glass">
                 <h2>Las primeras demos están en construcción</h2>
