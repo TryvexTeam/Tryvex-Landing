@@ -205,6 +205,20 @@ export const demos: Demo[] = [
     publicada: true,
   },
   {
+    id: "agencia-ia",
+    nicho: "Agencia o startup de IA",
+    categoria: "Tecnología e IA",
+    tipo: ["IA"],
+    descripcion:
+      "Landing de una sola pantalla con video de fondo, métricas en vivo y confianza empresarial, pensada para agencias y startups de IA.",
+    incluye: ["Video hero full-bleed", "Tipografía dot-matrix", "Métricas animadas"],
+    demoUrl: "https://tryvex-video-landing.vercel.app",
+    ctaLabel: "Ver proyecto",
+    imagen: "/catalogo/agencia-ia.webp",
+    ratio: "1366 / 577",
+    publicada: true,
+  },
+  {
     id: "belleza",
     nicho: "Salón de belleza",
     categoria: "Belleza y bienestar",
