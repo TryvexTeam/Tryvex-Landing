@@ -70,7 +70,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "too many requests" }, { status: 429 });
   }
 
-  const { name, phone, email, date, dateISO, time, message } = parseo.data;
+  const { name, phone, email, date, dateISO, time, message, consentimiento } = parseo.data;
+
+  /* Registro del consentimiento, para que quede en el correo interno junto a
+     los datos que autoriza. Va aparte del formulario a propósito: la persona
+     no ve ni un control más: pulsa el botón y el servidor levanta el acta.
+
+     Hora, IP y agente los pone el servidor y no el navegador: un dato que
+     prueba una autorización no puede venir del mismo lado que la declara. La
+     versión sí viaja desde el formulario — identifica qué texto tenía delante
+     al pulsar, que es lo que hace verificable el "informado".
+
+     El agente se recorta a 180 caracteres: identifica el dispositivo, que es
+     para lo que sirve, sin arrastrar la ristra completa de tokens al correo. */
+  const agente = (req.headers.get("user-agent") ?? "desconocido").slice(0, 180);
+  const selloConsentimiento = [
+    "Aceptado al pulsar «Acepto y agendo cita»",
+    `texto ${consentimiento.version}`,
+    new Date().toISOString(),
+    `IP ${ip}`,
+    agente,
+  ].join(" · ");
 
   // Create Google Calendar event + Meet link (falls back if Calendar not configured)
   let meetLink = FALLBACK_MEET;
@@ -98,7 +118,16 @@ export async function POST(req: NextRequest) {
         from: FROM_INTERNAL,
         to: NOTIFY_EMAIL,
         subject: `Nueva solicitud de llamada — ${name}`,
-        html: buildInternalEmail({ name, phone, email, date, time, message, meetLink }),
+        html: buildInternalEmail({
+          name,
+          phone,
+          email,
+          date,
+          time,
+          message,
+          meetLink,
+          consentimiento: selloConsentimiento,
+        }),
       }),
     ]);
 
@@ -298,6 +327,7 @@ function buildInternalEmail({
   time: horaCruda,
   message: mensajeCrudo,
   meetLink,
+  consentimiento: consentimientoCrudo,
 }: {
   name: string;
   phone: string;
@@ -306,6 +336,8 @@ function buildInternalEmail({
   time?: string;
   message?: string;
   meetLink: string;
+  /** Sello de la autorización: texto, versión y hora del servidor. */
+  consentimiento: string;
 }) {
   const name    = escaparHtml(nombreCrudo);
   const phone   = escaparHtml(telefonoCrudo);
@@ -313,6 +345,7 @@ function buildInternalEmail({
   const date    = fechaCruda ? escaparHtml(fechaCruda) : undefined;
   const time    = horaCruda ? escaparHtml(horaCruda) : undefined;
   const message = mensajeCrudo ? escaparHtml(mensajeCrudo) : undefined;
+  const consentimiento = escaparHtml(consentimientoCrudo);
 
   return `<!DOCTYPE html>
 <html lang="es">
@@ -365,13 +398,20 @@ function buildInternalEmail({
                   <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:#ffffff;font-size:14px;font-weight:600;">${date}</td>
                 </tr>` : ""}
                 ${time ? `<tr>
-                  <td style="padding:11px 0;border-bottom:${message ? "1px solid rgba(255,255,255,0.06)" : "none"};color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;">Hora</td>
-                  <td style="padding:11px 0;border-bottom:${message ? "1px solid rgba(255,255,255,0.06)" : "none"};color:#ffffff;font-size:14px;font-weight:600;">${time} hrs</td>
+                  <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;">Hora</td>
+                  <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:#ffffff;font-size:14px;font-weight:600;">${time} hrs</td>
                 </tr>` : ""}
                 ${message ? `<tr>
-                  <td style="padding:11px 0;color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;vertical-align:top;">Mensaje</td>
-                  <td style="padding:11px 0;color:rgba(255,255,255,0.6);font-size:14px;line-height:1.6;">${message}</td>
+                  <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;vertical-align:top;">Mensaje</td>
+                  <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);font-size:14px;line-height:1.6;">${message}</td>
                 </tr>` : ""}
+                <!-- Registro del consentimiento. Va en el mismo correo que los
+                     datos que autoriza: si mañana hay que probar que hubo
+                     autorización, está en la misma fila que el teléfono. -->
+                <tr>
+                  <td style="padding:11px 0;color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;vertical-align:top;">Consent.</td>
+                  <td style="padding:11px 0;color:rgba(255,255,255,0.6);font-size:12px;line-height:1.6;">${consentimiento}</td>
+                </tr>
               </table>
 
               ${meetBlock(meetLink, "Enlace Google Meet")}

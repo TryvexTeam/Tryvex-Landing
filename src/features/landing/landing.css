@@ -546,6 +546,20 @@
   h1 em {
     font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400;
   }
+  /* .h1-red-dot: el punto rojo de "software." en el H1 del home.
+     Se probó primero el contorno completo de la palabra
+     (`-webkit-text-stroke`): en la f/t de esta tipografía el trazo salía
+     doblado/fantasma, defecto real de renderizado. Se descartó.
+     Luego se probó separar el punto en su propio span/`::after`: cada
+     "palabra" del H1 se envuelve en `.split-word` (`display: inline-block`,
+     ver LandingClient.tsx) para el reveal escalonado, y un `inline-block`
+     trae su propio punto de quiebre de línea aunque no haya espacio en el
+     código — el punto quedaba huérfano en la línea siguiente.
+     Solución real: "software." lleva `data-no-split` (ver el walker en
+     LandingClient.tsx), que la saca por completo del sistema de palabras —
+     el punto rojo es un span anidado normal, con su color inline en el
+     JSX. Esa única palabra no participa del fade-in escalonado; el resto
+     del H1 sí. */
   h2 em {
     font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400;
   }
@@ -567,12 +581,56 @@
   }
   .hero-meta strong { color: var(--ink); font-weight: 600; }
 
+  /* Blob de color detrás del panel de agente — lo que hace que el
+     `backdrop-filter` de `.glass` (ya definido arriba) se vea como vidrio
+     líquido en vez de cristal esmerilado plano: necesita algo con color y
+     movimiento debajo para filtrar. Tres degradados radiales en los colores
+     de marca, cada uno a su propio ritmo dentro de `background-position`,
+     bien atrás en el z-index para que sólo se vea a través del blur. */
+  .hv-aurora {
+    position: absolute;
+    inset: -15%;
+    z-index: 0;
+    border-radius: 40px;
+    background:
+      radial-gradient(closest-side, rgba(229,57,53,0.5), transparent 70%),
+      radial-gradient(closest-side, rgba(255,183,94,0.45), transparent 70%),
+      radial-gradient(closest-side, rgba(14,14,14,0.28), transparent 70%);
+    background-size: 65% 65%, 55% 55%, 70% 70%;
+    background-repeat: no-repeat;
+    filter: blur(46px) saturate(140%);
+    animation: hvAuroraDrift 22s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes hvAuroraDrift {
+    0%, 100% { background-position: 15% 20%, 80% 15%, 45% 85%; }
+    33%      { background-position: 55% 10%, 25% 55%, 75% 35%; }
+    66%      { background-position: 30% 65%, 70% 75%, 15% 30%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hv-aurora { animation: none; }
+  }
+
   /* hero visual: glass automation card */
   .hero-visual {
     padding: 28px;
     aspect-ratio: 1.05/1;
     overflow: hidden;
     position: relative;
+    z-index: 1;
+  }
+  /* Sheen con respiración lenta — el vidrio líquido nunca está del todo
+     quieto. Sutil a propósito: la referencia advierte que demasiado
+     movimiento en el brillo se lee sucio, no premium. */
+  .hero-visual.glass::before {
+    animation: hvSheenBreathe 7s ease-in-out infinite;
+  }
+  @keyframes hvSheenBreathe {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 0.5; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-visual.glass::before { animation: none; }
   }
   .hv-spark { position: absolute; top: 24px; right: 24px; width: 56px; height: 56px;
     filter: drop-shadow(0 6px 12px rgba(14,14,14,0.18)); }
@@ -610,6 +668,7 @@
   /* small floating chip near hero */
   .float-chip {
     position: absolute;
+    z-index: 1;
     padding: 12px 14px;
     border-radius: 16px;
     display: flex; align-items: center; gap: 10px;
@@ -1882,11 +1941,17 @@
    en cada franja: 672px hasta 480, 604 hasta 768, 539 de ahí en adelante.
 
    Va después de la regla base a propósito: un @media no añade especificidad.
-   Antes vivía arriba, junto a `.final`, y el valor móvil no se aplicaba. */
+   Antes vivía arriba, junto a `.final`, y el valor móvil no se aplicaba.
+
+   Re-medido el 2026-08-15 al reemplazar la casilla de consentimiento por el
+   aviso sobre el botón: el bloque creció y el botón asomaba 15px por debajo
+   del panel, que recorta con `overflow: hidden`. Los cuatro pisos subieron en
+   consecuencia. Si se vuelve a tocar ese bloque, hay que repetir la medición
+   en las cuatro franjas — no basta con mirar el ancho del portátil. */
 @media (max-width: 768px) {
   .fv-shell {
     overflow: visible;
-    min-height: 685px;
+    min-height: 800px;
   }
   .fv--overlay.fv--active { justify-content: flex-start; padding-top: 4px; }
 }
@@ -1894,19 +1959,19 @@
   /* Desde 481 los días caben en una fila y el rótulo en una línea: el
      formulario baja a 604 y con el piso de 685 la tarjeta quedaba con 81px de
      vacío. */
-  .fv-shell { min-height: 620px; }
+  .fv-shell { min-height: 705px; }
 }
 @media (min-width: 769px) {
   /* 470 y no el alto exacto del formulario (519): el resto lo absorbe el
      `padding: 90px` de `.final`, donde sobra sitio. Subirlo hasta 519 dejaba la
      tarjeta en 800px y no entraba en un portátil de 768. */
-  .fv-shell { min-height: 470px; }
+  .fv-shell { min-height: 515px; }
 }
 @media (min-width: 769px) and (max-width: 980px) {
   /* Acá `.final` tiene 28px de padding, no 90: el sobrante del formulario ya no
      cabe en el margen de la tarjeta y `overflow: hidden` cortaba 5px del botón
      de confirmar. En esta franja el panel tiene que contenerlo entero. */
-  .fv-shell { min-height: 550px; }
+  .fv-shell { min-height: 605px; }
 }
 
 /* Success */
@@ -1983,31 +2048,20 @@ section.block,
   overflow-x: clip;
 }
 
+/* Aviso de consentimiento. Dejó de ser una casilla: ahora es el texto que
+   convierte el clic del botón en una autorización informada. Por eso el
+   contraste acá no es cosmético — si el aviso no se lee, el consentimiento no
+   está informado. `--muted-2` sobre el vidrio oscuro daba 3,4:1; este crema al
+   80% marca sobre 7:1. */
 .cf-consent {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.cf-consent label {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
   font-size: 13px;
-  line-height: 1.5;
-  color: var(--muted-2);
-  cursor: pointer;
+  line-height: 1.55;
+  color: rgba(236, 232, 220, 0.8);
+  margin-bottom: -4px;
 }
-.cf-consent input[type="checkbox"] {
-  margin-top: 3px;
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-  accent-color: var(--red);
-  cursor: pointer;
-}
-.cf-consent input[type="checkbox"]:focus-visible {
-  outline: 2px solid var(--red);
-  outline-offset: 2px;
+.cf-consent strong {
+  font-weight: 500;
+  color: var(--paper);
 }
 .cf-consent a {
   color: var(--cream);
@@ -2018,7 +2072,4 @@ section.block,
   outline: 2px solid var(--red);
   outline-offset: 2px;
   border-radius: 2px;
-}
-.cf-consent .cf-error {
-  color: var(--red-vivo, var(--red));
 }

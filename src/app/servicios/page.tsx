@@ -5,6 +5,8 @@ import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import SiteFooter from "../../components/SiteFooter";
 import ServiciosMotion from "./ServiciosMotion";
+import InteligenciaModelos from "../../features/capacidad/components/InteligenciaModelos";
+import "../../features/capacidad/capacidad.css";
 
 export const metadata: Metadata = {
   title: "Servicios — Tryvex",
@@ -285,8 +287,13 @@ export default function ServiciosPage() {
         {/* Spotlight — Inteligencia aplicada es el diferenciador real (ver
             docs/negocio/arquitectura-de-servicios.md §3): pesa distinto de
             las demás familias, así que se muestra distinto: mock de flujo en
-            vez de tarjeta de catálogo, mismo lenguaje visual que el hero. */}
-        <section className="block">
+            vez de tarjeta de catálogo, mismo lenguaje visual que el hero.
+
+            El `id` es el slug de su familia en FAMILIAS: la nav de salto de
+            arriba la enlaza igual que a las otras tres, y sin el id ese ítem
+            no llevaba a ninguna parte — el filtro que la saca de la grilla no
+            la saca de la navegación. */}
+        <section className="block" id="ia" style={{ scrollMarginTop: "100px" }}>
           <div className="wrap">
             <div style={{ marginBottom: "28px" }} data-anim="fade-up">
               <span className="eyebrow"><span className="sec-num">04</span><span className="sec-label">Inteligencia aplicada</span></span>
@@ -330,6 +337,18 @@ export default function ServiciosPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Panorama de modelos. Vivía en el home, donde caía pasado el píxel
+            6.600 —territorio de atención marginal según las mediciones de
+            scroll— y alargaba el camino a la llamada. Acá está el público que
+            sí lo necesita: quien ya está comparando proveedores. Va justo
+            después del spotlight de IA porque responde su pregunta siguiente:
+            "¿con qué modelos, exactamente?". */}
+        <section className="block" id="modelos" style={{ scrollMarginTop: "100px" }}>
+          <div className="wrap">
+            <InteligenciaModelos />
           </div>
         </section>
 
