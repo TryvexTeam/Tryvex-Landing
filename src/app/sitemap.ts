@@ -8,6 +8,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
+    /* Páginas de captación: la puerta de entrada de quien busca "agencia de
+       IA" o "agencia de software" y todavía no conoce la marca. Fecha literal,
+       nunca `new Date()` — un lastmod que cambia en cada build hace que Google
+       ignore la señal de todo el archivo. */
+    {
+      url: "https://www.tryvex.tech/agencia-de-ia-en-chile",
+      lastModified: new Date("2026-08-15"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: "https://www.tryvex.tech/agencia-de-software-en-chile",
+      lastModified: new Date("2026-08-15"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
     {
       url: "https://www.tryvex.tech/catalogo",
       lastModified: new Date("2026-08-03"),
