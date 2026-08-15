@@ -1,0 +1,492 @@
+/* ======= CAPACIDAD =======
+   Panel de actividad + panorama de modelos.
+   Vive acá y no en `landing.css` por la regla de features: cada dominio con su
+   CSS. Solo se apoya en las variables del `:root` de landing.css — no hay un
+   color literal en este archivo salvo dentro de los degradados del SVG, que no
+   aceptan `var()` en atributos de presentación. */
+
+/* ---------- Punto de salida hacia la llamada ----------
+   Discreto a propósito: no es una sección con fondo propio compitiendo por
+   atención, es una línea y un botón al cierre del bloque que acaba de
+   persuadir. Con tres de estos repartidos, el visitante nunca queda a más de
+   dos pantallas de la acción. */
+.salida {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.salida-txt {
+  font-size: 15.5px;
+  color: var(--ink-2);
+  max-width: 56ch;
+}
+.salida-txt em {
+  font-family: "Instrument Serif", serif;
+  font-style: italic;
+}
+/* Dentro del panel de vidrio la regla superior ya la pone el propio panel. */
+.panel-act .salida {
+  margin-top: 36px;
+}
+
+@media (max-width: 640px) {
+  .salida {
+    justify-content: flex-start;
+  }
+}
+
+/* ---------- Mapa de capacidades ----------
+   Sin tarjetas: cuatro bloques separados por regla, como el índice de una
+   revista. Con `glass` alrededor de cada familia el bloque competía con las
+   tres tarjetas de servicio que tiene justo encima y la sección entera se leía
+   como una grilla de cajas repetidas. */
+.mapa {
+  margin-top: 72px;
+  padding-top: 44px;
+  border-top: 1px solid var(--line);
+}
+.mapa-intro {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: end;
+  margin-bottom: 48px;
+}
+.mapa-intro h3 {
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  max-width: 15ch;
+}
+.mapa-intro h3 em {
+  font-family: "Instrument Serif", serif;
+  font-style: italic;
+  font-weight: 400;
+}
+.mapa-intro p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 46ch;
+}
+
+.mapa-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 44px 56px;
+}
+.mapa-fam {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+.mapa-int {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red-vivo);
+}
+.mapa-fam h4 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 12px;
+  max-width: 26ch;
+}
+.mapa-caps {
+  list-style: none;
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+.mapa-caps li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.mapa-caps li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 8px;
+  /* 2px, no 1: a 1px la línea caía en medio píxel según la fila y el navegador
+     la pintaba a media tinta — el guion se veía rojo en unas viñetas y gris en
+     otras dentro de la misma lista. */
+  height: 2px;
+  background: var(--red);
+}
+.mapa-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease, gap 0.2s ease;
+}
+.mapa-link span {
+  transition: transform 0.2s ease;
+}
+.mapa-link:hover,
+.mapa-link:focus-visible {
+  color: var(--ink);
+  border-bottom-color: var(--red);
+}
+.mapa-link:hover span {
+  transform: translateX(3px);
+}
+
+/* ---------- Panel de actividad ---------- */
+.panel-act {
+  padding: 48px 44px 40px;
+}
+.pa-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+.pa-head h2 {
+  font-size: clamp(30px, 3.4vw, 46px);
+}
+
+.pa-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--line);
+}
+.pa-kpi {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+.pa-kpi .v {
+  font-size: clamp(30px, 3vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.pa-kpi .l {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  margin-top: 10px;
+  line-height: 1.4;
+}
+/* Estas notas van en `--muted` y no en `--muted-2`: medido sobre el vidrio del
+   panel, `--muted-2` da 2,82:1 — por debajo del 4,5:1 que pide AA para texto
+   normal. `--muted` marca 5,18:1. Misma regla que llevó la tipografía chica en
+   rojo a `--red-vivo`. Aplica a toda etiqueta mono de estas dos secciones. */
+.pa-kpi .n {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.pa-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 48px;
+  margin-top: 36px;
+}
+.pa-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 400;
+  margin-bottom: 22px;
+}
+
+.pa-lista {
+  list-style: none;
+  display: grid;
+  gap: 22px;
+}
+.pa-rango-txt {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.pa-rango-txt .t {
+  font-size: 15px;
+  font-weight: 500;
+}
+.pa-rango-txt .w {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--red-vivo);
+  white-space: nowrap;
+}
+/* La barra es el mismo dato que el texto de arriba, en forma. Por eso el
+   contenedor va `aria-hidden`: repetirlo en el lector de pantalla no aporta. */
+.pa-barra {
+  position: relative;
+  height: 6px;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: var(--line-soft);
+}
+.pa-barra > span {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--red-vivo), var(--red));
+}
+.pa-rango-det {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.pa-pulso svg {
+  width: 100%;
+  height: 88px;
+  display: block;
+}
+.pa-pulso figcaption {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 14px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 12px;
+}
+
+/* ---------- Panorama de modelos ---------- */
+.ia-panel {
+  padding: 40px 44px 36px;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 44px 48px;
+}
+.ia-scatter {
+  min-width: 0;
+}
+.ia-cap {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.ia-cap .t {
+  font-size: 15px;
+  font-weight: 500;
+}
+.ia-cap .s {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ia-scatter svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.ia-grid {
+  stroke: var(--line-soft);
+  stroke-width: 1;
+}
+.ia-eje {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.ia-tick {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  fill: var(--muted);
+}
+.ia-tick-y {
+  text-anchor: end;
+}
+.ia-tick-x {
+  text-anchor: middle;
+}
+.ia-eje-lbl {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: var(--muted);
+}
+.ia-pt circle {
+  fill: var(--muted-2);
+}
+.ia-pt text {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  fill: var(--muted);
+  text-anchor: middle;
+}
+.ia-pt-uso circle {
+  fill: var(--red);
+  stroke: var(--paper);
+  stroke-width: 2;
+}
+.ia-pt-uso text {
+  fill: var(--ink);
+  font-weight: 600;
+}
+
+.ia-leyenda {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 20px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ia-leyenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.ia-leyenda li::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--muted-2);
+}
+.ia-leyenda li.uso::before {
+  background: var(--red);
+}
+
+.ia-tabla-wrap {
+  min-width: 0;
+  overflow-x: auto;
+}
+.ia-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.ia-tabla th,
+.ia-tabla td {
+  text-align: right;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line-soft);
+  white-space: nowrap;
+}
+.ia-tabla thead th {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 400;
+  border-bottom-color: var(--line);
+}
+.ia-tabla th[scope="row"],
+.ia-tabla thead th:first-child {
+  text-align: left;
+  font-weight: 500;
+}
+.ia-tabla tbody tr.uso th[scope="row"] {
+  color: var(--ink);
+}
+.ia-tabla tbody tr:not(.uso) {
+  color: var(--muted);
+}
+.ia-chip {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  /* Sin relleno: el rojo suave detrás aclaraba el fondo y dejaba el texto en
+     4,17:1. Contra el vidrio del panel, el mismo rojo marca 4,54:1. */
+  background: none;
+  border: 1px solid rgba(218, 22, 19, 0.32);
+  color: var(--red-vivo);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+.ia-metodo {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 760px;
+}
+.ia-metodo a {
+  color: var(--red-vivo);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1000px) {
+  .mapa-intro,
+  .mapa-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .mapa-grid {
+    gap: 34px;
+  }
+  .pa-kpis {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px 24px;
+  }
+  .pa-grid,
+  .ia-panel {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .pa-head,
+  .ia-panel {
+    /* el titular y su bajada dejan de competir por el ancho */
+    display: block;
+  }
+  .ia-panel > * + * {
+    margin-top: 36px;
+  }
+}
+@media (max-width: 640px) {
+  .panel-act,
+  .ia-panel {
+    padding: 32px 22px 28px;
+  }
+  .pa-kpis {
+    grid-template-columns: 1fr;
+  }
+  .pa-head {
+    margin-bottom: 30px;
+  }
+  .ia-tabla {
+    font-size: 12.5px;
+  }
+}

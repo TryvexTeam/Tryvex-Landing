@@ -27,6 +27,28 @@ export function digitosDe(telefono: string): number {
   return (telefono.match(/\d/g) ?? []).length;
 }
 
+/**
+ * Consentimiento por acción del botón.
+ *
+ * El formulario ya no lleva casilla: el aviso vive pegado al botón y el botón
+ * dice lo que ocurre al pulsarlo. La Ley 21.719 pide consentimiento previo,
+ * expreso e inequívoco, y pulsar un botón rotulado "Acepto y agendo cita"
+ * junto a un aviso visible es una acción afirmativa inequívoca. Lo que se
+ * pierde al sacar la casilla es la *prueba*, y por eso el consentimiento sigue
+ * viajando en el envío y el esquema lo exige: sin él la solicitud se rechaza
+ * con 422, igual que antes lo bloqueaba la casilla.
+ *
+ * `VERSION_CONSENTIMIENTO` identifica el texto que la persona tenía delante.
+ * **Subirla cada vez que cambie `TEXTO_CONSENTIMIENTO`**: sin eso, dentro de un
+ * año el registro dirá que aceptó un texto que en ese momento no existía.
+ */
+export const VERSION_CONSENTIMIENTO = "2026-08-15";
+
+/** Copia literal de lo que se muestra sobre el botón. Si cambia allá, cambia acá. */
+export const TEXTO_CONSENTIMIENTO =
+  "Al pulsar «Acepto y agendo cita» autorizas a Tryvex a usar tus datos para " +
+  "contactarte por esta solicitud, según su política de privacidad.";
+
 export const esquemaAgenda = z.object({
   name: z
     .string()
@@ -57,6 +79,14 @@ export const esquemaAgenda = z.object({
   dateISO: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   time: z.string().trim().regex(/^\d{2}:\d{2}$/).optional(),
   message: z.string().trim().max(2000, "Mensaje demasiado largo.").optional(),
+
+  /* `literal(true)`, no `boolean()`: un `false` tiene que rebotar igual que un
+     campo ausente. Con `boolean()` bastaría mandar `aceptado: false` para
+     colar una solicitud sin autorización. */
+  consentimiento: z.object({
+    aceptado: z.literal(true),
+    version: z.string().trim().min(1).max(40),
+  }),
 });
 
 export type DatosAgenda = z.infer<typeof esquemaAgenda>;

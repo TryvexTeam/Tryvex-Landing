@@ -3,6 +3,7 @@ import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import SiteFooter from "../../components/SiteFooter";
 import CookieSettingsLink from "../../components/legal/CookieSettingsLink";
+import { CONTACTO_HREF } from "../../lib/mail";
 
 export const metadata: Metadata = {
   title: "Política de privacidad — Tryvex",
@@ -62,7 +63,7 @@ export default function PrivacidadPage() {
             <p>
               Para cualquier tema relacionado con tus datos personales, incluido
               el ejercicio de los derechos descritos más abajo, el contacto es{" "}
-              <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a>.
+              <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a>.
               Respondemos dentro de los plazos que fija la ley y, en la práctica,
               dentro de los primeros días hábiles.
             </p>
@@ -82,20 +83,45 @@ export default function PrivacidadPage() {
             </p>
             <p>
               La base de licitud es tu <strong>consentimiento</strong>, que
-              entregas marcando la casilla del formulario antes de enviarlo. Es
-              revocable en cualquier momento escribiéndonos.
+              entregas al pulsar el botón <strong>«Acepto y agendo cita»</strong>,
+              con el aviso a la vista justo encima. Es revocable en cualquier
+              momento escribiéndonos.
+            </p>
+            <p>
+              De cada autorización guardamos un registro: la{" "}
+              <strong>fecha y hora</strong>, la <strong>versión del texto</strong>{" "}
+              que tenías delante, la <strong>dirección IP</strong> y el{" "}
+              <strong>navegador</strong> desde el que se envió. Existe para poder
+              acreditar que la autorización se dio y sobre qué texto — no para
+              perfilarte ni para publicidad. Se conserva mientras conservemos la
+              solicitud a la que acompaña.
             </p>
 
             <h3>2.2 Dirección IP</h3>
             <p>
-              Registramos temporalmente la dirección IP desde la que se envía el
-              formulario, únicamente para limitar envíos automatizados y proteger
-              el sitio de abuso. No la cruzamos con ningún otro dato ni la usamos
-              para identificarte.
+              La dirección IP desde la que se envía el formulario se usa para dos
+              cosas, y para nada más:
+            </p>
+            <ul className="legal-list">
+              <li>
+                <strong>Limitar envíos automatizados</strong> y proteger el sitio
+                de abuso. Para esto se guarda por horas y se descarta.
+              </li>
+              <li>
+                <strong>Acreditar tu autorización</strong>, dentro del registro
+                descrito en el punto anterior. Para esto queda junto a la
+                solicitud que autorizaste y dura lo que dure esa solicitud.
+              </li>
+            </ul>
+            <p>
+              No la usamos para identificarte, perfilarte ni segmentarte, y no la
+              compartimos con terceros con fines publicitarios.
             </p>
             <p>
-              La base de licitud es nuestro <strong>interés legítimo</strong> en
-              mantener el servicio operativo y seguro.
+              La base de licitud del primer uso es nuestro{" "}
+              <strong>interés legítimo</strong> en mantener el servicio operativo
+              y seguro; la del segundo, el <strong>deber de acreditar</strong> el
+              consentimiento que la ley nos impone.
             </p>
 
             <h3>2.3 Reuniones y grabaciones</h3>
@@ -158,7 +184,8 @@ export default function PrivacidadPage() {
               <li><strong>Consultas que no derivan en proyecto:</strong> hasta 12 meses desde el último contacto.</li>
               <li><strong>Clientes:</strong> mientras dure la relación y luego el plazo que exijan las obligaciones legales y tributarias aplicables.</li>
               <li><strong>Grabaciones y transcripciones:</strong> mientras dure el proyecto y hasta 6 meses después del cierre.</li>
-              <li><strong>Dirección IP del formulario:</strong> horas. Se descarta apenas deja de ser útil para el control de abuso.</li>
+              <li><strong>Dirección IP para control de abuso:</strong> horas. Se descarta apenas deja de ser útil para ese fin.</li>
+              <li><strong>Registro de la autorización</strong> (fecha, versión del texto, IP y navegador): lo mismo que la solicitud a la que acompaña.</li>
               <li><strong>Decisión sobre cookies:</strong> hasta que la cambies o borres los datos de tu navegador.</li>
             </ul>
             <p>
@@ -178,7 +205,7 @@ export default function PrivacidadPage() {
             </ul>
             <p>
               Se ejercen escribiendo a{" "}
-              <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a>. No
+              <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a>. No
               cobramos por ello. Si consideras que no respondimos bien, puedes
               reclamar ante la autoridad de protección de datos competente.
             </p>
@@ -211,7 +238,7 @@ export default function PrivacidadPage() {
             <div className="legal-foot">
               <p>
                 ¿Algo no queda claro? Escríbenos a{" "}
-                <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a> y
+                <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a> y
                 lo explicamos en palabras simples.
               </p>
               <p>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import SiteFooter from "../../components/SiteFooter";
 import CookieSettingsLink from "../../components/legal/CookieSettingsLink";
+import { CONTACTO_HREF } from "../../lib/mail";
 
 export const metadata: Metadata = {
   title: "Términos y condiciones — Tryvex",
@@ -57,7 +58,7 @@ export default function TerminosPage() {
                 legal exactos. El DS 6/2021 los exige para el proveedor. */}
             <p>
               Contacto:{" "}
-              <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a>.
+              <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a>.
             </p>
 
             <h2>2. Qué cubren estos términos</h2>
@@ -218,7 +219,7 @@ export default function TerminosPage() {
             <div className="legal-foot">
               <p>
                 ¿Dudas antes de firmar? Escríbenos a{" "}
-                <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a>.
+                <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a>.
               </p>
               <p>
                 Ver también la <Link href="/privacidad">política de privacidad</Link>{" "}

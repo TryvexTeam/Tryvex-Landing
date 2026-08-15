@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CookieSettingsLink from "./legal/CookieSettingsLink";
+import { CONTACTO_HREF } from "../lib/mail";
 
 /**
  * Footer único del sitio.
@@ -45,7 +46,7 @@ export default function SiteFooter({ revelar = false }: { revelar?: boolean }) {
             <div>
               <h2>Contacto</h2>
               <Link href="/contacto">Agendar llamada</Link>
-              <a href="mailto:tryvexentreprise@gmail.com">contacto@tryvex.tech</a>
+              <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer">contacto@tryvex.tech</a>
               <span>Santiago · CL</span>
             </div>
           </div>

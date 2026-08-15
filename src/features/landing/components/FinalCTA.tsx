@@ -4,7 +4,12 @@ import { useState, useMemo } from "react";
 import { sileo } from "sileo";
 
 import { HORARIOS } from "../../../lib/horarios";
-import { errorDelCampo, type CampoAgenda } from "../../../lib/validacion-agenda";
+import {
+  errorDelCampo,
+  VERSION_CONSENTIMIENTO,
+  type CampoAgenda,
+} from "../../../lib/validacion-agenda";
+import { CONTACTO_HREF } from "../../../lib/mail";
 
 const FALLBACK_SLOTS: string[] = [...HORARIOS];
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -99,19 +104,17 @@ export default function FinalCTA() {
      validación de formato NO lo bloquea a propósito: un botón apagado sin
      explicación deja al visitante sin saber qué le falta. Se deja pulsar, y al
      pulsar se le muestra exactamente qué corregir. */
-  /* El consentimiento es requisito para enviar, no un extra. La Ley 21.719 pide
-     que sea previo, expreso e inequívoco: por eso arranca desmarcado y bloquea
-     el envío mientras no se marque. */
-  const [consentimiento, setConsentimiento] = useState(false);
-  const [errorConsentimiento, setErrorConsentimiento] = useState(false);
-
+  /* El consentimiento ya no es una casilla aparte: lo declara el propio botón
+     ("Acepto y agendo cita") con el aviso justo encima. Así no hay un paso
+     extra que se pueda saltar ni un control que descuadre el formulario, y
+     sigue siendo una acción afirmativa e inequívoca. La prueba viaja en el
+     envío y el esquema del servidor la exige — ver `validacion-agenda`. */
   const canSubmit =
     form.name.trim() !== "" &&
     form.phone.trim() !== "" &&
     form.email.trim() !== "" &&
     selectedDate !== null &&
-    selectedTime !== null &&
-    consentimiento;
+    selectedTime !== null;
 
   const revisar = (campo: CampoAgenda, valor: string) =>
     setErrores((prev) => {
@@ -175,6 +178,9 @@ export default function FinalCTA() {
         date: dateStr,
         dateISO: toDateISO(selectedDate!),
         time: selectedTime,
+        /* Pulsar el botón *es* la autorización; esto es su registro. Va con la
+           versión del texto que la persona tenía a la vista. */
+        consentimiento: { aceptado: true, version: VERSION_CONSENTIMIENTO },
       }),
     }).then((res) => {
       if (!res.ok) throw new Error("request failed");
@@ -407,42 +413,27 @@ export default function FinalCTA() {
             </p>
             </div>
 
-            <div className="cf-consent">
-              <label htmlFor="consentimiento-datos">
-                <input
-                  type="checkbox"
-                  id="consentimiento-datos"
-                  checked={consentimiento}
-                  onChange={(e) => {
-                    setConsentimiento(e.target.checked);
-                    if (e.target.checked) setErrorConsentimiento(false);
-                  }}
-                  aria-describedby={errorConsentimiento ? "err-consentimiento" : undefined}
-                />
-                <span>
-                  Autorizo que Tryvex use mis datos para contactarme por esta
-                  solicitud, según su{" "}
-                  <a href="/privacidad" target="_blank" rel="noopener noreferrer">
-                    política de privacidad
-                  </a>
-                  .
-                </span>
-              </label>
-              <p className="cf-error" id="err-consentimiento" role="alert" aria-live="polite">
-                {errorConsentimiento ? "Necesitamos tu autorización para poder contactarte." : ""}
-              </p>
-            </div>
+            {/* El aviso va pegado al botón y antes de él en el DOM: es lo que
+                convierte el clic en consentimiento informado. `aria-describedby`
+                hace que un lector de pantalla lo lea al enfocar el botón, no
+                solo al recorrer el formulario en orden. */}
+            <p className="cf-consent" id="aviso-consentimiento">
+              Al pulsar <strong>«Acepto y agendo cita»</strong> autorizas a Tryvex a usar tus
+              datos para contactarte por esta solicitud, según su{" "}
+              <a href="/privacidad" target="_blank" rel="noopener noreferrer">
+                política de privacidad
+              </a>
+              .
+            </p>
 
             <button
               type="submit"
               className="btn-primary"
               disabled={loading}
-              onClick={() => {
-                if (!consentimiento) setErrorConsentimiento(true);
-              }}
+              aria-describedby="aviso-consentimiento"
               style={{ width: "100%", justifyContent: "center" }}
             >
-              {loading ? "Enviando…" : "Confirmar llamada"}
+              {loading ? "Enviando…" : "Acepto y agendo cita"}
               {!loading && (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M13 6l6 6-6 6" />
@@ -461,7 +452,7 @@ export default function FinalCTA() {
           <p>
             Te enviamos un correo con la invitación a Google Meet. Si necesitas
             reagendar, escríbenos a{" "}
-            <a href="mailto:tryvexentreprise@gmail.com" style={{ color: "var(--red)" }}>
+            <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)" }}>
               contacto@tryvex.tech
             </a>
           </p>

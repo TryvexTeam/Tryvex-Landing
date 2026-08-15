@@ -6,8 +6,13 @@ import { demosPublicadas } from "../features/catalogo/data";
 import DemoCard from "../features/catalogo/components/DemoCard";
 import BloqueResultados from "../features/landing/components/BloqueResultados";
 import { fetchStats } from "../features/landing/stats";
+import MapaCapacidades from "../features/capacidad/components/MapaCapacidades";
+import PanelActividad from "../features/capacidad/components/PanelActividad";
+import SalidaCTA from "../features/landing/components/SalidaCTA";
 import "../features/catalogo/catalogo.css";
+import "../features/capacidad/capacidad.css";
 import SiteFooter from "../components/SiteFooter";
+import { CONTACTO_HREF } from "../lib/mail";
 
 /** Preview del catálogo: las primeras demos publicadas. El resto vive en /catalogo. */
 const demosPreview = demosPublicadas.slice(0, 3);
@@ -58,8 +63,7 @@ export default async function Home() {
   </svg>
   <div className="wrap hero-grid">
     <div className="hero-col">
-      <span className="eyebrow" data-anim="fade-down"><span className="live"></span> Atendiendo a {businesses} negocios · Santiago, CL</span>
-      <h1 data-split="words">Automatizamos lo aburrido. Tú vendes <em>lo importante.</em></h1>
+      <h1 data-split="words">Hacemos el <span className="h1-red-dot" data-no-split>software<span style={{color: "var(--red)"}}>.</span></span> Tú vendes <em>lo importante.</em></h1>
       <p className="lede" data-anim="fade-up">
         Tryvex es un estudio de IA y agencia de software — <em>human-first, AI-powered</em>. Diseñamos, construimos y mantenemos <a href="/servicios">automatizaciones,
         landing pages, SaaS a medida e IA aplicada</a>. Reemplazamos la planilla, el copy-paste y el
@@ -80,6 +84,12 @@ export default async function Home() {
     </div>
 
     <div style={{position: "relative"}} data-anim="scale-in">
+      {/* Capa de color detrás del panel — sin esto el backdrop-blur del
+          `.glass` filtra fondo plano y se ve chato. Con un blob animado atrás,
+          el mismo blur/saturate ya definido en `.glass` rinde como vidrio
+          líquido de verdad: el color se mueve despacio debajo del cristal. */}
+      <div className="hv-aurora" aria-hidden="true"></div>
+
       <div className="float-chip glass strong fc-1" data-parallax style={{"--p-amt": "-20px"} as React.CSSProperties}>
         <div className="ic" style={{background: "var(--red)", fontSize: "11px"}}>IA</div>
         <div>
@@ -93,12 +103,12 @@ export default async function Home() {
         {/* La barra doble es decoración de la maqueta, no un comentario: va
             como string para que JSX no la lea como tal. */}
         <div className="hv-rule">{"// agente-tryvex-04.run"}</div>
-        <div className="hv-title">Consulta entra por WhatsApp → agente clasifica, responde y deriva.</div>
+        <div className="hv-title">Un WhatsApp se convierte en cita agendada — sin que nadie lo copie a mano.</div>
         <div className="hv-flow">
-          <div className="hv-step"><span className="dot"></span><span className="lbl">Trigger · mensaje recibido</span><span className="meta">00:00.0s</span></div>
-          <div className="hv-step"><span className="dot"></span><span className="lbl">Clasificar con modelo propio</span><span className="meta">00:01.2s</span></div>
-          <div className="hv-step active"><span className="dot"></span><span className="lbl">Responder o derivar a humano</span><span className="meta">00:02.8s</span></div>
-          <div className="hv-step"><span className="dot"></span><span className="lbl">Registrar en CRM</span><span className="meta">— pendiente</span></div>
+          <div className="hv-step"><span className="dot"></span><span className="lbl">Mensaje recibido</span><span className="meta">00:00.0s</span></div>
+          <div className="hv-step"><span className="dot"></span><span className="lbl">Modelo propio interpreta la intención</span><span className="meta">00:01.2s</span></div>
+          <div className="hv-step active"><span className="dot"></span><span className="lbl">Agenda el horario y confirma por WhatsApp</span><span className="meta">00:02.8s</span></div>
+          <div className="hv-step"><span className="dot"></span><span className="lbl">Queda anotado en el panel del equipo</span><span className="meta">— pendiente</span></div>
         </div>
         <div className="hv-foot">
           <div>agente ID · 0x4af2</div>
@@ -183,6 +193,15 @@ export default async function Home() {
         <p className="svc-industries">Gestión interna, reservas, facturación</p>
       </div>
     </div>
+
+    {/* Alcance completo. Va dentro de la 01 y sin número: es el pie de los tres
+        servicios, no una sección nueva del recorrido. */}
+    <MapaCapacidades />
+
+    {/* Primera de las tres salidas del cuerpo. Antes de esto el home pasaba
+        del hero (6% del scroll) a la oferta (65%) sin un punto de conversión
+        en medio. */}
+    <SalidaCTA texto="¿Lo tuyo aparece en la lista? En 20 minutos te decimos si se puede, cuánto demora y cuánto cuesta." />
   </div>
 </section>
 
@@ -252,6 +271,10 @@ export default async function Home() {
         <div className="step-meta">Semana 4+</div>
       </div>
     </div>
+
+    {/* Segunda salida. Cierra el tramo entre el mapa de capacidades y el panel
+        de actividad, que sin esto quedaba en tres pantallas sin acción. */}
+    <SalidaCTA texto="Así trabajamos. La primera llamada es el paso 0 y dura 20 minutos." />
   </div>
 </section>
 
@@ -264,11 +287,21 @@ export default async function Home() {
 </section>
 </div>{/* /scene-metrics-wrap */}
 
+{/* ACTIVIDAD — panel agregado, sin un solo dato por cliente.
+    El panorama de modelos vivía acá y se movió a /servicios: es contenido de
+    consideración —convence a quien ya está comparando proveedores— y en el
+    home caía pasado el píxel 6.600, donde la atención medida ya es marginal. */}
+<section className="block" id="actividad">
+  <div className="wrap">
+    <PanelActividad num="05" />
+  </div>
+</section>
+
 {/* TESTIMONIAL */}
 <section className="block">
   <div className="wrap quote-block">
     <div data-anim="fade-right">
-      <div className="sec-tag"><span className="sec-num">05</span><span className="sec-label">Lo que dicen</span></div>
+      <div className="sec-tag"><span className="sec-num">06</span><span className="sec-label">Lo que dicen</span></div>
       <p className="quote">Pasamos de revisar pedidos a las 11pm a no abrir la planilla en tres semanas. El equipo de Tryvex entregó algo que de verdad usamos.&rdquo;</p>
       <div className="quote-author">
         <div className="qa-avatar">C</div>
@@ -313,7 +346,7 @@ export default async function Home() {
   <div className="wrap">
     <div className="sec-head">
       <div>
-        <div className="sec-tag" data-anim="fade-down"><span className="sec-num">06</span><span className="sec-label">Cómo trabajar con nosotros</span></div>
+        <div className="sec-tag" data-anim="fade-down"><span className="sec-num">07</span><span className="sec-label">Cómo trabajar con nosotros</span></div>
         <h2 data-split="words">Dos puertas. <em>Mismo equipo.</em></h2>
       </div>
       <p className="sec-sub" data-anim="fade-up">Proyectos puntuales o socio continuo. Si no calzas en ninguno, lo conversamos.</p>
@@ -360,9 +393,9 @@ export default async function Home() {
 <section className="block" id="faq">
   <div className="wrap faq-grid">
     <div data-anim="fade-right">
-      <div className="sec-tag"><span className="sec-num">07</span><span className="sec-label">Preguntas</span></div>
+      <div className="sec-tag"><span className="sec-num">08</span><span className="sec-label">Preguntas</span></div>
       <h2 data-split="words">Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h2>
-      <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href="mailto:tryvexentreprise@gmail.com" style={{color: "var(--red)"}}>contacto@tryvex.tech</a> y te contestamos el mismo día.</p>
+      <p className="sec-sub" style={{marginTop: "24px"}}>¿Quedó algo sin responder? Escríbenos a <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer" style={{color: "var(--red)"}}>contacto@tryvex.tech</a> y te contestamos el mismo día.</p>
     </div>
     <div className="faq glass" data-anim="fade-left">
       <details open={true}>

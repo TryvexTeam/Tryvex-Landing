@@ -3,6 +3,7 @@ import Link from "next/link";
 import NavBar from "../../components/NavBar";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import SiteFooter from "../../components/SiteFooter";
+import { CONTACTO_HREF } from "../../lib/mail";
 
 export const metadata: Metadata = {
   title: "Preguntas frecuentes — Tryvex",
@@ -36,7 +37,7 @@ export default function PreguntasPage() {
             <h1 data-anim="fade-up" style={{ marginTop: "16px" }}>Lo que casi siempre nos preguntan <em>antes de la llamada.</em></h1>
             <p className="lede" data-anim="fade-up" style={{ maxWidth: "600px" }}>
               ¿Quedó algo sin responder? Escríbenos a{" "}
-              <a href="mailto:tryvexentreprise@gmail.com" style={{ color: "var(--red)" }}>contacto@tryvex.tech</a>{" "}
+              <a href={CONTACTO_HREF} target="_blank" rel="noopener noreferrer" style={{ color: "var(--red)" }}>contacto@tryvex.tech</a>{" "}
               y te contestamos el mismo día.
             </p>
           </div>
