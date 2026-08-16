@@ -29,14 +29,22 @@ Cada servicio se entrega como sistema vivo: deploy continuo, monitoreo y **90 d�
 
 ## Precios (reales — los que cobramos)
 
-### Por línea de servicio
-> Fuente: `src/app/contacto/page.tsx`
+> ⚠️ Fuente de verdad: catálogo de `/servicios` (`src/app/servicios/page.tsx`). Cualquier cambio de precio parte desde ahí.
 
-| Servicio | Precio base |
-|----------|-------------|
-| Automatización | desde $150.000 CLP |
-| Landing page | desde $200.000 CLP |
-| SaaS a medida | desde $800.000 CLP |
+### Catálogo completo
+
+| # | Servicio | Precio desde | Plazo | Mantención |
+|---|----------|---------------|-------|------------|
+| — | Agentes de IA | $1.600.000 | 4 semanas | — |
+| 01 | Landing esencial | $150.000 | 7 días hábiles | $20.000/mes |
+| 02 | Landing avanzada | $650.000 | 3 semanas | $49.000/mes |
+| 03 | Automatización de un proceso | $450.000 | 2 semanas | $49.000/mes |
+| 04 | Automatización operativa | $1.200.000 | 4 semanas | $49.000/mes |
+| 05 | Integración con sistemas chilenos | $850.000 | 3 semanas | $49.000/mes |
+| 06 | Atención automatizada por WhatsApp | $900.000 | 3 semanas | $49.000/mes |
+| 07 | Producto a medida (MVP) | $2.800.000 | 8 semanas | 5% si es SaaS |
+| 08 | Panel interno / dashboard | $1.400.000 | 4 semanas | $49.000/mes |
+| 09 | Portal de clientes | $2.200.000 | 5 semanas | $49.000/mes |
 
 El precio exacto se cierra en la llamada de descubrimiento.
 

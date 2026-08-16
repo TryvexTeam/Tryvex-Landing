@@ -118,6 +118,17 @@ export default function AgenciaIAPage() {
               agendar— conectados a los sistemas que ya usas. Precio y plazo cerrados desde el
               primer día.
             </p>
+            <div className="respuesta-directa" data-anim="fade-up">
+              <p>
+                Tryvex es un estudio de IA y agencia de software con base en Santiago de Chile que
+                pone agentes a operar dentro de los sistemas que una empresa ya usa: leen tickets y
+                correos, consultan la base de datos, agendan y dejan registro auditable. Trabaja
+                con precio y plazo cerrados desde el primer día; una automatización de un proceso
+                toma 2 semanas desde $450.000 CLP, y un agente afinado sobre los datos del negocio,
+                4 semanas desde $1.600.000 CLP. Integra con SII, Bsale, Mercado Libre, Shopify,
+                WhatsApp y Google Calendar.
+              </p>
+            </div>
             <div className="hero-cta" data-anim="fade-up" style={{ marginTop: "28px" }}>
               <Link href="/contacto" className="btn-primary">
                 Agenda una llamada de 20 min
@@ -151,6 +162,9 @@ export default function AgenciaIAPage() {
                     <li>Agendan, derivan y dejan registro de cada acción</li>
                     <li>Trazabilidad: se puede auditar qué hizo el agente y por qué</li>
                   </ul>
+                  <Link href="/agente-de-whatsapp-para-empresas" style={{ color: "var(--red-vivo)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                    Agente de WhatsApp que agenda →
+                  </Link>
                 </li>
                 <li className="mapa-fam">
                   <span className="mapa-int">Documentos</span>
@@ -161,6 +175,9 @@ export default function AgenciaIAPage() {
                     <li>Extracción de datos a la planilla o al sistema que ya usas</li>
                     <li>Búsqueda sobre tu propia documentación interna</li>
                   </ul>
+                  <Link href="/procesar-facturas-y-contratos-con-ia" style={{ color: "var(--red-vivo)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                    Procesar facturas y contratos →
+                  </Link>
                 </li>
                 <li className="mapa-fam">
                   <span className="mapa-int">Dato sensible</span>
@@ -171,6 +188,9 @@ export default function AgenciaIAPage() {
                     <li>Ruteo entre proveedores sin reescribir el código</li>
                     <li>Control de costo por tarea, medido y visible</li>
                   </ul>
+                  <Link href="/ia-en-tu-propio-servidor" style={{ color: "var(--red-vivo)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                    Modelos en tu propio servidor →
+                  </Link>
                 </li>
                 <li className="mapa-fam">
                   <span className="mapa-int">Integración</span>
@@ -181,6 +201,9 @@ export default function AgenciaIAPage() {
                     <li>Shopify, Bsale y Mercado Libre</li>
                     <li>Tu CRM o planilla actual, sin migración forzada</li>
                   </ul>
+                  <Link href="/automatizar-facturacion-sii" style={{ color: "var(--red-vivo)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                    Automatizar la facturación del SII →
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -229,8 +252,8 @@ export default function AgenciaIAPage() {
               <details open>
                 <summary>¿Cuánto demora un proyecto de IA aplicada?</summary>
                 <p>
-                  Entre 5 y 10 semanas para un agente propio afinado sobre los datos del negocio.
-                  Una automatización acotada toma de 2 a 4 semanas. El plazo se cierra en la
+                  Un agente propio afinado sobre los datos del negocio toma 4 semanas.
+                  Una automatización de un proceso toma 2 semanas. El plazo se cierra en la
                   primera llamada, no después de firmar.
                 </p>
               </details>

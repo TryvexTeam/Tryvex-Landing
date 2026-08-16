@@ -23,7 +23,7 @@ import "../../features/capacidad/capacidad.css";
 export const metadata: Metadata = {
   title: "Agencia de software en Chile — Tryvex",
   description:
-    "Desarrollo de software a medida en Santiago: productos SaaS, paneles internos y portales de cliente. MVP en producción en 4 a 8 semanas, con precio y plazo cerrados y el código a tu nombre.",
+    "Desarrollo de software a medida en Santiago: productos SaaS, paneles internos y portales de cliente. MVP en producción en 8 semanas, con precio y plazo cerrados y el código a tu nombre.",
   keywords: [
     "agencia de software en Chile",
     "desarrollo de software a medida",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Agencia de software en Chile — Tryvex",
     description:
-      "Software a medida con precio y plazo cerrados. MVP en producción en 4 a 8 semanas.",
+      "Software a medida con precio y plazo cerrados. MVP en producción en 8 semanas.",
     url: "https://www.tryvex.tech/agencia-de-software-en-chile",
     locale: "es_CL",
     type: "website",
@@ -105,6 +105,17 @@ export default async function AgenciaSoftwarePage() {
               SaaS a medida, paneles internos, portales de cliente y sitios que convierten. Precio
               y plazo cerrados antes de empezar, y el código a tu nombre al terminar.
             </p>
+            <div className="respuesta-directa" data-anim="fade-up">
+              <p>
+                Tryvex es una agencia de software en Santiago de Chile que construye productos SaaS
+                a medida, paneles internos y portales con Next.js, TypeScript y PostgreSQL. Un SaaS
+                Un producto a medida toma 8 semanas desde $2.800.000 CLP, un panel interno 4
+                semanas desde $1.400.000 CLP y una landing esencial 7 días hábiles desde $150.000
+                CLP. Todo se entrega desplegado y corriendo en producción, con el
+                repositorio y la documentación a nombre del cliente y 90 días de mantención sin
+                costo.
+              </p>
+            </div>
             <div className="hero-cta" data-anim="fade-up" style={{ marginTop: "28px" }}>
               <Link href="/contacto" className="btn-primary">
                 Agenda una llamada de 20 min
@@ -130,7 +141,7 @@ export default async function AgenciaSoftwarePage() {
             <div className="mapa" style={{ marginTop: "0", paddingTop: "0", borderTop: "none" }} data-anim="fade-up">
               <ul className="mapa-grid">
                 <li className="mapa-fam">
-                  <span className="mapa-int">4 a 8 semanas</span>
+                  <span className="mapa-int">8 semanas</span>
                   <h3>Producto a medida (MVP)</h3>
                   <ul className="mapa-caps">
                     <li>Frontend, backend, autenticación y despliegue</li>
@@ -171,6 +182,17 @@ export default async function AgenciaSoftwarePage() {
                 </li>
               </ul>
             </div>
+            <p style={{ color: "var(--muted)", marginTop: "24px" }} data-anim="fade-up">
+              Para trabajo más específico dentro del mismo alcance, revisa{" "}
+              <Link href="/automatizar-facturacion-sii" style={{ color: "var(--red-vivo)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                automatizar la facturación del SII
+              </Link>{" "}
+              y{" "}
+              <Link href="/procesar-facturas-y-contratos-con-ia" style={{ color: "var(--red-vivo)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                procesar facturas y contratos con IA
+              </Link>
+              .
+            </p>
           </div>
         </section>
 
@@ -187,7 +209,7 @@ export default async function AgenciaSoftwarePage() {
             <p style={{ color: "var(--muted)", marginBottom: "20px" }}>
               Dos formas, y se eligen en la primera llamada. <strong style={{ color: "var(--ink)" }}>Proyecto
               único</strong>: alcance fijo, precio y plazo cerrados antes de empezar — una landing
-              toma de 1 a 2 semanas, una automatización de 2 a 4, un MVP de 4 a 8.{" "}
+              toma 7 días hábiles, una automatización 2 semanas, un MVP 8 semanas.{" "}
               <strong style={{ color: "var(--ink)" }}>Socio continuo</strong>: sprints quincenales
               con prioridades tuyas, sin contrato que amarre y cancelable cuando quieras.
             </p>

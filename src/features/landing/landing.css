@@ -567,6 +567,78 @@
     font-size: 18.5px; color: var(--muted); max-width: 540px; line-height: 1.55;
     text-wrap: pretty;
   }
+
+  /* ======= RESPUESTA DIRECTA (AEO) =======
+
+     El párrafo que un motor de respuesta puede copiar entero y usar como
+     respuesta, sin el resto de la página alrededor. Por eso va autocontenido:
+     nombra a Tryvex por su nombre en vez de decir "nosotros", y no depende de
+     lo que diga el titular que tiene encima.
+
+     Se distingue del `.lede` a propósito. El lede tiene voz de marca y
+     convierte a quien ya llegó; este bloque responde la pregunta literal y
+     está escrito para ser citado. Van los dos, no uno en lugar del otro.
+
+     En `--ink` y no en `--muted`: es la frase más importante de la página y
+     el gris de apoyo la hacía leerse como pie de foto. El filete rojo a la
+     izquierda la ancla sin encajonarla en una tarjeta —una caja acá competía
+     con el `.glass` de la FAQ más abajo. */
+  .respuesta-directa {
+    border-left: 2px solid var(--red-vivo);
+    padding: 2px 0 2px 20px;
+    margin: 26px 0 0;
+    max-width: 620px;
+  }
+  .respuesta-directa p {
+    font-size: 17.5px; line-height: 1.6; color: var(--ink); text-wrap: pretty;
+    margin: 0;
+  }
+  .respuesta-directa p + p { margin-top: 12px; }
+  .respuesta-directa strong { font-weight: 560; }
+
+  /* ======= TABLA COMPARATIVA (AEO) =======
+
+     Los motores de respuesta citan tablas mucho más que prosa: la estructura
+     ya trae la comparación resuelta. Dos columnas y nada más —tres empiezan a
+     necesitar scroll horizontal en móvil y dejan de leerse de un golpe.
+
+     `overflow-x: auto` en el contenedor y no en la tabla: es lo que evita que
+     el `body` entero scrollee de lado cuando el contenido no cabe. */
+  .tabla-comp { overflow-x: auto; margin-top: 28px; }
+  .tabla-comp table {
+    width: 100%; border-collapse: collapse; font-size: 15px; min-width: 480px;
+  }
+  .tabla-comp thead th {
+    text-align: left; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+    font-weight: 400; padding: 0 16px 12px 0; border-bottom: 1px solid var(--line);
+  }
+  .tabla-comp thead th:last-child { color: var(--red-vivo); }
+  .tabla-comp td,
+  /* La primera celda de cada fila es `th scope="row"`, no `td`: nombra la fila
+     entera y es lo que permite a un lector de pantalla anunciar "Emisión del
+     DTE, con el flujo automatizado: …" en vez de leer la celda suelta. En una
+     tabla comparativa, que es toda contexto cruzado, sin eso el contenido no
+     se entiende. Va con el mismo aspecto que un `td` para que la diferencia
+     sea semántica y no visual. */
+  .tabla-comp tbody th {
+    padding: 13px 16px 13px 0; border-bottom: 1px solid var(--line-soft);
+    color: var(--ink); vertical-align: top; line-height: 1.5;
+    text-align: left; font-weight: 400;
+  }
+  .tabla-comp tbody th { color: var(--muted); width: 34%; }
+  .tabla-comp tbody tr:last-child td,
+  .tabla-comp tbody tr:last-child th { border-bottom: 0; }
+
+  /* El `<caption>` da el nombre accesible de la tabla. No se muestra porque el
+     `h2` de la sección ya dice lo mismo en pantalla; ocultarlo con
+     `display:none` lo sacaría también del árbol de accesibilidad, así que se
+     saca del flujo visual conservándolo para el lector de pantalla. */
+  .tabla-comp caption {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+
   .hero-cta { margin-top: 36px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   .btn-ghost {
     border: 1px solid var(--line); padding: 10px 18px; border-radius: 999px;
@@ -1082,7 +1154,12 @@
     z-index: 1; /* below any overlay (team-drawer z-index:9000, nav z-index:50) */
   }
   .foot-card { padding: 32px 36px; }
-  .foot-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; }
+  /* Cinco columnas desde que "Soluciones" se separó de "Servicios". La marca
+     baja de 1.6fr a 1.4fr y el gap de 40px a 32px para pagar la columna nueva
+     sin estrechar las de enlaces: "Agencia de software en Chile" es el texto
+     más largo del footer y es el que primero se parte. La columna de
+     Soluciones va a 1.15fr por eso mismo. */
+  .foot-top { display: grid; grid-template-columns: 1.4fr 1fr 1.15fr 1fr 1fr; gap: 32px; }
   .foot-top h2 { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 14px; font-weight: 400; }
   /* El `span` de "Santiago · CL" comparte el estilo de los enlaces. Es el único
      ítem de la columna que no es enlace, y sin esto se leía más oscuro y más
