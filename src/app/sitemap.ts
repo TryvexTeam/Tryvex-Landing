@@ -24,6 +24,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    /* Un nivel más abajo que las dos de arriba: aquellas responden por
+       categoría —"agencia de IA en Chile"—, estas por el dolor concreto que
+       trae a alguien a buscar. La consulta específica tiene menos volumen pero
+       mucha más intención, y hoy la contesta la competencia. Prioridad 0.8:
+       bajo las de categoría, sobre las institucionales. */
+    {
+      url: "https://www.tryvex.tech/automatizar-facturacion-sii",
+      lastModified: new Date("2026-08-16"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://www.tryvex.tech/agente-de-whatsapp-para-empresas",
+      lastModified: new Date("2026-08-16"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://www.tryvex.tech/procesar-facturas-y-contratos-con-ia",
+      lastModified: new Date("2026-08-16"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://www.tryvex.tech/ia-en-tu-propio-servidor",
+      lastModified: new Date("2026-08-16"),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     {
       url: "https://www.tryvex.tech/catalogo",
       lastModified: new Date("2026-08-03"),

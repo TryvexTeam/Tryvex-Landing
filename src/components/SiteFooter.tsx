@@ -34,12 +34,26 @@ export default function SiteFooter({ revelar = false }: { revelar?: boolean }) {
               <Link href="/servicios">Automatización</Link>
               <Link href="/servicios">Landing pages</Link>
               <Link href="/servicios">SaaS a medida</Link>
-              {/* Las dos páginas de captación viven acá y no en el menú: el nav
-                  ya tiene seis ítems y son puertas de entrada desde buscador,
-                  no parte del recorrido de quien ya está en el sitio. El enlace
-                  interno igual les da el peso que necesitan. */}
+            </div>
+            <div>
+              {/* Columna propia, separada de Servicios. Las páginas de captación
+                  viven acá y no en el menú: el nav ya tiene seis ítems y estas
+                  son puertas de entrada desde buscador, no parte del recorrido
+                  de quien ya está en el sitio. El enlace interno igual les da el
+                  peso que necesitan.
+
+                  Están agrupadas por lo que resuelven y no por lo que se vende,
+                  que es como las busca quien todavía no conoce la marca: primero
+                  las dos de categoría, después las cuatro por dolor concreto.
+                  Amontonadas bajo "Servicios" quedaban nueve ítems en una columna
+                  contra cinco en las de al lado. */}
+              <h2>Soluciones</h2>
               <Link href="/agencia-de-ia-en-chile">Agencia de IA en Chile</Link>
               <Link href="/agencia-de-software-en-chile">Agencia de software en Chile</Link>
+              <Link href="/automatizar-facturacion-sii">Automatizar facturación SII</Link>
+              <Link href="/agente-de-whatsapp-para-empresas">Agente de WhatsApp</Link>
+              <Link href="/procesar-facturas-y-contratos-con-ia">Procesar documentos con IA</Link>
+              <Link href="/ia-en-tu-propio-servidor">IA en tu propio servidor</Link>
             </div>
             <div>
               <h2>Estudio</h2>

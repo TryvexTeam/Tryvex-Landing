@@ -77,20 +77,103 @@ const jsonLd = {
         "Desarrollo de software a medida",
         "Facturación electrónica SII",
         "Integración de sistemas",
+        "Procesamiento de documentos con IA",
+        "Modelos de lenguaje en infraestructura propia",
+        "Desarrollo de productos SaaS",
       ],
-      /* ⚠️ `sameAs` va vacío A PROPÓSITO, y es lo que más falta acá.
-         Es el campo que le dice a un buscador "estos perfiles y esta web son
-         la misma entidad", y sin él el nombre compite a ciegas contra marcas
-         más grandes: Trivex (polímero de lentes), Trivox (otra agencia
+      /* Los precios salen del catálogo de `/servicios`: esa página es la
+         fuente de verdad. Si cambian, hay que tocarlos también en
+         `BUSINESS_LOGIC.md`, `/contacto`, `/preguntas` y `public/llms.txt`. */
+      priceRange: "$150.000 - $2.800.000 CLP",
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Servicios Tryvex",
+        itemListElement: [
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Agente de IA conectado a sistemas propios",
+            },
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              minPrice: 1600000,
+              priceCurrency: "CLP",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Automatización de un proceso",
+            },
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              minPrice: 450000,
+              priceCurrency: "CLP",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Integración con sistemas chilenos",
+            },
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              minPrice: 850000,
+              priceCurrency: "CLP",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Landing page",
+            },
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              minPrice: 150000,
+              priceCurrency: "CLP",
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              name: "Producto a medida (MVP)",
+            },
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              minPrice: 2800000,
+              priceCurrency: "CLP",
+            },
+          },
+        ],
+      },
+      /* `sameAs` es el campo que le dice a un buscador "estos perfiles y esta
+         web son la misma entidad". Sin él el nombre compite a ciegas contra
+         marcas más grandes: Trivex (polímero de lentes), Trivox (otra agencia
          chilena), Trovex.ai — y sobre todo **otra empresa llamada Tryvex** en
          Brisbane, `tryvex.au`, que ya ocupa `linkedin.com/company/tryvex`.
 
-         Por eso cada URL que se agregue tiene que comprobarse una por una:
-         apuntar al perfil equivocado no deja la entidad sin unir, la une con
-         la empresa incorrecta. Al crear los perfiles propios —LinkedIn con la
-         URL disponible, Instagram, Google Business Profile— se listan acá. */
+         Por eso cada URL se comprueba una por una antes de listarla: apuntar
+         al perfil equivocado no deja la entidad sin unir, la une con la
+         empresa incorrecta.
+
+         ⚠️ El de LinkedIn es un perfil `/in/`, no una página `/company/`. Une
+         la entidad igual, pero rinde menos: un buscador lee `/company/` como
+         organización y `/in/` como persona. La página de empresa sigue
+         pendiente, y el handle libre más cercano es `tryvex-chile` —el país
+         en el handle hace de desambiguador, igual que `alternateName` acá.
+         Al crearla, agregarla a esta lista junto con Instagram y el Perfil de
+         Negocio de Google. */
+      sameAs: ["https://www.linkedin.com/in/tryvex-tech/"],
       foundingDate: "2024",
-      dateModified: "2026-08-15",
+      /* Se actualiza a mano cada vez que cambia algo de la entidad —precios,
+         perfiles enlazados, servicios—, no en cada despliegue. Una fecha que
+         se mueve sola deja de ser una señal y pasa a ser ruido. */
+      dateModified: "2026-08-16",
     },
     {
       "@type": "WebSite",
@@ -98,7 +181,7 @@ const jsonLd = {
       url: "https://www.tryvex.tech",
       name: "Tryvex — Estudio de IA y Agencia de Software",
       publisher: { "@id": "https://www.tryvex.tech/#organization" },
-      dateModified: "2026-05-12",
+      dateModified: "2026-08-16",
     },
   ],
 };

@@ -60,7 +60,7 @@ export default function ContactoPage() {
               </details>
               <details>
                 <summary>¿Cuánto cuesta un proyecto?</summary>
-                <p>Una automatización parte desde $150.000 CLP. Una landing page desde $200.000 CLP. Un SaaS desde $800.000 CLP. El precio exacto lo cerramos en la llamada.</p>
+                <p>Una landing esencial parte desde $150.000 CLP y una automatización de un proceso desde $450.000 CLP. Un agente de IA conectado a tus sistemas desde $1.600.000 CLP y un producto a medida desde $2.800.000 CLP. El detalle por servicio está en la página de servicios y el precio exacto lo cerramos en la llamada.</p>
               </details>
               <details>
                 <summary>¿Puedo escribirles por email?</summary>

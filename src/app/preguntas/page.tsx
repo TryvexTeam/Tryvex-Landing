@@ -82,6 +82,26 @@ export default function PreguntasPage() {
                   <summary>¿Cómo sabemos que está funcionando?</summary>
                   <p>Cada flujo entrega logs, alertas y un panel de control donde se ve qué corrió y qué falló. Con el plan de socio continuo, además llega un reporte mensual con las métricas del período.</p>
                 </details>
+                <details>
+                  <summary>¿Necesito cambiar mi software de facturación para automatizar el SII?</summary>
+                  <p>No. La automatización es una capa que opera sobre el software de facturación certificado que tu empresa ya usa, sea Bsale u otro. Tryvex no es emisor electrónico certificado ante el SII ni gestiona folios CAF: conecta lo que ya tienes con tu sistema de ventas para que el DTE se emita, se envíe y se concilie sin tipeo manual.</p>
+                </details>
+                <details>
+                  <summary>¿En qué se diferencia un agente de IA de un chatbot?</summary>
+                  <p>Un chatbot responde preguntas. Un agente hace el trabajo: consulta la base de datos, agenda en el calendario, deriva a una persona cuando el caso lo necesita y deja registro auditable de cada acción. La diferencia práctica es si al final de la conversación quedó algo hecho o solo contestado.</p>
+                </details>
+                <details>
+                  <summary>¿Pueden correr la IA sin que mis datos salgan de la empresa?</summary>
+                  <p>Sí. Cuando el dato es sensible, montamos modelos de peso abierto dentro de tu propia infraestructura, de modo que nada de lo que procesa el modelo viaje fuera de tu red. Toma 4 semanas desde $1.600.000 CLP e incluye ruteo entre proveedores sin reescribir el código.</p>
+                </details>
+                <details>
+                  <summary>¿Cuánto cuesta un proyecto?</summary>
+                  <p>Una landing esencial parte desde $150.000 CLP y una automatización de un proceso desde $450.000 CLP. Un agente de IA conectado a tus sistemas desde $1.600.000 CLP y un producto a medida desde $2.800.000 CLP. El precio exacto se cierra en la llamada de 20 minutos, antes de firmar nada, y no cambia después.</p>
+                </details>
+                <details>
+                  <summary>¿Qué tan exacto es el procesamiento de documentos con IA?</summary>
+                  <p>El sistema deja el trabajo hecho y una persona revisa lo que tiene consecuencia. No prometemos exactitud perfecta: lo que se gana es que nadie tenga que abrir cada documento para saber de qué se trata y copiar los datos a mano.</p>
+                </details>
             </div>
 
             <p className="sec-sub" style={{ margin: "48px auto 0", textAlign: "center" }}>
@@ -146,8 +166,37 @@ export default function PreguntasPage() {
                 "@type": "Question",
                 name: "¿Qué pasa si no funciona?",
                 acceptedAnswer: { "@type": "Answer", text: "Tenemos garantía de 30 días. Si no entregamos lo prometido, devolvemos el último mes. Es raro que pase, pero está por escrito." },
+              },
+              {
+                "@type": "Question",
+                name: "¿Necesito cambiar mi software de facturación para automatizar el SII?",
+                acceptedAnswer: { "@type": "Answer", text: "No. La automatización es una capa que opera sobre el software de facturación certificado que tu empresa ya usa, sea Bsale u otro. Tryvex no es emisor electrónico certificado ante el SII ni gestiona folios CAF: conecta lo que ya tienes con tu sistema de ventas para que el DTE se emita, se envíe y se concilie sin tipeo manual." },
+              },
+              {
+                "@type": "Question",
+                name: "¿En qué se diferencia un agente de IA de un chatbot?",
+                acceptedAnswer: { "@type": "Answer", text: "Un chatbot responde preguntas. Un agente hace el trabajo: consulta la base de datos, agenda en el calendario, deriva a una persona cuando el caso lo necesita y deja registro auditable de cada acción. La diferencia práctica es si al final de la conversación quedó algo hecho o solo contestado." },
+              },
+              {
+                "@type": "Question",
+                name: "¿Pueden correr la IA sin que mis datos salgan de la empresa?",
+                acceptedAnswer: { "@type": "Answer", text: "Sí. Cuando el dato es sensible, montamos modelos de peso abierto dentro de tu propia infraestructura, de modo que nada de lo que procesa el modelo viaje fuera de tu red. Toma 4 semanas desde $1.600.000 CLP e incluye ruteo entre proveedores sin reescribir el código." },
+              },
+              {
+                "@type": "Question",
+                name: "¿Cuánto cuesta un proyecto?",
+                acceptedAnswer: { "@type": "Answer", text: "Una landing esencial parte desde $150.000 CLP y una automatización de un proceso desde $450.000 CLP. Un agente de IA conectado a tus sistemas desde $1.600.000 CLP y un producto a medida desde $2.800.000 CLP. El precio exacto se cierra en la llamada de 20 minutos, antes de firmar nada, y no cambia después." },
+              },
+              {
+                "@type": "Question",
+                name: "¿Qué tan exacto es el procesamiento de documentos con IA?",
+                acceptedAnswer: { "@type": "Answer", text: "El sistema deja el trabajo hecho y una persona revisa lo que tiene consecuencia. No prometemos exactitud perfecta: lo que se gana es que nadie tenga que abrir cada documento para saber de qué se trata y copiar los datos a mano." },
               }
             ],
+            speakable: {
+              "@type": "SpeakableSpecification",
+              cssSelector: [".faq summary", ".faq p"],
+            },
           }),
         }}
       />
