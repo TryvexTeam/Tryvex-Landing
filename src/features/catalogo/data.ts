@@ -255,6 +255,8 @@ export const demos: Demo[] = [
     incluye: ["Web inmersiva", "Formulario de cotización", "Asistente WhatsApp"],
     demoUrl: "https://tryvex-demo-cafeteria.vercel.app",
     whatsappRef: "DEMO-CAFE",
+    imagen: "/catalogo/cafeteria.jpg",
+    ratio: "1280 / 800",
     publicada: true,
   },
 ];
