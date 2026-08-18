@@ -245,6 +245,18 @@ export const demos: Demo[] = [
     imagen: "/catalogo/belleza.jpg",
     publicada: true,
   },
+  {
+    id: "cafeteria",
+    nicho: "Cafetería y pastelería artesanal",
+    categoria: "Gastronomía",
+    tipo: ["Automatización"],
+    descripcion:
+      "Vitrina de tortas y pastelería para bodas y eventos, con cotizaciones cerrándose por WhatsApp.",
+    incluye: ["Web inmersiva", "Formulario de cotización", "Asistente WhatsApp"],
+    demoUrl: "https://tryvex-demo-cafeteria.vercel.app",
+    whatsappRef: "DEMO-CAFE",
+    publicada: true,
+  },
 ];
 
 export const demosPublicadas: Demo[] = demos.filter(
