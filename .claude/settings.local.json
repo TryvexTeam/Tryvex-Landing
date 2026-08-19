@@ -78,7 +78,41 @@
       "WebFetch(domain:sileo.aaryan.design)",
       "Bash(npx vercel *)",
       "Bash(node -e \"require\\('googleapis'\\); console.log\\('googleapis OK'\\)\")",
-      "Bash(ls src/lib/)"
+      "Bash(ls src/lib/)",
+      "Bash(npx next *)",
+      "Bash(.\\\\node_modules\\\\.bin\\\\next dev *)",
+      "PowerShell(.\\\\node_modules\\\\.bin\\\\next dev)",
+      "PowerShell(npm install)",
+      "PowerShell(& \".\\\\node_modules\\\\.bin\\\\next.cmd\" dev)",
+      "Bash(mkdir -p \"c:/Users/josep/OneDrive/Documents/GitHub/Tryvex-Landing/src/components\")",
+      "Skill(playwright-cli)",
+      "Skill(playwright-cli:*)",
+      "PowerShell(Start-Process \"http://localhost:3000\")",
+      "Bash(npx playwright *)",
+      "Bash(ffmpeg -version)",
+      "PowerShell($cmd = Get-Command ffmpeg -ErrorAction SilentlyContinue; if \\($cmd\\) { $cmd.Source } else { \"NOT FOUND\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\ffmpeg\" -ErrorAction SilentlyContinue | Select-Object Name; Get-ChildItem \"$env:USERPROFILE\\\\ffmpeg\" -ErrorAction SilentlyContinue | Select-Object Name; Get-ChildItem \"C:\\\\Program Files\\\\ffmpeg\" -ErrorAction SilentlyContinue | Select-Object Name)",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\")",
+      "PowerShell(Test-Path \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\"; if \\(Test-Path \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\"\\) { [math]::Round\\(\\(Get-Item \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\"\\).Length / 1MB, 1\\) })",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\josep\\\\Downloads\\\\kling_20260528_作品_An_mame_la_3792_0.mp4\" \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\" -Force; $size = [math]::Round\\(\\(Get-Item \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\"\\).Length / 1MB, 1\\); Write-Host \"Copiado: ${size} MB\")",
+      "PowerShell(winget install Gyan.FFmpeg --silent --accept-package-agreements --accept-source-agreements 2>&1)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); ffprobe -v quiet -print_format json -show_streams \"C:\\\\Users\\\\josep\\\\Downloads\\\\kling_20260528_作品_An_mame_la_3792_0.mp4\" 2>&1 | ConvertFrom-Json | Select-Object -ExpandProperty streams | Where-Object { $_.codec_type -eq \"video\" } | Select-Object width, height, codec_name, r_frame_rate, duration)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); ffmpeg -y -ss 5 -i \"C:\\\\Users\\\\josep\\\\Downloads\\\\kling_20260528_作品_An_mame_la_3792_0.mp4\" -frames:v 1 \"C:\\\\Users\\\\josep\\\\Downloads\\\\frame_check.jpg\" 2>&1 | Select-Object -Last 3)",
+      "Bash(python -m markitdown --version)",
+      "Bash(pip show *)",
+      "Bash(python -m markitdown \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\")",
+      "Bash(ffprobe -v quiet -print_format json -show_streams \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(s.get\\('codec_type'\\), s.get\\('codec_name'\\)\\) for s in d.get\\('streams',[]\\)]\")",
+      "Bash(ffprobe -v quiet -print_format json -show_format -show_streams \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\")",
+      "Bash(ffprobe -v error -show_streams -select_streams a \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\")",
+      "Bash(ffprobe -v quiet -show_entries stream=index,codec_type,codec_name,channels,sample_rate -of default \"c:\\\\Users\\\\josep\\\\OneDrive\\\\Documents\\\\GitHub\\\\Tryvex-Landing\\\\public\\\\hero-bg.mp4\")",
+      "Bash(yt-dlp \"https://www.tiktok.com/@rinconstore_cl/video/7649320139376069896\" -o \"C:/Users/josep/tiktok-rinconstore.mp4\" --merge-output-format mp4)",
+      "Bash(python -m yt_dlp \"https://www.tiktok.com/@rinconstore_cl/video/7649320139376069896\" -o \"C:/Users/josep/tiktok-rinconstore.%\\(ext\\)s\" --merge-output-format mp4)",
+      "Bash(ffprobe -v quiet -show_entries stream=index,codec_type,codec_name,channels,sample_rate -of default \"C:/Users/josep/tiktok-rinconstore.mp4\")",
+      "Bash(python -m markitdown \"C:/Users/josep/tiktok-rinconstore.mp4\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\josep\\OneDrive\\Documents\\GitHub\\Tryvex-Landing\\src"
     ]
   }
 }

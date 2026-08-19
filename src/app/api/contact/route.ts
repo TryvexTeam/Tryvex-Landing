@@ -15,6 +15,8 @@ interface SchedulePayload {
   dateISO?: string;
   time?: string;
   message?: string;
+  /** Si ya se creó el evento (ej. desde el CRM), se pasa el Meet link directo. */
+  meetLink?: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -39,9 +41,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Create Google Calendar event + Meet link (falls back if Calendar not configured)
-  let meetLink = FALLBACK_MEET;
-  if (process.env.GOOGLE_REFRESH_TOKEN && dateISO && time) {
+  // Si ya viene un meetLink (ej. el CRM ya creó el evento en Google), usarlo
+  // directo y no crear otro evento duplicado.
+  let meetLink = body.meetLink || FALLBACK_MEET;
+  if (!body.meetLink && process.env.GOOGLE_REFRESH_TOKEN && dateISO && time) {
     try {
       meetLink = await createCalendarEvent({ name, phone, email, dateISO, time, message });
     } catch (err) {
