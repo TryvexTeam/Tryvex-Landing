@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 import { openCookiePreferences, useConsent } from "./useConsent";
 
 /**
@@ -14,9 +16,22 @@ import { openCookiePreferences, useConsent } from "./useConsent";
  * es una decisión válida, y dejarlo cerrar sin elegir equivaldría a asumir un
  * consentimiento que nadie dio.
  */
+/* Rutas donde el aviso no se muestra.
+   /links se abre desde la bio de una red social, ocupa una sola pantalla y su
+   única razón de ser es que alguien toque un enlace: un aviso al pie tapa
+   justo eso. No hay ilegalidad en omitirlo porque tampoco se activa ninguna
+   cookie de análisis sin decisión previa — `ClarityScript` no se inyecta y
+   `window.clarity` no existe, así que el registro de clics de esa página
+   simplemente no ocurre. El precio es real y conviene tenerlo presente: el
+   tráfico que llegue directo a /links y no haya pasado antes por el sitio no
+   queda medido. */
+const SIN_AVISO = ["/links"];
+
 export default function CookieBanner() {
+  const ruta = usePathname();
   const { consent, hydrated, acceptAll, rejectAll } = useConsent();
 
+  if (SIN_AVISO.includes(ruta)) return null;
   if (!hydrated || consent !== null) return null;
 
   return (

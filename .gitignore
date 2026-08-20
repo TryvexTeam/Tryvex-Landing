@@ -57,3 +57,14 @@ src/app/landing-script.js
 .playwright-mcp/
 .verify/
 skills-lock.json
+
+# Skills de herramientas de IA instalados por `npx skills add`. Son del entorno
+# de quien desarrolla, no del producto: se replican en cuatro carpetas (una por
+# editor) y no aportan nada al sitio.
+.agents/
+.trae/
+.windsurf/
+.claude/skills/higgsfield-*
+
+# Bocetos del canvas de diseño de /links. Material de trabajo, no código.
+.design/
