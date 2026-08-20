@@ -1,0 +1,797 @@
+/* ======================================================================
+   /links — la página de enlaces que va en la bio de las redes.
+
+   Rompe con el papel crema del resto del sitio a propósito: no se llega
+   acá navegando, se llega desde Instagram o TikTok. Es la cara oscura de
+   la marca, no una página más de la landing, así que declara sus propios
+   colores en `.links-pagina` en vez de tocar el `:root` de `landing.css`.
+   ====================================================================== */
+
+.links-pagina {
+  --tinta: #08080a;
+  --hueso: #f2f0ec;
+  --rojo: #da1613;
+  --rojo-claro: #ff3b36;
+  --linea: rgba(242, 240, 236, 0.14);
+  --apagado: rgba(242, 240, 236, 0.4);
+
+  position: relative;
+  min-height: 100svh;
+  background: var(--tinta);
+  color: var(--hueso);
+  overflow-x: hidden;
+}
+
+/* El tema de esta ruta es oscuro y punto — misma razón que en la landing:
+   sin declararlo, el oscurecido automático de algunos navegadores invierte
+   la página entera. Acá invertiría un fondo casi negro a casi blanco. */
+.links-pagina {
+  color-scheme: dark;
+}
+
+/* `landing.css` pinta `html, body` con el papel crema para todo el sitio, y
+   esta ruta es la única oscura. Sin esto el crema asoma por debajo y por
+   encima del documento —en el rebote del scroll, y en cualquier hueco que
+   deje el alto de la página—, que es exactamente donde se nota.
+
+   Va con `:has()` en vez de una clase en el `<body>`: el layout raíz es
+   compartido por las ocho rutas y no tiene por qué enterarse de esta. */
+html:has(.links-pagina),
+body:has(.links-pagina) {
+  background: #08080a;
+  color-scheme: dark;
+}
+
+/* ---------- campo de color ----------
+   La aurora sube desde el borde inferior. `.links-brasa` deja de ser el efecto
+   y pasa a ser su respaldo: es lo único que se ve si WebGL no arranca o si el
+   visitante pidió movimiento reducido, y desaparece en cuanto la aurora avisa
+   que está montada. */
+.links-aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.92;
+}
+.links-aurora canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.links-aurora[data-listo] ~ .links-brasa {
+  opacity: 0;
+}
+
+/* Textura de fondo, difuminada de origen. Va debajo de la aurora y le da
+   grano y cortinas verticales que un degradado no tiene. */
+.links-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: #08080a url("/links/fondo.webp") center bottom / cover no-repeat;
+  opacity: 0.55;
+}
+
+/* ---------- respaldo del campo de color ---------- */
+.links-brasa {
+  transition: opacity 600ms ease;
+  position: fixed;
+  left: -30%;
+  right: -30%;
+  bottom: -28vh;
+  height: 78vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 58% 46% at 50% 100%, var(--rojo) 0%, rgba(218, 22, 19, 0.4) 32%, rgba(218, 22, 19, 0.07) 60%, transparent 78%),
+    radial-gradient(ellipse 34% 46% at -6% 46%, rgba(218, 22, 19, 0.55) 0%, transparent 62%),
+    radial-gradient(ellipse 34% 46% at 106% 52%, rgba(218, 22, 19, 0.55) 0%, transparent 62%);
+}
+
+/* ---------- guías de columna ----------
+   La grilla del sistema, dibujada. No es decoración: son las columnas reales
+   sobre las que se alinea `.links-contenido`, con el mismo ancho máximo y el
+   mismo margen. Si el contenido deja de calzar con las guías, es que una de
+   las dos medidas se movió.
+
+   Se ocultan bajo 420px: a ese ancho seis columnas quedan más finas que el
+   propio grosor de la línea y el fondo se convierte en un rayado.
+
+   Las cotas rotuladas —«6 columnas», «20 margen», «14 gutter»— se quitaron: en
+   una lámina de presentación explican el sistema, pero en la página publicada
+   son texto que el visitante lee y no significa nada para él. Las guías se
+   quedan porque son textura, no rótulo. */
+.links-guias {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: none;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 20px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px;
+}
+.links-guias span {
+  border-left: 1px dashed rgba(255, 90, 80, 0.16);
+  border-right: 1px dashed rgba(255, 90, 80, 0.16);
+}
+@media (min-width: 420px) {
+  .links-guias { display: grid; }
+}
+
+
+/* Grano. Va en `overlay` sobre todo lo demás: es lo que impide que los
+   degradados se vean como un relleno de CSS en pantallas grandes. */
+.links-grano {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.42;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.7'/></svg>");
+}
+
+/* ---------- el objeto ---------- */
+/* A pantalla completa y fija. Antes era una franja `sticky` de la portada, y
+   por eso la estrella se quedaba en el hero: fuera de esa franja no había
+   lienzo donde dibujarla. Ahora el lienzo es la ventana y el recorrido lo
+   decide el propio objeto, que se reacomoda tramo a tramo con el scroll. */
+.links-escena {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.estrella-3d {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.estrella-3d canvas {
+  display: block;
+}
+
+/* El respaldo plano se retira solo cuando la escena confirma que está
+   montada. Ocultarlo antes deja el hueco vacío si WebGL no arranca. */
+.estrella-3d__plana {
+  width: min(60vw, 320px);
+  height: min(60vw, 320px);
+  filter: drop-shadow(0 30px 60px rgba(218, 22, 19, 0.45));
+}
+.estrella-3d[data-listo] .estrella-3d__plana {
+  display: none;
+}
+
+/* ---------- contenido ---------- */
+.links-contenido {
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+/* El contenido sube sobre la escena: la estrella queda detrás del titular,
+   no encima de él. El margen negativo es igual a la parte baja de la escena
+   que puede taparse sin cortar el objeto. */
+/* Aire de portada: la estrella necesita una pantalla para ella antes de que
+   empiece a leerse el texto. */
+.links-cuerpo {
+  padding-top: 46svh;
+}
+
+/* La cabecera de «B»: una sola pastilla centrada que ya lleva los dos accesos
+   del sitio dentro, en vez de una marca a la izquierda y un sello a la derecha. */
+/* Queda pegada arriba y fuera del bloque que sube sobre la escena: dentro de
+   `.links-contenido` el margen negativo la arrastraba encima del titular. */
+.links-marca {
+  position: sticky;
+  top: 16px;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+}
+
+.links-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--hueso);
+  color: var(--tinta);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.links-pill svg {
+  width: 14px;
+  height: 14px;
+}
+.links-pill__sep {
+  width: 1px;
+  height: 12px;
+  background: rgba(8, 8, 10, 0.22);
+}
+.links-pill a {
+  color: rgba(8, 8, 10, 0.66);
+  text-decoration: none;
+  letter-spacing: 0.14em;
+}
+.links-pill a:hover {
+  color: var(--rojo);
+}
+
+/* Claim al margen, como en «B»: alineado a la derecha, en condensada chica,
+   contrapesando el titular grande de la izquierda. */
+.links-claim {
+  display: block;
+  margin: 22px 0 0;
+  text-align: right;
+  font-family: var(--cond);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(14px, 4vw, 18px);
+  line-height: 1.14;
+  color: var(--hueso);
+}
+
+.links-eyebrow {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--rojo-claro);
+}
+
+.links-titular {
+  margin: 10px 0 0;
+  font-family: var(--cond);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(50px, 15vw, 92px);
+  line-height: 0.84;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+  text-shadow: 0 6px 30px rgba(8, 8, 10, 0.85);
+}
+.links-titular em {
+  font-style: normal;
+  color: var(--rojo);
+}
+
+.links-bajada {
+  margin: 16px 0 0;
+  max-width: 34ch;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(242, 240, 236, 0.72);
+}
+
+/* ---------- índice ---------- */
+.links-indice {
+  margin-top: 36px;
+}
+
+.links-indice__titulo {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--apagado);
+  padding-bottom: 10px;
+}
+
+.links-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.links-fila {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 60px;
+  padding: 6px 0;
+  border-top: 1px solid var(--linea);
+  color: inherit;
+  text-decoration: none;
+  transition: color 180ms ease, padding-left 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.links-fila:hover,
+.links-fila:focus-visible {
+  color: var(--rojo-claro);
+  padding-left: 8px;
+}
+
+.links-fila__num {
+  flex-shrink: 0;
+  width: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--apagado);
+}
+.links-fila:hover .links-fila__num {
+  color: var(--rojo-claro);
+}
+
+.links-fila__nombre {
+  flex-grow: 1;
+  font-family: var(--cond);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(24px, 6.4vw, 34px);
+  line-height: 1;
+}
+
+.links-fila__meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--apagado);
+  white-space: nowrap;
+}
+
+.links-fila__flecha {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 180ms ease, transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.links-fila:hover .links-fila__flecha,
+.links-fila:focus-visible .links-fila__flecha {
+  opacity: 1;
+  transform: none;
+}
+
+/* En hover el texto pasa a rojo, y el recorrido de la estrella lo cruza por
+   detrás en cualquier punto de la lista: sobre su chispa —del mismo rojo— la
+   palabra desaparece, y sobre el metal claro del cuerpo pierde casi todo el
+   contraste. Un halo negro cerrado la despega del fondo sea cual sea.
+
+   Va en las ocho filas y no solo en las tres primeras: el objeto pasa por
+   todas a lo largo del scroll, así que limitarlo dejaba el resto expuesto al
+   mismo problema, y la lista se comportaba distinto según la fila.
+
+   Sombra y no `-webkit-text-stroke`: el trazo obliga a `paint-order` para no
+   comerse el interior de una condensada de este peso, y aun así deja un canto
+   duro que compite con la tipografía. Cuatro capas —dos cerradas para el
+   recorte, dos abiertas para el halo— separan del fondo sin tocar la forma de
+   la letra. */
+.links-fila:hover .links-fila__nombre,
+.links-fila:focus-visible .links-fila__nombre {
+  text-shadow:
+    0 0 2px rgba(0, 0, 0, 1),
+    0 0 5px rgba(0, 0, 0, 1),
+    0 0 10px rgba(0, 0, 0, 1),
+    0 0 22px rgba(0, 0, 0, 1),
+    0 0 44px rgba(0, 0, 0, 0.9);
+}
+
+/* El número y la meta también se pierden sobre el metal, aunque al ser chicos
+   les basta un halo más corto. */
+.links-fila:hover .links-fila__num,
+.links-fila:focus-visible .links-fila__num,
+.links-fila:hover .links-fila__meta,
+.links-fila:focus-visible .links-fila__meta {
+  text-shadow:
+    0 0 3px rgba(0, 0, 0, 1),
+    0 0 8px rgba(0, 0, 0, 1),
+    0 0 18px rgba(0, 0, 0, 0.95);
+}
+
+/* ---------- pregunta de cierre ----------
+   Es la única frase de la página que interpela directamente, y por eso va en
+   el cierre y no en la portada: primero se prueba lo que hay (el índice, el
+   trabajo), después se pregunta. */
+.links-pregunta {
+  margin: 44px 0 0;
+  font-family: var(--cond);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(28px, 8.4vw, 46px);
+  line-height: 0.98;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+  color: var(--hueso);
+}
+.links-pregunta em {
+  font-style: normal;
+  color: var(--rojo-claro);
+}
+
+/* ---------- el texto se defiende de la estrella ----------
+   En un teléfono la estrella termina su recorrido justo detrás de esta frase,
+   y su metal claro deja el texto blanco sin contraste. La solución no es
+   apartar el objeto —el cruce es justamente lo que da la sensación de que la
+   estrella está en la página y no detrás de ella—, sino invertir el texto
+   únicamente donde estorba.
+
+   `.links-pregunta::after` es la misma frase en tinta, superpuesta al píxel, y
+   una máscara circular la revela solo sobre la estrella. El círculo lo sitúan
+   `--ex`/`--ey`/`--er`, que publica la escena 3D cuadro a cuadro con el centro
+   del objeto ya proyectado a pantalla.
+
+   Se aplica solo bajo 900px: en escritorio el texto vive en su columna y la
+   estrella se retira al margen, así que no llegan a cruzarse. */
+@media (max-width: 899px) {
+  .links-pregunta {
+    position: relative;
+    isolation: isolate;
+
+    /* Los valores por defecto van ACÁ, en el elemento, no dentro del `::after`.
+       La escena escribe `--ex`/`--ey`/`--er` sobre este mismo nodo, y una
+       variable declarada dentro del pseudo-elemento gana siempre sobre la
+       heredada: definidos allí, los del JS no llegaban nunca y la máscara se
+       quedaba con el círculo de radio cero fuera de cuadro. */
+    --ex: -999px;
+    --ey: -999px;
+    --er: 0px;
+  }
+
+  .links-pregunta::after {
+    content: attr(data-texto);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    color: #0a0a0b;
+    -webkit-mask-image: radial-gradient(
+      circle var(--er) at var(--ex) var(--ey),
+      #000 0 97%,
+      transparent 97%
+    );
+    mask-image: radial-gradient(
+      circle var(--er) at var(--ex) var(--ey),
+      #000 0 97%,
+      transparent 97%
+    );
+  }
+
+  /* El rojo no participa: sobre el metal claro conserva contraste de sobra
+     —es un tono profundo y el texto es grande—, y en tinta se perdería. */
+  .links-pregunta em {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* ---------- cierre ---------- */
+.links-cierre {
+  margin-top: 8px;
+}
+
+/* El gesto viene de las tarjetas del panel de TryvexPlataform: al pasar por
+   encima suben 2px, el borde se tiñe del acento y aparece una flecha diagonal.
+   Acá se repite el mismo vocabulario para que el botón se sienta de la misma
+   familia, con dos diferencias que impone el fondo: la tarjeta del panel es
+   oscura sobre oscuro y este botón es claro, así que el tinte va al borde y no
+   al fondo; y el resplandor de esquina se pinta en rojo por fuera del papel,
+   no por dentro. */
+.links-cta {
+  --notch-r: 30px;          /* radio del círculo rojo */
+  --notch-aire: 6px;        /* separación entre el círculo y el papel */
+  --notch-x: 34px;          /* centro del círculo, medido desde el borde derecho */
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 30px;
+  min-height: 66px;
+  padding: 16px calc(var(--notch-x) + var(--notch-r) + 10px) 16px 24px;
+  color: var(--tinta);
+  text-decoration: none;
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.links-cta:hover,
+.links-cta:focus-visible {
+  transform: translateY(-2px);
+}
+
+/* El papel del botón vive en un pseudo-elemento, no en el fondo del enlace.
+   Tiene que ser así: la muesca se hace con una máscara, y una máscara sobre el
+   propio `<a>` recortaría también lo que lleva dentro —empezando por el círculo
+   rojo, que es justo lo que debe quedar entero—. Con el papel aparte, el
+   recorte solo se come el papel y el contenido queda por encima intacto.
+
+   El círculo transparente de la máscara es mayor que el rojo por `--notch-aire`,
+   y esa diferencia es lo que se ve como el filo curvo alrededor: el papel se
+   cierra sobre sí mismo describiendo dos curvas cóncavas donde se encuentra con
+   el círculo. */
+.links-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 999px;
+  background: var(--hueso);
+  -webkit-mask-image: radial-gradient(
+    circle calc(var(--notch-r) + var(--notch-aire))
+      at calc(100% - var(--notch-x)) 50%,
+    transparent 0 100%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    circle calc(var(--notch-r) + var(--notch-aire))
+      at calc(100% - var(--notch-x)) 50%,
+    transparent 0 100%,
+    #000 100%
+  );
+  transition: box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.links-cta:hover::before,
+.links-cta:focus-visible::before {
+  box-shadow: 0 14px 34px -18px rgba(218, 22, 19, 0.75);
+}
+
+/* El resplandor de la esquina, igual que en la tarjeta del panel: un círculo
+   difuminado que asoma desde fuera del recuadro. Queda por debajo del texto
+   —de ahí el `isolation` del botón— y solo entra al pasar por encima. */
+.links-cta__brillo {
+  position: absolute;
+  top: -18px;
+  right: -14px;
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(218, 22, 19, 0.55);
+  filter: blur(24px);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+.links-cta:hover .links-cta__brillo,
+.links-cta:focus-visible .links-cta__brillo {
+  opacity: 1;
+}
+
+.links-cta__texto {
+  font-family: var(--cond);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(22px, 6vw, 30px);
+  line-height: 1;
+}
+.links-cta__icono {
+  flex-shrink: 0;
+  position: absolute;
+  top: 50%;
+  right: calc(var(--notch-x) - var(--notch-r));
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: calc(var(--notch-r) * 2);
+  height: calc(var(--notch-r) * 2);
+  border-radius: 999px;
+  background: var(--rojo);
+  /* Recorta el riel: es lo que hace que la flecha desaparezca en el borde del
+     círculo en vez de salirse del botón. */
+  overflow: hidden;
+  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* El riel lleva las dos flechas en DIAGONAL, no en fila: la de arriba a la
+   derecha es la que sale de cuadro y la de abajo a la izquierda la que entra,
+   siguiendo el mismo eje que apunta la punta. Con las flechas en fila —como
+   estaban cuando la flecha era horizontal— el relevo se movía en diagonal pero
+   las dos compartían altura, y la que entraba aparecía por el costado en vez
+   de por la esquina.
+
+   Se releva en vez de animar una sola: una sola tendría que volver, y la
+   vuelta se lee como un rebote. */
+.links-cta__riel {
+  position: relative;
+  width: 17px;
+  height: 17px;
+  transform: translate(0, 0);
+  transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.links-cta__riel svg {
+  position: absolute;
+  inset: 0;
+  width: 17px;
+  height: 17px;
+}
+/* La segunda espera fuera del círculo, en la esquina opuesta. */
+.links-cta__riel svg:last-child {
+  transform: translate(-30px, 30px);
+}
+.links-cta:hover .links-cta__riel,
+.links-cta:focus-visible .links-cta__riel {
+  transform: translate(30px, -30px);
+}
+
+
+.links-cta:hover .links-cta__icono,
+.links-cta:focus-visible .links-cta__icono {
+  transform: translateY(-50%) scale(1.06);
+}
+
+.links-pie {
+  margin-top: 26px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--apagado);
+}
+.links-pie a {
+  color: inherit;
+  text-decoration: none;
+}
+.links-pie a:hover {
+  color: var(--rojo-claro);
+}
+
+/* ---------- foco visible ---------- */
+.links-pagina a:focus-visible {
+  outline: 2px solid var(--rojo-claro);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- movimiento reducido ----------
+   La escena 3D directamente no se monta (lo decide el componente). Acá solo
+   se recorta la altura reservada, porque el respaldo plano ocupa menos. */
+@media (prefers-reduced-motion: reduce) {
+  .links-escena {
+    position: static;
+    height: auto;
+    padding: 40px 0 10px;
+  }
+  .links-cuerpo {
+    padding-top: 0;
+  }
+  .links-fila,
+  .links-cta,
+  .links-fila__flecha {
+    transition: none;
+  }
+  .links-fila__flecha {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* ======================================================================
+   ESCRITORIO
+
+   La página se diseñó primero para el teléfono, que es donde de verdad se
+   usa: llega desde la bio de una red social. En pantalla ancha esa misma
+   columna estrecha y centrada deja dos tercios de superficie vacíos y
+   obliga a bajar mucho para llegar al índice.
+
+   A partir de 900px el contenido pasa a dos columnas: la promesa a la
+   izquierda, el índice a la derecha, y el cierre cruzando ambas. La
+   estrella sigue recorriendo el fondo por detrás — su presencia ya baja
+   sola en los tramos de lectura.
+   ====================================================================== */
+@media (min-width: 900px) {
+  .links-contenido {
+    max-width: 1180px;
+    /* Holgado a propósito: el cierre es la última parada del recorrido de la
+       estrella, y sin aire debajo el objeto llega a su tamaño grande justo
+       cuando ya no queda pantalla donde verlo. */
+    padding: 0 48px 120px;
+  }
+
+  /* Al margen derecho, no centrada: en ancho la pastilla centrada compite con
+     la estrella por el eje del medio, y las dos quedan apiladas en la misma
+     columna. Llevada al canto, la portada respira y el objeto se queda solo en
+     el centro, que es donde tiene que estar. */
+  .links-marca {
+    justify-content: flex-end;
+    /* Mismo ancho útil y mismo margen que el contenido: la cabecera es hermana
+       de `.links-contenido`, no hija, así que sin esto se alineaba con el borde
+       de la ventana y quedaba fuera de la columna. */
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-right: 48px;
+    padding-left: 48px;
+  }
+
+  .links-cuerpo {
+    /* La estrella necesita su pantalla antes de que empiece el texto. Con
+       menos aire, la portada del objeto caía encima del arranque del índice. */
+    padding-top: 52svh;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    column-gap: 72px;
+    align-items: start;
+  }
+
+  /* La promesa se queda a la vista mientras se recorre el índice: en dos
+     columnas el lado izquierdo es más corto y, sin esto, quedaba un hueco
+     largo en blanco a media lectura. */
+  .links-intro {
+    position: sticky;
+    top: 96px;
+  }
+
+  .links-titular {
+    font-size: clamp(58px, 5.4vw, 82px);
+  }
+
+  .links-bajada {
+    font-size: 16px;
+    max-width: 40ch;
+  }
+
+  /* En una sola columna el claim iba alineado a la derecha para contrapesar
+     el titular. Acá el contrapeso lo hace el índice de al lado, así que
+     vuelve al margen izquierdo con el resto del bloque. */
+  .links-claim {
+    text-align: left;
+    margin-top: 30px;
+    font-size: 20px;
+  }
+
+  .links-indice {
+    margin-top: 0;
+  }
+
+  .links-fila {
+    min-height: 66px;
+  }
+
+  .links-fila__nombre {
+    font-size: 32px;
+  }
+
+  /* El cierre cruza las dos columnas y separa la pregunta del botón: en
+     ancho hay sitio para que convivan en una línea sin apretarse. */
+  .links-cierre {
+    grid-column: 1 / -1;
+    margin-top: 72px;
+    padding-top: 30px;
+    border-top: 1px solid var(--linea);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+  }
+
+  .links-pregunta {
+    margin: 0;
+    flex: 1 1 auto;
+    max-width: 22ch;
+    font-size: clamp(34px, 3.1vw, 46px);
+  }
+
+  .links-cta {
+    margin-top: 0;
+    flex: 0 0 auto;
+    min-width: 340px;
+  }
+
+  /* Fuera del grid de dos columnas: dentro quedaba como una fila más y no
+     llegaba a entrar en pantalla al final del recorrido. */
+  .links-pie {
+    margin-top: 40px;
+    text-align: left;
+  }
+}

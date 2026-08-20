@@ -54,6 +54,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      /* Fuera del menú a propósito: se llega por la URL directa desde la bio de
+         las redes. Sigue en el sitemap porque estar oculta del nav no es lo
+         mismo que estar oculta de Google. Prioridad baja: no compite con la
+         home por la consulta de marca, solo debe existir. */
+      url: "https://www.tryvex.tech/links",
+      lastModified: new Date("2026-08-19"),
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
+    {
       url: "https://www.tryvex.tech/catalogo",
       lastModified: new Date("2026-08-03"),
       changeFrequency: "weekly",
