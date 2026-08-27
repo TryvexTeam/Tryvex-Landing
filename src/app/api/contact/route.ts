@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { createCalendarEvent } from "@/lib/google-calendar";
+import { CrmRechazo, reservarCita } from "@/lib/crm";
+import { santiagoToUTC } from "@/lib/fecha-santiago";
 import { esquemaAgenda } from "@/lib/validacion-agenda";
 import { escaparHtml } from "@/lib/html";
 
@@ -92,14 +93,46 @@ export async function POST(req: NextRequest) {
     agente,
   ].join(" · ");
 
-  // Create Google Calendar event + Meet link (falls back if Calendar not configured)
+  /* La reserva la crea el CRM, y es lo primero que ocurre.
+
+     Antes el orden era al revés: acá se creaba el evento en Google, se mandaban
+     los correos, y recién al final salía un fire-and-forget a un dashboard
+     externo. La cita nacía fuera del CRM y entraba por la puerta de atrás; si
+     ese último paso fallaba, nadie se enteraba y el lead no existía.
+
+     Ahora el CRM lo hace todo en una transacción —lead, evento, asistente y el
+     registro del consentimiento— y devuelve quién atiende y el enlace de Meet.
+     Si la reserva falla, no se manda ningún correo: confirmarle una llamada a
+     alguien que no quedó agendado es peor que pedirle que reintente. */
   let meetLink = FALLBACK_MEET;
-  if (process.env.GOOGLE_REFRESH_TOKEN && dateISO && time) {
-    try {
-      meetLink = await createCalendarEvent({ name, phone, email, dateISO, time, message });
-    } catch (err) {
-      console.error("[/api/contact] calendar error", err);
+  let quienAtiende: string | null = null;
+
+  if (!dateISO || !time) {
+    return NextResponse.json({ error: "invalid payload" }, { status: 422 });
+  }
+
+  try {
+    const reserva = await reservarCita({
+      nombre: name,
+      email,
+      telefono: phone,
+      mensaje: message,
+      // Con el huso correcto de esa fecha, no un -04:00 fijo.
+      inicio: santiagoToUTC(dateISO, time).toISOString(),
+      consentimientoVersion: consentimiento.version,
+    });
+    meetLink = reserva.meet_link ?? FALLBACK_MEET;
+    quienAtiende = reserva.integrante_nombre;
+  } catch (err) {
+    if (err instanceof CrmRechazo) {
+      // Tres cosas distintas para quien reserva: la hora se ocupó mientras
+      // llenaba el formulario, no es una hora que se ofrezca, o es demasiado
+      // sobre la hora. El formulario las distingue.
+      const status = err.motivo === "slot_no_disponible" ? 409 : 422;
+      return NextResponse.json({ error: err.motivo }, { status });
     }
+    console.error("[/api/contact] reserva en el CRM", err);
+    return NextResponse.json({ error: "booking failed" }, { status: 503 });
   }
 
   const resend = new Resend(apiKey);
@@ -136,43 +169,37 @@ export async function POST(req: NextRequest) {
     if (falloCliente) console.error("[/api/contact] correo al cliente", falloCliente);
     if (falloInterno) console.error("[/api/contact] aviso al equipo", falloInterno);
 
-    // Registrar la cita en el dashboard interno del equipo (trybot/leads-dashboard).
-    // Fire-and-forget: si el dashboard no responde, la reserva del cliente NO se ve
-    // afectada. Solo corre si está configurado CITAS_INGEST_TOKEN en el entorno.
-    if (process.env.CITAS_INGEST_TOKEN && dateISO && time) {
-      const fecha_hora = `${dateISO}T${time}:00-04:00`; // Chile (UTC-4)
-      fetch("https://leads-dashboard-production-c504.up.railway.app/api/citas/ingest", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-ingest-token": process.env.CITAS_INGEST_TOKEN,
-        },
-        body: JSON.stringify({
-          nombre: name,
-          email,
-          telefono: phone,
-          fecha_hora,
-          mensaje: message,
-          origen: "tryvex.tech",
-        }),
-      }).catch((err) => console.error("[/api/contact] citas ingest error", err));
-    }
+    /* Acá iba un fire-and-forget al dashboard de Railway con la cita. Ya no
+       hace falta: la cita se creó en el CRM antes de llegar hasta aquí, así que
+       el equipo la ve en su kanban como lead con dueño asignado, y no como un
+       correo que alguien tiene que transcribir. Aquel envío además construía la
+       hora con un offset `-04:00` fijo, que en horario de verano corría la cita
+       una hora. */
 
-    /* El criterio es dónde queda el lead, no cuántos correos salieron.
-       - Si falla el aviso al equipo, nadie se entera de la solicitud: se
-         responde con error para que el visitante lo reintente o escriba al
-         correo que muestra el toast.
-       - Si solo falla la copia del cliente, la solicitud ya está en la bandeja
-         del equipo y en el calendario: obligar a reintentar duplicaría la cita
-         para nada. Queda registrado en el log y el equipo hace el contacto. */
-    if (falloInterno) {
-      return NextResponse.json({ error: "email failed" }, { status: 502 });
-    }
+    /* El criterio cambió con el CRM, y este es el punto delicado del cambio.
 
-    return NextResponse.json({ ok: true, confirmacionEnviada: !falloCliente });
+       Antes, si fallaba el aviso al equipo se respondía 502 para que el
+       visitante reintentara: el correo era el ÚNICO registro de la solicitud, y
+       sin él la cita se perdía. Ahora la cita ya está guardada en el CRM cuando
+       se llega hasta aquí, así que pedir un reintento crearía una SEGUNDA
+       reserva —otro lead, otro evento, otra hora bloqueada— por un fallo de
+       correo. El error que arreglamos se convertiría en uno peor.
+
+       Así que un fallo de correo ya no invalida la reserva: se responde ok, se
+       registra en el log, y el equipo ve la cita en su kanban igual. Lo que sí
+       viaja al cliente es si recibió su confirmación, para que el formulario
+       pueda decírselo. */
+    return NextResponse.json({
+      ok: true,
+      confirmacionEnviada: !falloCliente,
+      avisoInternoEnviado: !falloInterno,
+      atiende: quienAtiende,
+    });
   } catch (err) {
-    console.error("[/api/contact] resend error", err);
-    return NextResponse.json({ error: "email failed" }, { status: 500 });
+    // Mismo criterio: la cita existe. Un fallo del proveedor de correo no la
+    // borra, y responder error acá haría que el visitante reintente y duplique.
+    console.error("[/api/contact] resend error (la cita YA está en el CRM)", err);
+    return NextResponse.json({ ok: true, confirmacionEnviada: false, atiende: quienAtiende });
   }
 }
 
