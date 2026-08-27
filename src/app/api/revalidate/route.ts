@@ -5,9 +5,15 @@ import { z } from "zod";
 
 const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET;
 
-// Tags válidos que este endpoint puede invalidar. Allowlist explícita: el
-// payload nunca decide una ruta o tag arbitrario, solo elige entre estos.
-const TAGS_VALIDOS = ["equipo"] as const;
+/* Tags válidos que este endpoint puede invalidar. Allowlist explícita: el
+   payload nunca decide una ruta o tag arbitrario, solo elige entre estos.
+
+   · `equipo`         — alguien editó su ficha pública y /team debe releerla.
+   · `disponibilidad` — alguien cambió qué horas ofrece, y el formulario de
+     agenda debe volver a preguntárselas al CRM. Sin este, quien marca sus
+     horas ve «no queda ninguna hora libre» hasta diez minutos después —cinco
+     del caché del CRM y cinco del de acá— y concluye que no funcionó. */
+const TAGS_VALIDOS = ["equipo", "disponibilidad"] as const;
 
 const bodySchema = z.object({
   tag: z.enum(TAGS_VALIDOS),
