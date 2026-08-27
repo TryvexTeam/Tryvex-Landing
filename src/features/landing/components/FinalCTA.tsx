@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { sileo } from "sileo";
 
-import { HORARIOS } from "../../../lib/horarios";
 import {
   errorDelCampo,
   VERSION_CONSENTIMIENTO,
@@ -11,7 +10,6 @@ import {
 } from "../../../lib/validacion-agenda";
 import { CONTACTO_HREF } from "../../../lib/mail";
 
-const FALLBACK_SLOTS: string[] = [...HORARIOS];
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MONTHS_ES = [
   "Ene", "Feb", "Mar", "Abr", "May", "Jun",
@@ -48,8 +46,13 @@ export default function FinalCTA() {
   const [form, setForm] = useState<ScheduleForm>({ name: "", phone: "", email: "", message: "" });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [availableSlots, setAvailableSlots] = useState<string[]>(FALLBACK_SLOTS);
+  /* Arranca vacío y no con la lista fija: hasta que se elige un día no hay
+     ninguna hora que ofrecer, y partir con horarios de relleno los mostraba
+     como disponibles antes de haber preguntado. */
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
+  /** No se pudo consultar la disponibilidad — distinto de "no hay horas". */
+  const [falloSlots, setFalloSlots] = useState(false);
   const [loading, setLoading] = useState(false);
 
   /**
@@ -87,14 +90,23 @@ export default function FinalCTA() {
     setSelectedDate(day);
     setSelectedTime(null);
     setLoadingSlots(true);
+    setFalloSlots(false);
     try {
       const res = await fetch(`/api/availability?date=${toDateISO(day)}`);
-      if (res.ok) {
-        const { slots } = await res.json() as { slots: string[] };
-        setAvailableSlots(slots.length > 0 ? slots : FALLBACK_SLOTS);
-      }
+      if (!res.ok) throw new Error(`availability ${res.status}`);
+
+      const { slots } = (await res.json()) as { slots: string[] };
+      /* Una lista vacía es una respuesta, no un fallo: significa que ese día no
+         queda ninguna hora libre. Antes se traducía a la lista fija de
+         horarios, así que un día completo se mostraba como un día entero
+         disponible y el visitante podía reservar una hora ya tomada. */
+      setAvailableSlots(slots);
     } catch {
-      setAvailableSlots(FALLBACK_SLOTS);
+      /* Y esto sí es un fallo: no sabemos qué hay libre. Tampoco se inventa —
+         se deja vacío y se dice lo que pasa. No ofrecer nada es recuperable;
+         confirmar una cita que no existe, no. */
+      setAvailableSlots([]);
+      setFalloSlots(true);
     } finally {
       setLoadingSlots(false);
     }
@@ -312,9 +324,13 @@ export default function FinalCTA() {
               <p className="sch-aviso sch-aviso--guia" role="status">
                 {loadingSlots
                   ? "Buscando horarios libres…"
-                  : selectedDate && !selectedTime
-                    ? "Ahora elige la hora."
-                    : ""}
+                  : falloSlots
+                    ? "No pudimos cargar los horarios. Reintenta en un momento o escríbenos."
+                    : selectedDate && availableSlots.length === 0
+                      ? "Ese día no queda ninguna hora libre. Prueba con otro."
+                      : selectedDate && !selectedTime
+                        ? "Ahora elige la hora."
+                        : ""}
               </p>
             </div>
 
