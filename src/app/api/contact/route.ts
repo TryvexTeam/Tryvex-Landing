@@ -117,6 +117,9 @@ export async function POST(req: NextRequest) {
       email,
       telefono: phone,
       mensaje: message,
+      // La misma IP con la que se cobra el freno de aca arriba: asi el CRM
+      // cuenta a la persona que reserva y no a este servidor.
+      ipVisitante: ip === "desconocida" ? null : ip,
       // Con el huso correcto de esa fecha, no un -04:00 fijo.
       inicio: santiagoToUTC(dateISO, time).toISOString(),
       consentimientoVersion: consentimiento.version,

@@ -61,12 +61,24 @@ export class CrmRechazo extends Error {
   }
 }
 
-function cabeceras() {
+function cabeceras(ipVisitante?: string | null) {
   if (!CRM_URL || !LANDING_API_TOKEN) throw new CrmNoConfigurado();
-  return {
+  const base: Record<string, string> = {
     "x-landing-token": LANDING_API_TOKEN,
     "Content-Type": "application/json",
   };
+  /* Quien reserva es el visitante, no este servidor.
+   *
+   * Sin esto el CRM ve siempre la IP de Vercel y su limite de 3 reservas por
+   * hora se reparte entre TODOS los visitantes juntos: el cuarto que agende en
+   * una hora queda bloqueado sin haber hecho nada. Se confirmo el 13-sep-2026
+   * mirando `intentos_reserva_publica`: todos los intentos figuraban con IPs
+   * de servidor, ninguna de una persona.
+   *
+   * La cabecera es creible del otro lado porque viaja junto al token, que solo
+   * tiene la landing. */
+  if (ipVisitante) base["x-visitante-ip"] = ipVisitante;
+  return base;
 }
 
 /**
@@ -114,10 +126,13 @@ export async function reservarCita(datos: {
   /** Instante de inicio en ISO 8601 con zona. */
   inicio: string;
   consentimientoVersion: string;
+  /** IP de quien reserva, para que el limite del CRM cuente personas y no
+   *  servidores. Opcional: sin ella el limite sigue existiendo, compartido. */
+  ipVisitante?: string | null;
 }): Promise<ReservaConfirmada> {
   const res = await fetch(`${CRM_URL}/api/publico/citas`, {
     method: "POST",
-    headers: cabeceras(),
+    headers: cabeceras(datos.ipVisitante),
     body: JSON.stringify({
       nombre: datos.nombre,
       email: datos.email,
