@@ -14,7 +14,16 @@ const nextConfig: NextConfig = {
     // Si el CRM migra a otro proyecto de Supabase, hay que cambiar el hostname de
     // acá o las fotos del equipo dejan de cargar. Es el precio de no dejar el
     // optimizador abierto, y queda escrito para que ese día no sea un misterio.
+    //
+    // 2026-09-26: el CRM pasó a Supabase self-hosted en el VPS. El host viejo se
+    // mantiene mientras existan deploys o cachés que aún lo sirvan; se puede
+    // quitar cuando el proyecto de la nube se dé de baja.
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "supabase.srv1877698.hstgr.cloud",
+        pathname: "/storage/v1/object/public/avatares/**",
+      },
       {
         protocol: "https",
         hostname: "wfsjzhshkaokjoansbhc.supabase.co",
