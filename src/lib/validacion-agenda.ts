@@ -49,6 +49,31 @@ export const TEXTO_CONSENTIMIENTO =
   "Al pulsar «Acepto y agendo cita» autorizas a Tryvex a usar tus datos para " +
   "contactarte por esta solicitud, según su política de privacidad.";
 
+/**
+ * Productos desde los que se puede llegar al formulario con `?producto=`.
+ *
+ * Lista cerrada: el valor viene de la URL, o sea de cualquiera, así que solo se
+ * acepta lo que está aquí y lo demás se ignora. Agregar un producto es agregar
+ * una entrada.
+ */
+export const PRODUCTOS_AGENDA = {
+  "bitacora-coach": {
+    etiqueta: "Bitácora Coach",
+    mensaje: "Quiero una demo de Bitácora Coach (app para coaches).",
+  },
+} as const;
+
+export type ProductoAgenda = keyof typeof PRODUCTOS_AGENDA;
+
+const CLAVES_PRODUCTO = Object.keys(PRODUCTOS_AGENDA) as [ProductoAgenda, ...ProductoAgenda[]];
+
+/** Devuelve el producto si el valor de la URL está en la lista; si no, `undefined`. */
+export function productoValido(valor: unknown): ProductoAgenda | undefined {
+  return typeof valor === "string" && Object.hasOwn(PRODUCTOS_AGENDA, valor)
+    ? (valor as ProductoAgenda)
+    : undefined;
+}
+
 export const esquemaAgenda = z.object({
   name: z
     .string()
@@ -79,6 +104,9 @@ export const esquemaAgenda = z.object({
   dateISO: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   time: z.string().trim().regex(/^\d{2}:\d{2}$/).optional(),
   message: z.string().trim().max(2000, "Mensaje demasiado largo.").optional(),
+
+  /* Opcional: solo llega si la persona vino desde un enlace de producto. */
+  producto: z.enum(CLAVES_PRODUCTO).optional(),
 
   /* `literal(true)`, no `boolean()`: un `false` tiene que rebotar igual que un
      campo ausente. Con `boolean()` bastaría mandar `aceptado: false` para
