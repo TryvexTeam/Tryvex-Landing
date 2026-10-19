@@ -5,8 +5,10 @@ import { sileo } from "sileo";
 
 import {
   errorDelCampo,
+  PRODUCTOS_AGENDA,
   VERSION_CONSENTIMIENTO,
   type CampoAgenda,
+  type ProductoAgenda,
 } from "../../../lib/validacion-agenda";
 import { CONTACTO_HREF } from "../../../lib/mail";
 
@@ -41,9 +43,22 @@ interface ScheduleForm {
 
 type View = "cta" | "form" | "success";
 
-export default function FinalCTA() {
-  const [view, setView] = useState<View>("cta");
-  const [form, setForm] = useState<ScheduleForm>({ name: "", phone: "", email: "", message: "" });
+interface FinalCTAProps {
+  /** Producto que trae el enlace (`/contacto?producto=…`), ya validado. */
+  producto?: ProductoAgenda;
+}
+
+export default function FinalCTA({ producto }: FinalCTAProps = {}) {
+  const infoProducto = producto ? PRODUCTOS_AGENDA[producto] : null;
+  /* Quien llega con un producto ya dijo qué quiere: se abre directo el
+     formulario, con el mensaje de la demo escrito (editable). */
+  const [view, setView] = useState<View>(producto ? "form" : "cta");
+  const [form, setForm] = useState<ScheduleForm>({
+    name: "",
+    phone: "",
+    email: "",
+    message: infoProducto?.mensaje ?? "",
+  });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   /* Arranca vacío y no con la lista fija: hasta que se elige un día no hay
@@ -193,6 +208,7 @@ export default function FinalCTA() {
         /* Pulsar el botón *es* la autorización; esto es su registro. Va con la
            versión del texto que la persona tenía a la vista. */
         consentimiento: { aceptado: true, version: VERSION_CONSENTIMIENTO },
+        ...(producto ? { producto } : {}),
       }),
     }).then((res) => {
       if (!res.ok) throw new Error("request failed");
@@ -261,6 +277,15 @@ export default function FinalCTA() {
         {/* ── Form — absolute overlay, scrolls if content overflows ── */}
         <div className={`fv fv--overlay${view === "form" ? " fv--active" : ""}`}>
           <form className="sch-form" onSubmit={handleSubmit} noValidate>
+            {infoProducto && (
+              <p
+                className="sch-label"
+                style={{ fontWeight: 600, marginBottom: 8 }}
+                data-testid="chip-producto"
+              >
+                Demo de {infoProducto.etiqueta}
+              </p>
+            )}
             <p className="sch-label">
               Elige un día y hora para tu llamada de 20 min.
             </p>

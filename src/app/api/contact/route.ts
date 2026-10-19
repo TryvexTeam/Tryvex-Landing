@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { CrmRechazo, reservarCita } from "@/lib/crm";
 import { santiagoToUTC } from "@/lib/fecha-santiago";
-import { esquemaAgenda } from "@/lib/validacion-agenda";
+import { esquemaAgenda, PRODUCTOS_AGENDA } from "@/lib/validacion-agenda";
 import { escaparHtml } from "@/lib/html";
 
 const NOTIFY_EMAIL = "tryvexentreprise@gmail.com";
@@ -71,7 +71,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "too many requests" }, { status: 429 });
   }
 
-  const { name, phone, email, date, dateISO, time, message, consentimiento } = parseo.data;
+  const { name, phone, email, date, dateISO, time, message, consentimiento, producto } = parseo.data;
+  const etiquetaProducto = producto ? PRODUCTOS_AGENDA[producto].etiqueta : null;
 
   /* Registro del consentimiento, para que quede en el correo interno junto a
      los datos que autoriza. Va aparte del formulario a propósito: la persona
@@ -116,7 +117,9 @@ export async function POST(req: NextRequest) {
       nombre: name,
       email,
       telefono: phone,
-      mensaje: message,
+      /* El CRM no tiene campo de producto: la etiqueta viaja al inicio del
+         mensaje para que el lead quede marcado sin cambiar su contrato. */
+      mensaje: etiquetaProducto ? `[${etiquetaProducto}] ${message ?? ""}`.trim() : message,
       // La misma IP con la que se cobra el freno de aca arriba: asi el CRM
       // cuenta a la persona que reserva y no a este servidor.
       ipVisitante: ip === "desconocida" ? null : ip,
@@ -153,7 +156,7 @@ export async function POST(req: NextRequest) {
       resend.emails.send({
         from: FROM_INTERNAL,
         to: NOTIFY_EMAIL,
-        subject: `Nueva solicitud de llamada — ${name}`,
+        subject: `${etiquetaProducto ? `[${etiquetaProducto}] ` : ""}Nueva solicitud de llamada — ${name}`,
         html: buildInternalEmail({
           name,
           phone,
@@ -161,6 +164,7 @@ export async function POST(req: NextRequest) {
           date,
           time,
           message,
+          producto: etiquetaProducto ?? undefined,
           meetLink,
           consentimiento: selloConsentimiento,
         }),
@@ -356,6 +360,7 @@ function buildInternalEmail({
   date: fechaCruda,
   time: horaCruda,
   message: mensajeCrudo,
+  producto: productoCrudo,
   meetLink,
   consentimiento: consentimientoCrudo,
 }: {
@@ -365,6 +370,8 @@ function buildInternalEmail({
   date?: string;
   time?: string;
   message?: string;
+  /** Etiqueta del producto desde el que llegó, si vino de un enlace. */
+  producto?: string;
   meetLink: string;
   /** Sello de la autorización: texto, versión y hora del servidor. */
   consentimiento: string;
@@ -375,6 +382,7 @@ function buildInternalEmail({
   const date    = fechaCruda ? escaparHtml(fechaCruda) : undefined;
   const time    = horaCruda ? escaparHtml(horaCruda) : undefined;
   const message = mensajeCrudo ? escaparHtml(mensajeCrudo) : undefined;
+  const producto = productoCrudo ? escaparHtml(productoCrudo) : undefined;
   const consentimiento = escaparHtml(consentimientoCrudo);
 
   return `<!DOCTYPE html>
@@ -430,6 +438,10 @@ function buildInternalEmail({
                 ${time ? `<tr>
                   <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;">Hora</td>
                   <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:#ffffff;font-size:14px;font-weight:600;">${time} hrs</td>
+                </tr>` : ""}
+                ${producto ? `<tr>
+                  <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;">Producto</td>
+                  <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:#ffffff;font-size:14px;font-weight:600;">${producto}</td>
                 </tr>` : ""}
                 ${message ? `<tr>
                   <td style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;vertical-align:top;">Mensaje</td>

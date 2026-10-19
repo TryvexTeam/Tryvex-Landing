@@ -4,6 +4,7 @@ import { CONTACTO_HREF } from "../../lib/mail";
 import RevelarAlScroll from "../../components/RevelarAlScroll";
 import FinalCTA from "../../features/landing/components/FinalCTA";
 import SiteFooter from "../../components/SiteFooter";
+import { productoValido } from "../../lib/validacion-agenda";
 
 export const metadata: Metadata = {
   title: "Contacto — Tryvex",
@@ -18,7 +19,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactoPage() {
+export default async function ContactoPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ producto?: string | string[] }>;
+}) {
+  const { producto } = await searchParams;
+  const productoInicial = productoValido(Array.isArray(producto) ? producto[0] : producto);
+
   return (
     <>
       <div className="ambient"><div className="b1"></div><div className="b2"></div><div className="b3"></div></div>
@@ -42,7 +50,7 @@ export default function ContactoPage() {
 
         <section className="block" id="final">
           <div className="wrap">
-            <FinalCTA />
+            <FinalCTA producto={productoInicial} />
           </div>
         </section>
 
