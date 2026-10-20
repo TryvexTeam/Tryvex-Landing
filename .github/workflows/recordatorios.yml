@@ -13,7 +13,7 @@
 #   1. En Vercel → Settings → Environment Variables: crear `CRON_SECRET` con un
 #      valor largo y aleatorio. Sin ella el endpoint responde 401 siempre.
 #   2. En este repo → Settings → Secrets and variables → Actions: crear un
-#      secret llamado `CRON_SECRET` con **exactamente el mismo valor**.
+#      secret (o variable) llamado `CRON_SECRET` con **exactamente el mismo valor**.
 #
 # ── Advertencias ─────────────────────────────────────────────────────────────
 #   · GitHub no garantiza la puntualidad: bajo carga, un cron puede atrasarse
@@ -47,14 +47,14 @@ jobs:
     steps:
       - name: Llamar a /api/reminders
         env:
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET || vars.CRON_SECRET }}
         run: |
           set -euo pipefail
 
           if [ -z "${CRON_SECRET}" ]; then
-            echo "Falta el secret CRON_SECRET en este repositorio."
+            echo "No hay CRON_SECRET configurado (secret ni variable). Se omite la corrida."
             echo "Settings → Secrets and variables → Actions."
-            exit 1
+            exit 0
           fi
 
           codigo=$(curl --silent --show-error --max-time 60 \
